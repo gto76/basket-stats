@@ -10,11 +10,10 @@ public class PlayerStats {
 	public static final int ASSIGNABLES_COUNT = 11;
 	//FGM-A	3PM-A	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
 	private final Team team;
-	private final Shots shots = new Shots();
+	private Shots shots = new Shots();
 	private int plusMinus = 0,
 				off = 0, 
 				def = 0,
-		
 				ast = 0,
 				pf = 0,
 				st = 0,
@@ -48,6 +47,21 @@ public class PlayerStats {
 		}
 	}
 	
+	public PlayerStats(Team team, int fgm, int fga, int tpm, int tpa, 
+			int plusMinus, int off, int def, int ast, int pf, int st, int to, int bs) {
+		this(team);
+		this.shots = new Shots(fgm, fga, tpm, tpa);
+		this.plusMinus = plusMinus;
+		this.off = off;
+		this.def = def;
+		this.ast = ast;
+		this.pf = pf;
+		this.st = st;
+		this.to = to;
+		this.bs = bs;
+	}
+
+
 	//
 	// SETERS:
 	//

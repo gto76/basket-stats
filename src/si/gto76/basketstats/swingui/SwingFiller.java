@@ -1,0 +1,369 @@
+package si.gto76.basketstats.swingui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.net.URISyntaxException;
+import java.sql.Time;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Deque;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
+import org.omg.PortableServer._ServantLocatorStub;
+
+import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.coreclasses.Game;
+import si.gto76.basketstats.coreclasses.Player;
+import si.gto76.basketstats.coreclasses.PlayerStats;
+import si.gto76.basketstats.coreclasses.Stat;
+import si.gto76.basketstats.coreclasses.StatCats;
+import si.gto76.basketstats.coreclasses.Team;
+
+public class SwingFiller implements KeyListener {
+	protected static final long DOUBLE_CLICK_LAG =  250000000;
+	Game game;
+	JFrame frame = new JFrame(Conf.APP_NAME);
+	Container container = new Container();
+	private BasketMenu meni;
+
+	Deque<Stat> stackOfCommands = new ArrayDeque<Stat>();
+	List<Player> playersOnTheFloor = new ArrayList<Player>();
+
+	JLabel team1Label = new JLabel();
+	JLabel team2Label = new JLabel();
+
+    static ArrayList<Image> iconsActive;
+    static ArrayList<Image> iconsNotActive;
+
+	{
+		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+	}
+
+	public SwingFiller(Game game) {
+		this.game = game;
+		int rows = game.getNumberOfPlayers() + 2, columns = 1;
+		GridLayout layout = new GridLayout(rows, columns);
+		layout.setHgap(Conf.MAIN_H_GAP);
+		layout.setVgap(Conf.MAIN_V_GAP);
+		container.setLayout(layout);
+
+		// Icons
+    	final ImageIcon iconImgS = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S));
+    	final ImageIcon iconImgSBlue = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S_BLUE));
+    	final ImageIcon iconImgM = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_M));
+    	final ImageIcon iconImgL = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_L));
+    	final ImageIcon iconImgXL = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_XL));
+    	
+    	iconsActive = new ArrayList<Image>() {
+			private static final long serialVersionUID = 4560955969369357297L;
+			{add(iconImgSBlue.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
+    	};
+    	iconsNotActive = new ArrayList<Image>() {
+			private static final long serialVersionUID = -337325274310404675L;
+			{add(iconImgS.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
+    	};
+        frame.setIconImages(iconsActive);
+        
+		// Menus
+		meni = new BasketMenu();
+		frame.setJMenuBar(meni.getMenuBar());
+
+		/*
+		 * FILE
+		 */
+		// SAVE AS
+		meni.menuFileSaveas.addActionListener(new SaveListener(game, frame));
+		// OPEN
+		meni.menuFileOpen.addActionListener(new LoadListener(this));
+		// FILE EXIT
+		meni.menuFileExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onWindowClose();
+			}
+		});
+
+		/*
+		 * EDIT
+		 */
+		// UNDO
+		meni.menuEditUndo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				undo();
+			}
+		});
+		
+        /*
+         * HELP ABOUT
+         */
+        meni.menuHelpAbout.addActionListener (
+			new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                	try {
+						new AboutDialog();
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+                }
+            }
+        );
+
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent we) {
+				onWindowClose();
+			}
+		});
+
+		fill();
+		seal();
+		updateUndoLabel();
+	}
+
+	private void fill() {
+		fillTeam(game.getTeam1(), team1Label);
+		fillTeam(game.getTeam2(), team2Label);
+	}
+
+	private void fillTeam(Team team, JLabel label) {
+		JPanel p = new JPanel();
+		label.setText(getTeamNameAndScore(team));
+		p.add(label);
+		container.add(p);
+		fillPlayers(team.getAllPlayersStats());
+	}
+
+	private void fillPlayers(Map<Player, PlayerStats> allPlayerStats) {
+		for (Entry<Player, PlayerStats> playerWithStats : allPlayerStats
+				.entrySet()) {
+			Container playersContainer = new Container();
+			int rows = 1, columns = PlayerStats.ASSIGNABLES_COUNT + 1;
+			GridLayout layout = new GridLayout(rows, columns);
+			layout.setHgap(1);
+			layout.setVgap(1);
+			playersContainer.setLayout(layout);
+			container.add(playersContainer);
+
+			fillPlayer(playersContainer, playerWithStats);
+		}
+	}
+
+	private void fillPlayer(Container playersContainer,
+			Entry<Player, PlayerStats> playerWithStats) {
+		Player player = playerWithStats.getKey();
+		PlayerStats stats = playerWithStats.getValue();
+
+		// NAME PANEL
+		JPanel namePanel = createStringPanel(player.getShortName());
+		final Container nameContainer = new Container();
+		nameContainer.addMouseListener(new MouseListener() {
+				public void mouseReleased(MouseEvent arg0) {}
+				public void mousePressed(MouseEvent arg0) {}
+				public void mouseExited(MouseEvent arg0) {}
+				public void mouseEntered(MouseEvent arg0) {}
+				
+				long clickedTimeOld = System.nanoTime();
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					long clickedTimeNew = System.nanoTime();
+					long deltaTime = clickedTimeNew - clickedTimeOld;
+					if (deltaTime < DOUBLE_CLICK_LAG) {
+						System.out.println("Clicked!!!");
+						//nameContainer.removeAll(); TODO change name
+						//nameContainer.add(createStringPanel("Bla"));
+					}
+					else {
+						clickedTimeOld = clickedTimeNew;
+					}
+				}
+			}
+		);
+		nameContainer.setLayout(new GridLayout(1, 1));
+		nameContainer.add(namePanel);
+		nameContainer.validate();
+		playersContainer.add(nameContainer);
+
+		// BUTTONS
+		List<JButton> buttons = new ArrayList<JButton>();
+		for (Stat stat : stats.getStats()) {
+			JButton button = createStatButton(stat);
+			buttons.add(button);
+		}
+
+		JCheckBox onFloorSelector = new PlayersCheckBox(player,
+				stats.getTeam(), buttons);
+		onFloorSelector.setSelected(true);
+		onFloorSelector.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent itemEvent) {
+				// AbstractButton abstractButton =
+				// (AbstractButton)itemEvent.getSource();
+				PlayersCheckBox cb = (PlayersCheckBox) itemEvent.getItem();
+				int state = itemEvent.getStateChange();
+				if (state == ItemEvent.SELECTED) {
+					cb.team.putPlayerOnTheFloor(cb.player);
+					cb.enableAllButtons();
+				} else if (state == ItemEvent.DESELECTED) {
+					cb.team.getPlayerOffTheFloor(cb.player);
+					cb.disableAllButtons();
+				}
+			}
+		});
+		playersContainer.add(onFloorSelector);
+
+		for (JButton button : buttons) {
+			playersContainer.add(button);
+		}
+	}
+
+	private JButton createStatButton(final Stat stat) {
+		String statsName = stat.getName();
+		JButton button = new JButton(statsName);
+		if (statsName.equals("Off") || statsName.equals("Def")) {
+			button.setBackground(Color.GRAY);
+		}
+		button.addKeyListener(this);
+
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Integer scoreDelta = stat.fireAction();
+				if (scoreDelta != null) {
+					Team playersTeam = stat.getTeam();
+					setPlusMinus(scoreDelta, playersTeam);
+				}
+				pushCommandOnStack(stat);
+				System.out.println(game);
+			}
+		});
+		return button;
+	}
+
+	private void pushCommandOnStack(Stat stat) {
+		stackOfCommands.push(stat);
+		updateUndoLabel();
+	}
+
+	private void updateUndoLabel() {
+		Stat stat = stackOfCommands.peek();
+		if (stat != null) {
+			meni.menuEditUndo.setEnabled(true);
+			meni.menuEditUndo.setText("Undo " + stat.getName() + " "
+				+ stat.getPlayer().getShortName());
+		}
+		else {
+			meni.menuEditUndo.setEnabled(false);
+			meni.menuEditUndo.setText("Undo");
+		}
+	}
+
+	private JPanel createStringPanel(String name) {
+		JPanel p = new JPanel();
+		JLabel nameLabel = new JLabel(name);
+		p.add(nameLabel);
+		return p;
+	}
+
+	private void seal() {
+		frame.add(container, BorderLayout.CENTER);
+		frame.setSize(Conf.WINDOW_WIDTH, Conf.WINDOW_HEIGHT);
+		frame.setVisible(true);
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		char c = arg0.getKeyChar();
+		if ( c == 26 ) {
+			undo();
+		}
+	}
+
+	private void undo() {
+		if (stackOfCommands.size() == 0) {
+			return;
+		}
+		Stat lastCommand = popCommandFromStack();
+		Integer scoreDelta = lastCommand.undoAction();
+		if (scoreDelta != null) {
+			Team team = lastCommand.getTeam();
+			setPlusMinus(scoreDelta, team);
+		}
+		System.out.println(game);
+		System.out.println("UNDO!");
+	}
+
+	private Stat popCommandFromStack() {
+		Stat command = stackOfCommands.pop();
+		updateUndoLabel();
+		return command;
+	}
+
+	private void setPlusMinus(Integer scoreDelta, Team team) {
+		team.changePlusMinus(scoreDelta);
+		Team otherTeam = game.getOtherTeam(team);
+		otherTeam.changePlusMinus(scoreDelta * (-1));
+		updateScore();
+	}
+
+	private void updateScore() {
+		Team team1 = game.getTeam1();
+		team1Label.setText(getTeamNameAndScore(team1));
+
+		Team team2 = game.getTeam2();
+		team2Label.setText(getTeamNameAndScore(team2));
+	}
+
+	private String getTeamNameAndScore(Team team) {
+		return team.getName() + ": " + team.get(StatCats.PTS);
+	}
+
+	public static void onWindowClose() {
+		confirmExit();
+	}
+
+	private static void confirmExit() {
+		String ObjButtons[] = { "Yes", "No" };
+		int PromptResult = JOptionPane.showOptionDialog(null,
+				"Are you sure you want to exit?", "",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
+				ObjButtons, ObjButtons[1]);
+		if (PromptResult == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
+	}
+
+}
