@@ -54,7 +54,7 @@ public class Game {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("\n").append(lb).append(date).append("\n").append(location)
 				.append("\n").append(lb).append("\n").append(team1.getName())
 				.append(": ").append(team1.get(StatCats.PTS)).append("\n\n")

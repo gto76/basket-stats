@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import si.gto76.basketstats.Conf;
+
 public class PlayerStats {
 	public static final int STAT_COUNT = 13;
 	public static final int ASSIGNABLES_COUNT = 11;
@@ -251,11 +253,11 @@ public class PlayerStats {
 	@Override
 	public String toString() {
 		//FGM-A	3PM-A +/-	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
-		StringBuffer sb = new StringBuffer();
-		sb.append(getFgm()).append("-").append(getFga()).append("\t")
-		.append(getTpm()).append("-").append(getTpa()).append("\t");
+		StringBuilder sb = new StringBuilder();
+		sb.append(Team.padTab(getFgm()+"-"+getFga()))
+		.append(Team.padTab(getTpm()+"-"+getTpa()));
 		for (StatCats sc : StatCats.nonScoringValues()) {
-			sb.append(get(sc)).append("\t");
+			sb.append(Team.padTab(Integer.toString(get(sc))));
 		}
 		return sb.toString();
 	}

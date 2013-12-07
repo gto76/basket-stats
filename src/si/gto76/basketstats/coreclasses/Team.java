@@ -124,51 +124,53 @@ public class Team {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-
-		String theTabs = "";
-		for (int i = Conf.NUMBER_OF_TABS_FOR_PLAYER_NAME; i > 0; i--) {
-			theTabs = theTabs + "\t";
-		}
+		StringBuilder sb = new StringBuilder();
 
 		// HEADER
-		sb.append(name).append("\n").append(theTabs).append("FGM-A\t")
-				.append("3PM-A\t");
+		//FGM-A	3PM-A +/-	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
+		sb.append(name).append("\n").
+		append(emptyPlayersName()).
+		append(padTab("FGM-A")).append(padTab("3PM-A"));
 		for (StatCats sc : StatCats.nonScoringValues()) {
-			sb.append(sc.getName()).append("\t");
+			sb.append(padTab(sc.getName()));
 		}
 		sb.append("\n");
 
 		// PLAYER STATS
 		for (Player player : allPlayersStats.keySet()) {
 			String playersName = player.getFullName();
-			int spaceForName = Conf.NUMBER_OF_TABS_FOR_PLAYER_NAME
-					* Conf.TAB_WIDTH;
-			sb.append(padEnd(playersName, spaceForName, ' '))
-					.append(allPlayersStats.get(player)).append("\n");
+			sb.append(padEnd(playersName, Conf.PLAYER_NAME_WIDTH, ' ')).
+			append(allPlayersStats.get(player)).append("\n");
 		}
 		
 		// TOTALS
-		sb.append("Totals").append(theTabs).append(get(StatCats.FGM))
-				.append("-").append(get(StatCats.FGA)).append("\t")
-				.append(get(StatCats.TPM)).append("-")
-				.append(get(StatCats.TPA)).append("\t");
+		sb.append(padEnd("Totals", Conf.PLAYER_NAME_WIDTH, ' ')).
+		append(padTab(get(StatCats.FGM)+"-"+get(StatCats.FGA))).
+		append(padTab(get(StatCats.TPM)+"-"+get(StatCats.TPA)));
 		for (StatCats sc : StatCats.nonScoringValues()) {
 			if (sc == StatCats.PM) {
-				sb.append("\t");
+				sb.append(padTab(""));
 				continue;
 			}
-			sb.append(get(sc)).append("\t");
+			sb.append( padTab(get(sc).toString()) );
 		}
 		sb.append("\n");
 
 		// PERCENTS
-		sb.append(theTabs).append(oneDigit.format(getFgPercent())).append("%")
-				.append("\t").append(oneDigit.format(getTpPercent()))
-				.append("%");
-		sb.append("\n");
+		sb.append(emptyPlayersName()).
+		append( padTab(oneDigit.format(getFgPercent())+"%") ).
+		append(oneDigit.format(getTpPercent())+"%").
+		append("\n");
 
 		return sb.toString();
+	}
+	
+	public static String emptyPlayersName() {
+		return padEnd("", Conf.PLAYER_NAME_WIDTH, ' ');
+	}
+	
+	public static String padTab(String string) {
+		return padEnd(string, Conf.TAB_WIDTH, ' ');
 	}
 
 	public static String padEnd(String string, int minLength, char padChar) {

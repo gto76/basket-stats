@@ -11,6 +11,7 @@ public class Conf {
 
 	static public final int NUMBER_OF_TABS_FOR_PLAYER_NAME = 3;
 	static public final int TAB_WIDTH = 8;
+	static public final int PLAYER_NAME_WIDTH = NUMBER_OF_TABS_FOR_PLAYER_NAME * TAB_WIDTH;
 	
 	// Icons
 	public static final String ICON_FILENAME_S = "/resources/ba16.png"; 

@@ -9,7 +9,6 @@ import si.gto76.basketstats.swingui.SwingFiller;
 public class BasketStats {
 
 	// TODO dodajanje igralcev
-	// TODO v editorjih ki imajo tab=4 se vse podre -> tabe v space
 
 	public static void main(String[] args) throws FileNotFoundException {
 			
