@@ -4,28 +4,43 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import si.gto76.basketstats.Conf;
 
-public class Team {
+public class Team implements PlayerOrTeam {
 	private static final DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
 
 	private String name;
-	private Map<Player, PlayerStats> allPlayersStats = new HashMap<Player, PlayerStats>();
+	private Map<Player, PlayerStats> allPlayersStats = new LinkedHashMap<Player, PlayerStats>();
 	Set<Player> playersOnTheFloor = new HashSet<Player>();
 
 	public Team(String name, List<Player> players) {
 		this.name = name;
 		for (Player player : players) {
-			PlayerStats ps = new PlayerStats(this);
-			allPlayersStats.put(player, ps);
-			playersOnTheFloor.add(player);
+			addPlayer(player);
 		}
 	}
 
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getName() {
+		return name;
+	}
+	
+	public void addPlayer(Player player) {
+		PlayerStats ps = new PlayerStats(this);
+		allPlayersStats.put(player, ps);
+		playersOnTheFloor.add(player);
+	}
+	
 	public Team(String name, Map<Player, PlayerStats> allPlayersStats) {
 		this.name = name;
 		this.allPlayersStats = allPlayersStats;
@@ -33,10 +48,6 @@ public class Team {
 
 	public void addAllPlayersOnTheFloor() {
 		playersOnTheFloor.addAll(allPlayersStats.keySet());
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public PlayerStats getPlayersStats(Player player) {
@@ -111,13 +122,6 @@ public class Team {
 		return zeroIfDevideByZero(tpm, tpa);
 	}
 
-	private double zeroIfDevideByZero(int devidee, int devider) {
-		if (devider == 0) {
-			return 0;
-		}
-		return ((double) devidee / devider) * 100.0;
-	}
-
 	public boolean hasPlayer(Player player) {
 		return allPlayersStats.keySet().contains(player);
 	}
@@ -138,7 +142,7 @@ public class Team {
 
 		// PLAYER STATS
 		for (Player player : allPlayersStats.keySet()) {
-			String playersName = player.getFullName();
+			String playersName = player.getName();
 			sb.append(padEnd(playersName, Conf.PLAYER_NAME_WIDTH, ' ')).
 			append(allPlayersStats.get(player)).append("\n");
 		}
@@ -163,6 +167,13 @@ public class Team {
 		append("\n");
 
 		return sb.toString();
+	}
+	
+	public static  double zeroIfDevideByZero(int devidee, int devider) {
+		if (devider == 0) {
+			return 0;
+		}
+		return ((double) devidee / devider) * 100.0;
 	}
 	
 	public static String emptyPlayersName() {

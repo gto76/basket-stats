@@ -1,13 +1,22 @@
 package si.gto76.basketstats.coreclasses;
 
-public class Player {
-	private String firstName, secondName;
+public class Player implements PlayerOrTeam {
+	private String name;
 
-	public Player(String firstName, String secondName) {
-		this.firstName = firstName;
-		this.secondName = secondName;
+	public Player(String name) {
+		this.name = name;
 	}
-
+	
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String getName() {
+		return name;
+	}
+/*
 	public String getFirstName() {
 		return firstName;
 	}
@@ -20,10 +29,10 @@ public class Player {
 	public String getFullName() {
 		return firstName + " " + secondName;
 	}
-
+*/
 	@Override
 	public String toString() {
-		return getFullName();
+		return getName();
 	}
 
 }

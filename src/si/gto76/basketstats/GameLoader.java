@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class GameLoader {
+	private static final boolean DEBUG = false;
 	final static String SPLITTER_STR = " +|\t";
 
 	public static Game createGameFromString(String gameString) {
@@ -34,8 +36,8 @@ public class GameLoader {
 		// line 8, do :, ime druge ekipe
 		String team2Name = lll[8].split(":")[0];
 
-		Map<Player, PlayerStats> team1Stats = new HashMap<Player, PlayerStats>();
-		Map<Player, PlayerStats> team2Stats = new HashMap<Player, PlayerStats>();
+		Map<Player, PlayerStats> team1Stats = new LinkedHashMap<Player, PlayerStats>();
+		Map<Player, PlayerStats> team2Stats = new LinkedHashMap<Player, PlayerStats>();
 		Team team1 = new Team(team1Name, team1Stats);
 		Team team2 = new Team(team2Name, team2Stats);
 
@@ -60,37 +62,39 @@ public class GameLoader {
 		// IGRALEC:
 		// FGM-A 3PM-A +/- OFF DEF TOT AST PF ST TO BS PTS
 		// 0-0 0-0 0 0 0 0 2 2 0 0 0 0
-		String[] s = playerString.split(SPLITTER_STR);
+		String playersName = playerString.substring(0, Conf.PLAYER_NAME_WIDTH-1).trim();
+		String playersStats = playerString.substring(Conf.PLAYER_NAME_WIDTH);
+		
+		String[] sss = playersStats.split(SPLITTER_STR);
 
-		int i = 0;
-		for (String a : s) {
-			System.out.println(i + ": " + a);
-			i++;
+		if (DEBUG) {
+			int i = 0;
+			for (String s : sss) {
+				System.out.println(i + ": " + s);
+				i++;
+			}
 		}
 
-		String firstName = s[0];
-		String secondName = s[1];
-
-		String[] fg = s[2].split("-");
+		String[] fg = sss[0].split("-");
 		int fgm = Integer.parseInt(fg[0]);
 		int fga = Integer.parseInt(fg[1]);
 
-		String[] tp = s[3].split("-");
+		String[] tp = sss[1].split("-");
 		int tpm = Integer.parseInt(tp[0]);
 		int tpa = Integer.parseInt(tp[1]);
 
-		int pm = Integer.parseInt(s[4]);
-		int off = Integer.parseInt(s[5]);
-		int def = Integer.parseInt(s[6]);
-		// tot s[7] -> redundant information
-		int ast = Integer.parseInt(s[8]);
-		int pf = Integer.parseInt(s[9]);
-		int st = Integer.parseInt(s[10]);
-		int to = Integer.parseInt(s[11]);
-		int bs = Integer.parseInt(s[12]);
-		// pts s[13] -> redundant information
+		int pm = Integer.parseInt(sss[2]);
+		int off = Integer.parseInt(sss[3]);
+		int def = Integer.parseInt(sss[4]);
+		// tot s[5] -> redundant information
+		int ast = Integer.parseInt(sss[6]);
+		int pf = Integer.parseInt(sss[7]);
+		int st = Integer.parseInt(sss[8]);
+		int to = Integer.parseInt(sss[9]);
+		int bs = Integer.parseInt(sss[10]);
+		// pts s[11] -> redundant information
 
-		Player pl = new Player(firstName, secondName);
+		Player pl = new Player(playersName);
 		PlayerStats plStats = new PlayerStats(team, fgm, fga, tpm, tpa, pm,
 				off, def, ast, pf, st, to, bs);
 
