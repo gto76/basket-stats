@@ -1,6 +1,6 @@
 package si.gto76.basketstats.coreclasses;
 
-public class Player implements PlayerOrTeam {
+public class Player implements HasName {
 	private String name;
 
 	public Player(String name) {

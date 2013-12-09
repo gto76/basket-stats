@@ -11,7 +11,7 @@ import java.util.Set;
 
 import si.gto76.basketstats.Conf;
 
-public class Team implements PlayerOrTeam {
+public class Team implements HasName {
 	private static final DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
 
 	private String name;

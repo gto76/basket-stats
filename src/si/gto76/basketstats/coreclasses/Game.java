@@ -5,11 +5,11 @@ import java.util.Date;
 import si.gto76.basketstats.Conf;
 
 public class Game {
-	private String location;
+	private Location location;
 	private Date date;
 	private Team team1, team2;
 
-	public Game(Team team1, Team team2, Date date, String location) {
+	public Game(Team team1, Team team2, Date date, Location location) {
 		this.team1 = team1;
 		this.team2 = team2;
 		this.date = date;
@@ -28,7 +28,7 @@ public class Game {
 		return team2;
 	}
 
-	public String getLocation() {
+	public Location getLocation() {
 		return location;
 	}
 

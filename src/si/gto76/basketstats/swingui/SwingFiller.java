@@ -2,6 +2,7 @@ package si.gto76.basketstats.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -35,15 +36,20 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.SpinnerDateModel;
 import javax.swing.WindowConstants;
+
+import net.sourceforge.jdatepicker.JDateComponentFactory;
+import net.sourceforge.jdatepicker.util.JDatePickerUtil;
 
 import org.omg.PortableServer._ServantLocatorStub;
 
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
-import si.gto76.basketstats.coreclasses.PlayerOrTeam;
+import si.gto76.basketstats.coreclasses.HasName;
 import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.StatCats;
@@ -70,22 +76,14 @@ public class SwingFiller implements KeyListener {
 
 	public SwingFiller(final Game game) {
 		this.game = game;
-		initializeContainer();
 		setIcons();
 		addMenus();
+		initializeContainer();
 		fillContainer();
 		sealContainer();
 		updateUndoLabel();
 	}
 
-	private void initializeContainer() {
-		int rows = game.getNumberOfPlayers() + 2, columns = 1;
-		GridLayout layout = new GridLayout(rows, columns);
-		layout.setHgap(Conf.MAIN_H_GAP);
-		layout.setVgap(Conf.MAIN_V_GAP);
-		container.setLayout(layout);
-	}
-	
 	private void setIcons() {
     	final ImageIcon iconImgS = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S));
     	final ImageIcon iconImgSBlue = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S_BLUE));
@@ -169,20 +167,46 @@ public class SwingFiller implements KeyListener {
 		});
 	}
 
-	protected void addNewPlayerToTeam(Team team) {
-		int noOfPlayers = team.getNumberOfPlayers();
-		Player player = new Player("Player " + Integer.toString(noOfPlayers+1));
-		team.addPlayer(player);
-		container.removeAll();
-		initializeContainer();
-		fillContainer();
-		System.out.println(game);
+	private void initializeContainer() {
+		int rows = game.getNumberOfPlayers() + 3, columns = 1;
+		GridLayout layout = new GridLayout(rows, columns);
+		layout.setHgap(Conf.MAIN_H_GAP);
+		layout.setVgap(Conf.MAIN_V_GAP);
+		container.setLayout(layout);
 	}
 
+	/*
+	 * FILL_CONTAINER
+	 */
 	private void fillContainer() {
+		fillTimeAndPlace();
 		fillTeam(game.getTeam1(), team1Label);
 		fillTeam(game.getTeam2(), team2Label);
 		updateScore();
+	}
+
+	private void fillTimeAndPlace() {
+		//// TODO date and place setup
+		// DATE
+		Container dateAndPlaceContainer = new Container();
+		GridLayout dateAndPlaceLayout = new GridLayout(1, 3);
+		//layout.setHgap(Conf.MAIN_H_GAP);
+		//layout.setVgap(Conf.MAIN_V_GAP);
+		dateAndPlaceContainer.setLayout(dateAndPlaceLayout);
+		dateAndPlaceContainer.add((Component)JDateComponentFactory.createJDatePicker());
+		// TIME
+		JSpinner timeSpinner = new JSpinner( new SpinnerDateModel() );
+		JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "HH:mm");
+		timeSpinner.setEditor(timeEditor);
+		timeSpinner.setValue(new Date()); // will only show the current time
+		dateAndPlaceContainer.add(timeSpinner);
+		// PLACE
+		JPanel placeContainer = new JPanel();
+		//dateAndPlaceContainer.add(new JLabel("Place")); //TODO place as class -> hasName
+		addNamePanel(placeContainer, game.getLocation());
+		dateAndPlaceContainer.add(placeContainer);
+		
+		container.add(dateAndPlaceContainer);
 	}
 
 	private void fillTeam(Team team, JLabel label) {
@@ -248,7 +272,7 @@ public class SwingFiller implements KeyListener {
 		}
 	}
 
-	private void addNamePanel(Container container, final PlayerOrTeam pot) {
+	private void addNamePanel(Container container, final HasName pot) {
 		JPanel namePanel = createStringPanel(pot.getName());
 		// Updates team1Label or team2Label global variable, so that updateScore()
 		// can update score by teams name.
@@ -283,7 +307,7 @@ public class SwingFiller implements KeyListener {
 	}
 
 	protected void switchNameLabelWithTextArea(final Container nameContainer,
-			final PlayerOrTeam pot) {
+			final HasName pot) {
 		nameContainer.removeAll();
 		final JTextArea textArea = new JTextArea(pot.getName());
 		textArea.addKeyListener(new KeyListener() {
@@ -322,7 +346,7 @@ public class SwingFiller implements KeyListener {
 		}
 	}
 
-	protected void changeNameAndSwitchBackToLabel(Container nameContainer, PlayerOrTeam pot,
+	protected void changeNameAndSwitchBackToLabel(Container nameContainer, HasName pot,
 				String name) {
     	pot.setName(name);
     	nameContainer.removeAll();
@@ -352,6 +376,15 @@ public class SwingFiller implements KeyListener {
 		});
 		return button;
 	}
+	/*
+	 * FILL_CONTAINER END
+	 */
+	
+	private void sealContainer() {
+		frame.add(container, BorderLayout.CENTER);
+		frame.setSize(Conf.WINDOW_WIDTH, Conf.WINDOW_HEIGHT);
+		frame.setVisible(true);
+	}
 
 	private void pushCommandOnStack(Stat stat) {
 		stackOfCommands.push(stat);
@@ -377,11 +410,15 @@ public class SwingFiller implements KeyListener {
 		p.add(nameLabel);
 		return p;
 	}
-
-	private void sealContainer() {
-		frame.add(container, BorderLayout.CENTER);
-		frame.setSize(Conf.WINDOW_WIDTH, Conf.WINDOW_HEIGHT);
-		frame.setVisible(true);
+	
+	protected void addNewPlayerToTeam(Team team) {
+		int noOfPlayers = team.getNumberOfPlayers();
+		Player player = new Player("Player " + Integer.toString(noOfPlayers+1));
+		team.addPlayer(player);
+		container.removeAll();
+		initializeContainer();
+		fillContainer();
+		System.out.println(game);
 	}
 
 	@Override

@@ -48,8 +48,8 @@ public class BasketStats {
 		Team
 		team1 = new Team("TEAM A", ppp1),
 		team2 = new Team("TEAM B", ppp2);
-		Long startTime = Date.parse("Tue, 17 april 2012 21:30"); // TODO date and place setup
-		Game derbi = new Game(team1, team2, new Date(startTime), "Dvorana Trnovo");
+		Long startTime = Date.parse("Tue, 17 april 2012 21:30"); 
+		Game derbi = new Game(team1, team2, new Date(startTime), new Location("Dvorana Trnovo"));
 		
 		new SwingFiller(derbi);
 		System.out.println(derbi);

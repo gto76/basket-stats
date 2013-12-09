@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import si.gto76.basketstats.coreclasses.Game;
+import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.Team;
@@ -54,7 +55,7 @@ public class GameLoader {
 
 		team1.addAllPlayersOnTheFloor();
 		team2.addAllPlayersOnTheFloor();
-		return new Game(team1, team2, date, location);
+		return new Game(team1, team2, date, new Location(location));
 	}
 
 	private static void addPlayerToMap(String playerString,
