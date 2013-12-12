@@ -73,7 +73,7 @@ public class SwingFiller implements KeyListener {
 	{
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
-
+	// TODO omejitev pri dodajanju imen na stevilo characterjev ali regex "-" metoda in prepoved "-"
 	public SwingFiller(final Game game) {
 		this.game = game;
 		setIcons();
