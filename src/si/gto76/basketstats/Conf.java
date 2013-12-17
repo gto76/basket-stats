@@ -23,4 +23,6 @@ public class Conf {
 	public static final String ICON_FILENAME_M = "/resources/ba32.png"; 
 	public static final String ICON_FILENAME_L = "/resources/ba64.png"; 
 	public static final String ICON_FILENAME_XL = "/resources/ba128.png";
+	
+	public static final int PLAYERS_NAME_COLUMN_WIDTH = 80;
 }

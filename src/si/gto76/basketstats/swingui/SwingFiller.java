@@ -5,8 +5,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,15 +26,18 @@ import java.net.URISyntaxException;
 import java.sql.Time;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -58,7 +64,15 @@ import si.gto76.basketstats.coreclasses.Team;
 public class SwingFiller implements KeyListener {
 	Game game;
 	JFrame frame = new JFrame(Conf.APP_NAME);
-	Container container = new Container();
+	// gridx, gridy			 - Pozicija
+	// gridwidth, gridheight - Kolk celic zauzema
+	// fill					 - Se širi skupaj z kontejnerjem, glede na weight
+	// weightx, weighty		 - 
+	// ipadx, ipady			 - kolk pixlov doda
+	// insets				 - padding
+	// anchor				 - anchor
+	JPanel mainPanel;
+	static int lastFilledRow;
 	private BasketMenu meni;
 
 	Deque<Stat> stackOfCommands = new ArrayDeque<Stat>();
@@ -73,17 +87,29 @@ public class SwingFiller implements KeyListener {
 	{
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
-	// TODO omejitev pri dodajanju imen na stevilo characterjev ali regex "-" metoda in prepoved "-"
+	// TODO date z label or selector
+	// TODO load game, da se tudi datum in place zlovdata
+	//--------------------
+	// TODO new game -> ask if it is cool if not saved
+	// TODO open -> ask if it is cool if not saved
+	// TODO exit -> ask if it is cool if not saved
+	// TODO last dir
+	// TODO da ce ponesreci zbrisemo lahko se vedno dvakrat kliknemo label
 	public SwingFiller(final Game game) {
 		this.game = game;
 		setIcons();
 		addMenus();
+		
 		initializeContainer();
 		fillContainer();
 		sealContainer();
+		
 		updateUndoLabel();
 	}
 
+	/*
+	 * 1. SET ICONS
+	 */
 	private void setIcons() {
     	final ImageIcon iconImgS = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S));
     	final ImageIcon iconImgSBlue = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S_BLUE));
@@ -102,6 +128,9 @@ public class SwingFiller implements KeyListener {
         frame.setIconImages(iconsActive);
 	}
 	
+	/*
+	 * 2. ADD MENUS
+	 */
 	private void addMenus() {
 		meni = new BasketMenu();
 		frame.setJMenuBar(meni.getMenuBar());
@@ -143,10 +172,22 @@ public class SwingFiller implements KeyListener {
 				addNewPlayerToTeam(team);
 			}
 		});
-		
+	
         /*
-         * HELP ABOUT
+         * HELP
          */
+        meni.menuHelpHelp.addActionListener (
+			new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                	try {
+						new HelpDialog();
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+                }
+            }
+        );
+      
         meni.menuHelpAbout.addActionListener (
 			new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -167,89 +208,113 @@ public class SwingFiller implements KeyListener {
 		});
 	}
 
+	/*
+	 * 3. INITIALIZE CONTAINER
+	 */
 	private void initializeContainer() {
-		int rows = game.getNumberOfPlayers() + 3, columns = 1;
-		GridLayout layout = new GridLayout(rows, columns);
-		layout.setHgap(Conf.MAIN_H_GAP);
-		layout.setVgap(Conf.MAIN_V_GAP);
-		container.setLayout(layout);
+		mainPanel = new JPanel(new GridBagLayout());
+		lastFilledRow = 0;
 	}
 
 	/*
-	 * FILL_CONTAINER
+	 * 4. FILL CONTAINER
 	 */
 	private void fillContainer() {
-		fillTimeAndPlace();
-		fillTeam(game.getTeam1(), team1Label);
-		fillTeam(game.getTeam2(), team2Label);
+		addPlace();
+		addTime();
+		addTeam(game.getTeam1(), team1Label);
+		addTeam(game.getTeam2(), team2Label);
 		updateScore();
 	}
 
-	private void fillTimeAndPlace() {
-		//// TODO date and place setup
-		// DATE
-		Container dateAndPlaceContainer = new Container();
-		GridLayout dateAndPlaceLayout = new GridLayout(1, 3);
-		//layout.setHgap(Conf.MAIN_H_GAP);
-		//layout.setVgap(Conf.MAIN_V_GAP);
-		dateAndPlaceContainer.setLayout(dateAndPlaceLayout);
-		dateAndPlaceContainer.add((Component)JDateComponentFactory.createJDatePicker());
-		// TIME
-		JSpinner timeSpinner = new JSpinner( new SpinnerDateModel() );
-		JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "HH:mm");
-		timeSpinner.setEditor(timeEditor);
-		timeSpinner.setValue(new Date()); // will only show the current time
-		dateAndPlaceContainer.add(timeSpinner);
-		// PLACE
+	private void addPlace() {
 		JPanel placeContainer = new JPanel();
-		//dateAndPlaceContainer.add(new JLabel("Place")); //TODO place as class -> hasName
-		addNamePanel(placeContainer, game.getLocation());
-		dateAndPlaceContainer.add(placeContainer);
+		new NamePanel(this, placeContainer, game.getLocation());
+		//placeContainer.setPreferredSize(new Dimension(200,30)); //XXX
 		
-		container.add(dateAndPlaceContainer);
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;       
+		c.gridy = 0;       
+		//c.gridwidth = 2;   
+		c.anchor = GridBagConstraints.WEST;
+		mainPanel.add(placeContainer, c);
+	}
+	
+	private void addTime() {
+		JPanel timeContainer = new JPanel();
+		new TimePanel(this, timeContainer);
+	    
+	    GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 2;       
+		c.gridy = 0;       
+		c.gridwidth = 1;   
+		c.anchor = GridBagConstraints.EAST;
+		//c.ipadx = 15;
+		mainPanel.add(timeContainer, c);
+		lastFilledRow++;
 	}
 
-	private void fillTeam(Team team, JLabel label) {
+	private void addTeam(Team team, JLabel label) {
+		addTeamName(team);
+		// Players names and buttons
+		addPlayers(team.getAllPlayersStats());
+	}
+
+	private void addTeamName(Team team) {
 		// Team name and score
 		JPanel p = new JPanel();
-		addNamePanel(p, team);
-		container.add(p);
-		// Players names and buttons
-		fillPlayers(team.getAllPlayersStats());
-	}
-
-	private void fillPlayers(Map<Player, PlayerStats> allPlayerStats) {
-		for (Entry<Player, PlayerStats> playerWithStats : allPlayerStats
-				.entrySet()) {
-			Container playersContainer = new Container();
-			int rows = 1, columns = PlayerStats.ASSIGNABLES_COUNT + 1;
-			GridLayout layout = new GridLayout(rows, columns);
-			layout.setHgap(1);
-			layout.setVgap(1);
-			playersContainer.setLayout(layout);
-			container.add(playersContainer);
-
-			fillPlayer(playersContainer, playerWithStats);
-		}
-	}
-
-	private void fillPlayer(Container playersContainer,
-			Entry<Player, PlayerStats> playerWithStats) {
-		Player player = playerWithStats.getKey();
-		PlayerStats stats = playerWithStats.getValue();
-
-		addNamePanel(playersContainer, player);
+		new NamePanel(this, p, team);
 		
-		// BUTTONS
-		List<JButton> buttons = new ArrayList<JButton>();
-		for (Stat stat : stats.getStats()) {
-			JButton button = createStatButton(stat);
-			buttons.add(button);
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;       
+		c.gridy = lastFilledRow;       
+		c.gridwidth = 3;   
+		c.weighty = 1.0;
+		c.ipady = 0;
+		mainPanel.add(p, c);
+		lastFilledRow++;
+	}
+	
+	private void addPlayers(Map<Player, PlayerStats> allPlayerStats) {
+		for (Entry<Player, PlayerStats> playerWithStats : allPlayerStats.entrySet()) {
+			addPlayer(playerWithStats.getKey(), playerWithStats.getValue());
 		}
+	}
+	
+	private void addPlayer(Player player, PlayerStats playerStats) {
+		// NAME:
+		addPlayersName(player);
+		// CHECKBOX:
+		List<JButton> buttons = createPlayersButtons(playerStats);
+		PlayersCheckBox checkBox = createPlayersCheckBox(player, playerStats.getTeam(), buttons);
+		addPlayersCheckBox(checkBox);
+		// BUTTONS:
+		addPlayersButtons(buttons);
+		
+		lastFilledRow++;
+	}
 
+	private void addPlayersName(Player player) {
+		JPanel playersNameContainer = new JPanel();
+		//playersNameContainer.setMinimumSize(new Dimension(240, 15));
+		//playersNameContainer.setPreferredSize(new Dimension(140,15));
+		new NamePanel(this, playersNameContainer, player);
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;       
+		c.gridy = lastFilledRow;       
+		c.weighty = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL; //XXX
+		//c.fill = GridBagConstraints.VERTICAL;
+		c.anchor = GridBagConstraints.CENTER;
+		//c.ipadx = Conf.PLAYERS_NAME_COLUMN_WIDTH;
+		mainPanel.add(playersNameContainer, c);
+	}
+	
+	private PlayersCheckBox createPlayersCheckBox(Player player, Team team, List<JButton> buttons) {
 		// ON FLOOR SELECTOR
-		JCheckBox onFloorSelector = new PlayersCheckBox(player,
-				stats.getTeam(), buttons);
+		PlayersCheckBox onFloorSelector = new PlayersCheckBox(player,
+				team, buttons);
 		onFloorSelector.setSelected(true);
 		onFloorSelector.addItemListener(new ItemListener() {
 			@Override
@@ -265,93 +330,53 @@ public class SwingFiller implements KeyListener {
 				}
 			}
 		});
-		playersContainer.add(onFloorSelector);
-
-		for (JButton button : buttons) {
-			playersContainer.add(button);
-		}
+		return onFloorSelector;
+	}
+	
+	private void addPlayersCheckBox(PlayersCheckBox checkBox) {
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 1;       
+		c.gridy = lastFilledRow;       
+		c.weighty = 1.0;
+		mainPanel.add(checkBox, c);
 	}
 
-	private void addNamePanel(Container container, final HasName pot) {
-		JPanel namePanel = createStringPanel(pot.getName());
-		// Updates team1Label or team2Label global variable, so that updateScore()
-		// can update score by teams name.
-		if (pot instanceof Team) {
-			updateTeamLabelReference((Team) pot, (JLabel) namePanel.getComponent(0));
+	private List<JButton> createPlayersButtons(PlayerStats stats) {
+		List<JButton> buttons = new ArrayList<JButton>();
+		for (Stat stat : stats.getStats()) {
+			JButton button = createStatButton(stat);
+			
+			//button.setMargin(m)
+			//button.setMaximumSize(new Dimension(40, 10));
+			//button.setMinimumSize(new Dimension(40, 10));
+			//button.setPreferredSize(new Dimension(0, 0)); //XXX
+			
+			button.setMinimumSize(new Dimension(100, 10));
+			button.setMaximumSize(new Dimension(100, 10));
+			button.setPreferredSize(new Dimension(100, 10));
+			
+			
+			buttons.add(button);
+		}
+		return buttons;
+	}
+	
+	private void addPlayersButtons(List<JButton> bbb) {
+		GridLayout layout = new GridLayout(1, bbb.size());
+		layout.setHgap(1);
+		JPanel panel = new JPanel(layout);
+		for (JButton b : bbb) {
+			panel.add(b);
 		}
 		
-		final Container nameContainer = new Container();
-		nameContainer.addMouseListener(new MouseListener() {
-				public void mouseReleased(MouseEvent arg0) {}
-				public void mousePressed(MouseEvent arg0) {}
-				public void mouseExited(MouseEvent arg0) {}
-				public void mouseEntered(MouseEvent arg0) {}
-				
-				long clickedTimeOld = System.nanoTime();
-				@Override
-				public void mouseClicked(MouseEvent arg0) {
-					long clickedTimeNew = System.nanoTime();
-					long deltaTime = clickedTimeNew - clickedTimeOld;
-					if (deltaTime < Conf.DOUBLE_CLICK_LAG) {
-						switchNameLabelWithTextArea(nameContainer, pot);
-					}
-					else {
-						clickedTimeOld = clickedTimeNew;
-					}
-				}
-			}
-		);
-		nameContainer.setLayout(new GridLayout(1, 1));
-		nameContainer.add(namePanel);
-		container.add(nameContainer);
-	}
-
-	protected void switchNameLabelWithTextArea(final Container nameContainer,
-			final HasName pot) {
-		nameContainer.removeAll();
-		final JTextArea textArea = new JTextArea(pot.getName());
-		textArea.addKeyListener(new KeyListener() {
-			public void keyTyped(KeyEvent e) {}
-			public void keyReleased(KeyEvent e) {}
-			public void keyPressed(KeyEvent e) {
-			    if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-			    	e.consume();
-			    	String name = textArea.getText();
-			    	changeNameAndSwitchBackToLabel(nameContainer, pot, name);
-			    	if (pot instanceof Team) {
-			    		// Extra work because of score by team name
-			    		changeNameAndSwitchBackToLabel(nameContainer, pot, name);
-			    		JPanel jp = (JPanel) nameContainer.getComponent(0);
-			    		JLabel teamLabel = (JLabel) jp.getComponent(0);
-			    		Team team = (Team) pot;
-			    		updateTeamLabelReference(team, teamLabel);
-			    		updateScore();
-			    	}
-			    	System.out.println(game);
-			    }
-			}
-		});
-		nameContainer.add(textArea);
-		nameContainer.validate();
-		textArea.requestFocus();
-		textArea.selectAll();
-	}
-
-	protected void updateTeamLabelReference(Team team, JLabel teamLabel) {
-		if (game.getTeam1().equals(team)) {
-			team1Label = teamLabel;
-		}
-		else {
-			team2Label = teamLabel;
-		}
-	}
-
-	protected void changeNameAndSwitchBackToLabel(Container nameContainer, HasName pot,
-				String name) {
-    	pot.setName(name);
-    	nameContainer.removeAll();
-    	nameContainer.add(createStringPanel(pot.getName()));
-    	nameContainer.validate();
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 2;       
+		c.gridy = lastFilledRow;       
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.BOTH;
+		c.insets = new Insets(2, 0, 2, 0); 
+		mainPanel.add(panel, c);
 	}
 
 	private JButton createStatButton(final Stat stat) {
@@ -376,14 +401,29 @@ public class SwingFiller implements KeyListener {
 		});
 		return button;
 	}
-	/*
-	 * FILL_CONTAINER END
-	 */
 	
+	/*
+	 * 5. SEAL CONTAINER
+	 */
 	private void sealContainer() {
-		frame.add(container, BorderLayout.CENTER);
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 6, 1, 2));
+		frame.setContentPane(mainPanel);
 		frame.setSize(Conf.WINDOW_WIDTH, Conf.WINDOW_HEIGHT);
 		frame.setVisible(true);
+	}
+	
+	/*
+	 * ##### ##### ##### ##### ##### ##### #####
+	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 
+	 * ##### ##### ##### ##### ##### ##### #####
+	 */
+	protected void updateTeamLabelReference(Team team, JLabel teamLabel) {
+		if (game.getTeam1().equals(team)) {
+			team1Label = teamLabel;
+		}
+		else {
+			team2Label = teamLabel;
+		}
 	}
 
 	private void pushCommandOnStack(Stat stat) {
@@ -415,9 +455,10 @@ public class SwingFiller implements KeyListener {
 		int noOfPlayers = team.getNumberOfPlayers();
 		Player player = new Player("Player " + Integer.toString(noOfPlayers+1));
 		team.addPlayer(player);
-		container.removeAll();
+		//mainPanel.removeAll();
 		initializeContainer();
 		fillContainer();
+		sealContainer();
 		System.out.println(game);
 	}
 
@@ -462,7 +503,7 @@ public class SwingFiller implements KeyListener {
 		updateScore();
 	}
 
-	private void updateScore() {
+	void updateScore() {
 		Team team1 = game.getTeam1();
 		team1Label.setText(getTeamNameAndScore(team1));
 
@@ -479,6 +520,7 @@ public class SwingFiller implements KeyListener {
 	}
 
 	private static void confirmExit() {
+		/*
 		String ObjButtons[] = { "Yes", "No" };
 		int PromptResult = JOptionPane.showOptionDialog(null,
 				"Are you sure you want to exit?", "",
@@ -486,7 +528,15 @@ public class SwingFiller implements KeyListener {
 				ObjButtons, ObjButtons[1]);
 		if (PromptResult == JOptionPane.YES_OPTION) {
 			System.exit(0);
-		}
+		}*/
+		System.exit(0);
+	}
+	
+	public static void setAllSizes(Component comp, int width, int height) {
+		Dimension dim = new Dimension(width, height);
+		comp.setMinimumSize(dim);
+		comp.setMaximumSize(dim);
+		comp.setPreferredSize(dim);
 	}
 
 }

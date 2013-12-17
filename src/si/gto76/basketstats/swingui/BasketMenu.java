@@ -16,6 +16,7 @@ public class BasketMenu {
 	JMenuItem menuEditAddPlayer1 = new JMenuItem();
 	JMenuItem menuEditAddPlayer2 = new JMenuItem();
 	JMenu menuHelp = new JMenu();
+	JMenuItem menuHelpHelp = new JMenuItem();
 	JMenuItem menuHelpAbout = new JMenuItem();
 
 	public BasketMenu() {
@@ -28,6 +29,7 @@ public class BasketMenu {
 		menuEditAddPlayer1.setText("Add Player To Team 1");
 		menuEditAddPlayer2.setText("Add Player To Team 2");
 		menuHelp.setText("Help");
+		menuHelpHelp.setText("Help");
 		menuHelpAbout.setText("About");
 
 		menuFile.add(menuFileOpen);
@@ -38,6 +40,7 @@ public class BasketMenu {
 		menuEdit.add(menuEditAddPlayer1);
 		menuEdit.add(menuEditAddPlayer2);
 		menuBar.add(menuEdit);
+		menuHelp.add(menuHelpHelp);
 		menuHelp.add(menuHelpAbout);
 		menuBar.add(menuHelp);
 	}

@@ -1,6 +1,8 @@
 package si.gto76.basketstats.swingui;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -12,7 +14,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import si.gto76.basketstats.Conf;
 
@@ -66,12 +70,12 @@ public class AboutDialog extends JFrame {
 	    label.setAlignmentX(Component.CENTER_ALIGNMENT);
     	p.add(label);
     	// Other info
-    	addLabelToPanel(" ", p);
+    	//addLabelToPanel(" ", p);
     	addLabelToPanel("Version: " + Conf.VERSION, p);
-    	addLabelToPanel(" ", p);
+    	//addLabelToPanel(" ", p);
     	addLabelToPanel("Author: Jure Šorn", p);
     	addLabelToPanel("<sornjure@hotmail.com>", p);
-    	addLabelToPanel(" ", p);
+    	//addLabelToPanel(" ", p);
     	//p.add(button);
     	
     	dlg.setSize(240, 105);
@@ -83,9 +87,18 @@ public class AboutDialog extends JFrame {
 	}
     
     private static void addLabelToPanel(String txt, JPanel pnl) {
-    	JLabel lbl = new JLabel(txt);
+    	JTextField lbl=new JTextField(txt);
+    	lbl.setFont(UIManager.getDefaults().getFont("TabbedPane.font"));
+    	lbl.setEditable(false);
+    	lbl.setBorder(null);
+    	lbl.setBackground(null);
+    	lbl.setDisabledTextColor(Color.black);    	
+    	
+    	JPanel p = new JPanel();
+    	p.add(lbl);
+    	
     	lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
-    	pnl.add(lbl);
+    	pnl.add(p); //lbl);
     }
 	  
     /*

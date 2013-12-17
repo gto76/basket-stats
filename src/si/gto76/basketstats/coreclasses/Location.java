@@ -4,11 +4,12 @@ public class Location implements HasName {
 	private String name;
 
 	public Location(String name) {
-		this.name = name;
+		setName(name);
 	}
 
 	@Override
 	public void setName(String name) {
+		name = name.trim();
 		this.name = name;
 	}
 

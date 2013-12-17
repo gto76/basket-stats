@@ -19,7 +19,7 @@ public class Team implements HasName {
 	Set<Player> playersOnTheFloor = new HashSet<Player>();
 
 	public Team(String name, List<Player> players) {
-		this.name = name;
+		setName(name);
 		for (Player player : players) {
 			addPlayer(player);
 		}
@@ -27,7 +27,8 @@ public class Team implements HasName {
 
 	@Override
 	public void setName(String name) {
-		this.name = name;
+		name = name.trim();
+		this.name = name.toUpperCase();
 	}
 	
 	@Override

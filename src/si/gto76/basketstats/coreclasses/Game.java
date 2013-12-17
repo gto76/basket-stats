@@ -19,6 +19,10 @@ public class Game {
 	public Date getDate() {
 		return date;
 	}
+	
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
 	public Team getTeam1() {
 		return team1;
