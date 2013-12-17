@@ -22,20 +22,7 @@ public class Player implements HasName {
 	public String getName() {
 		return name;
 	}
-/*
-	public String getFirstName() {
-		return firstName;
-	}
-	public String getSecondName() {
-		return secondName;
-	}
-	public String getShortName() {
-		return firstName.charAt(0) + ". " + secondName;
-	}
-	public String getFullName() {
-		return firstName + " " + secondName;
-	}
-*/
+
 	@Override
 	public String toString() {
 		return getName();

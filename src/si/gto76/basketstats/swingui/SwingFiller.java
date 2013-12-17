@@ -1,33 +1,24 @@
 package si.gto76.basketstats.swingui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URISyntaxException;
-import java.sql.Time;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
@@ -36,26 +27,15 @@ import java.util.Map.Entry;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTextArea;
-import javax.swing.SpinnerDateModel;
 import javax.swing.WindowConstants;
-
-import net.sourceforge.jdatepicker.JDateComponentFactory;
-import net.sourceforge.jdatepicker.util.JDatePickerUtil;
-
-import org.omg.PortableServer._ServantLocatorStub;
 
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
-import si.gto76.basketstats.coreclasses.HasName;
 import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.StatCats;
@@ -64,13 +44,6 @@ import si.gto76.basketstats.coreclasses.Team;
 public class SwingFiller implements KeyListener {
 	Game game;
 	JFrame frame = new JFrame(Conf.APP_NAME);
-	// gridx, gridy			 - Pozicija
-	// gridwidth, gridheight - Kolk celic zauzema
-	// fill					 - Se širi skupaj z kontejnerjem, glede na weight
-	// weightx, weighty		 - 
-	// ipadx, ipady			 - kolk pixlov doda
-	// insets				 - padding
-	// anchor				 - anchor
 	JPanel mainPanel;
 	static int lastFilledRow;
 	private BasketMenu meni;
@@ -83,18 +56,15 @@ public class SwingFiller implements KeyListener {
 
     static ArrayList<Image> iconsActive;
     static ArrayList<Image> iconsNotActive;
+    
+    boolean stateChangedSinceLastSave = false;
+
+    int mainWindowWidth = Conf.WINDOW_WIDTH;
+    int mainWindowHeight = Conf.WINDOW_HEIGHT;
 
 	{
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
-	// TODO date z label or selector
-	// TODO load game, da se tudi datum in place zlovdata
-	//--------------------
-	// TODO new game -> ask if it is cool if not saved
-	// TODO open -> ask if it is cool if not saved
-	// TODO exit -> ask if it is cool if not saved
-	// TODO last dir
-	// TODO da ce ponesreci zbrisemo lahko se vedno dvakrat kliknemo label
 	public SwingFiller(final Game game) {
 		this.game = game;
 		setIcons();
@@ -138,10 +108,27 @@ public class SwingFiller implements KeyListener {
 		/*
 		 * FILE
 		 */
-		// SAVE AS
-		meni.menuFileSaveas.addActionListener(new SaveListener(game, frame));
+		// NEW
+		meni.menuFileNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boolean exit = true;
+				if (stateChangedSinceLastSave) {
+					exit = SwingFiller.exitDialog("Game was not saved.\n" +
+							"Are you sure you want to open new game?");
+				}
+				if (exit) {
+					Game derbi = Conf.getDefaultGame();
+					new SwingFiller(derbi);
+					System.out.println(derbi);
+					frame.hide();
+				}
+			}
+		});
+		
 		// OPEN
 		meni.menuFileOpen.addActionListener(new LoadListener(this));
+		// SAVE AS
+		meni.menuFileSaveas.addActionListener(new SaveListener(this));//game, frame));
 		// FILE EXIT
 		meni.menuFileExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -230,7 +217,6 @@ public class SwingFiller implements KeyListener {
 	private void addPlace() {
 		JPanel placeContainer = new JPanel();
 		new NamePanel(this, placeContainer, game.getLocation());
-		//placeContainer.setPreferredSize(new Dimension(200,30)); //XXX
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;       
@@ -242,6 +228,7 @@ public class SwingFiller implements KeyListener {
 	
 	private void addTime() {
 		JPanel timeContainer = new JPanel();
+		timeContainer.setBorder(BorderFactory.createEmptyBorder(0,0,0,4));
 		new TimePanel(this, timeContainer);
 	    
 	    GridBagConstraints c = new GridBagConstraints();
@@ -296,18 +283,14 @@ public class SwingFiller implements KeyListener {
 
 	private void addPlayersName(Player player) {
 		JPanel playersNameContainer = new JPanel();
-		//playersNameContainer.setMinimumSize(new Dimension(240, 15));
-		//playersNameContainer.setPreferredSize(new Dimension(140,15));
 		new NamePanel(this, playersNameContainer, player);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;       
 		c.gridy = lastFilledRow;       
 		c.weighty = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL; //XXX
-		//c.fill = GridBagConstraints.VERTICAL;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
-		//c.ipadx = Conf.PLAYERS_NAME_COLUMN_WIDTH;
 		mainPanel.add(playersNameContainer, c);
 	}
 	
@@ -345,17 +328,7 @@ public class SwingFiller implements KeyListener {
 		List<JButton> buttons = new ArrayList<JButton>();
 		for (Stat stat : stats.getStats()) {
 			JButton button = createStatButton(stat);
-			
-			//button.setMargin(m)
-			//button.setMaximumSize(new Dimension(40, 10));
-			//button.setMinimumSize(new Dimension(40, 10));
-			//button.setPreferredSize(new Dimension(0, 0)); //XXX
-			
-			button.setMinimumSize(new Dimension(100, 10));
-			button.setMaximumSize(new Dimension(100, 10));
-			button.setPreferredSize(new Dimension(100, 10));
-			
-			
+			setAllSizes(button, 100, 10);
 			buttons.add(button);
 		}
 		return buttons;
@@ -408,7 +381,7 @@ public class SwingFiller implements KeyListener {
 	private void sealContainer() {
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 6, 1, 2));
 		frame.setContentPane(mainPanel);
-		frame.setSize(Conf.WINDOW_WIDTH, Conf.WINDOW_HEIGHT);
+		frame.setSize(mainWindowWidth, mainWindowHeight);
 		frame.setVisible(true);
 	}
 	
@@ -417,65 +390,10 @@ public class SwingFiller implements KeyListener {
 	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 
 	 * ##### ##### ##### ##### ##### ##### #####
 	 */
-	protected void updateTeamLabelReference(Team team, JLabel teamLabel) {
-		if (game.getTeam1().equals(team)) {
-			team1Label = teamLabel;
-		}
-		else {
-			team2Label = teamLabel;
-		}
-	}
-
-	private void pushCommandOnStack(Stat stat) {
-		stackOfCommands.push(stat);
-		updateUndoLabel();
-	}
-
-	private void updateUndoLabel() {
-		Stat stat = stackOfCommands.peek();
-		if (stat != null) {
-			meni.menuEditUndo.setEnabled(true);
-			meni.menuEditUndo.setText("Undo " + stat.getName() + " "
-				+ stat.getPlayer().getName());
-		}
-		else {
-			meni.menuEditUndo.setEnabled(false);
-			meni.menuEditUndo.setText("Undo");
-		}
-	}
-
-	private JPanel createStringPanel(String name) {
-		JPanel p = new JPanel();
-		JLabel nameLabel = new JLabel(name);
-		p.add(nameLabel);
-		return p;
-	}
 	
-	protected void addNewPlayerToTeam(Team team) {
-		int noOfPlayers = team.getNumberOfPlayers();
-		Player player = new Player("Player " + Integer.toString(noOfPlayers+1));
-		team.addPlayer(player);
-		//mainPanel.removeAll();
-		initializeContainer();
-		fillContainer();
-		sealContainer();
-		System.out.println(game);
-	}
-
-	@Override
-	public void keyPressed(KeyEvent arg0) {	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) { }
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		char c = arg0.getKeyChar();
-		if ( c == 26 ) {
-			undo();
-		}
-	}
-
+	/*
+	 * UNDO
+	 */
 	private void undo() {
 		if (stackOfCommands.size() == 0) {
 			return;
@@ -490,10 +408,58 @@ public class SwingFiller implements KeyListener {
 		System.out.println("UNDO!");
 	}
 
+	private void pushCommandOnStack(Stat stat) {
+		stateChangedSinceLastSave = true;
+		stackOfCommands.push(stat);
+		updateUndoLabel();
+	}
+
 	private Stat popCommandFromStack() {
+		stateChangedSinceLastSave = true;
 		Stat command = stackOfCommands.pop();
 		updateUndoLabel();
 		return command;
+	}
+	
+	public void keyPressed(KeyEvent arg0) {	}
+	public void keyReleased(KeyEvent arg0) { }
+	public void keyTyped(KeyEvent arg0) {
+		char c = arg0.getKeyChar();
+		if ( c == 26 ) {
+			undo();
+		}
+	}
+	
+	private void updateUndoLabel() {
+		Stat stat = stackOfCommands.peek();
+		if (stat != null) {
+			meni.menuEditUndo.setEnabled(true);
+			meni.menuEditUndo.setText("Undo " + stat.getName() + " "
+				+ stat.getPlayer().getName());
+		}
+		else {
+			meni.menuEditUndo.setEnabled(false);
+			meni.menuEditUndo.setText("Undo");
+		}
+	}
+
+	protected void updateTeamLabelReference(Team team, JLabel teamLabel) {
+		if (game.getTeam1().equals(team)) {
+			team1Label = teamLabel;
+		}
+		else {
+			team2Label = teamLabel;
+		}
+	}
+	
+	protected void addNewPlayerToTeam(Team team) {
+		int noOfPlayers = team.getNumberOfPlayers();
+		Player player = new Player("Player " + Integer.toString(noOfPlayers+1));
+		team.addPlayer(player);
+		initializeContainer();
+		fillContainer();
+		sealContainer();
+		System.out.println(game);
 	}
 
 	private void setPlusMinus(Integer scoreDelta, Team team) {
@@ -511,27 +477,43 @@ public class SwingFiller implements KeyListener {
 		team2Label.setText(getTeamNameAndScore(team2));
 	}
 
-	private String getTeamNameAndScore(Team team) {
-		return team.getName() + ": " + team.get(StatCats.PTS);
+	public void onWindowClose() {
+		if (stateChangedSinceLastSave) {
+			confirmExit();
+		}
+		else {
+			System.exit(0);
+		}
 	}
 
-	public static void onWindowClose() {
-		confirmExit();
+	private void confirmExit() {
+		if (exitDialog("Game was not saved.\n" +
+				"Are you sure you want to exit?")) {
+			System.exit(0);
+		}
 	}
-
-	private static void confirmExit() {
-		/*
+	
+	/*
+	 * UTILS
+	 */
+	public static boolean exitDialog(String text) {
 		String ObjButtons[] = { "Yes", "No" };
 		int PromptResult = JOptionPane.showOptionDialog(null,
-				"Are you sure you want to exit?", "",
+				text, "",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
 				ObjButtons, ObjButtons[1]);
 		if (PromptResult == JOptionPane.YES_OPTION) {
-			System.exit(0);
-		}*/
-		System.exit(0);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
-	
+
+	private static String getTeamNameAndScore(Team team) {
+		return team.getName() + ": " + team.get(StatCats.PTS);
+	}
+
 	public static void setAllSizes(Component comp, int width, int height) {
 		Dimension dim = new Dimension(width, height);
 		comp.setMinimumSize(dim);

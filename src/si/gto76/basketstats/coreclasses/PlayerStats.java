@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import si.gto76.basketstats.Conf;
-
 public class PlayerStats {
 	public static final int STAT_COUNT = 13;
 	public static final int ASSIGNABLES_COUNT = 11;
@@ -62,7 +60,6 @@ public class PlayerStats {
 		this.to = to;
 		this.bs = bs;
 	}
-
 
 	//
 	// SETERS:
@@ -171,7 +168,6 @@ public class PlayerStats {
 		bs--;
 		return null;
 	}
-	
 	
 	//
 	// GETTERS

@@ -8,26 +8,22 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import si.gto76.basketstats.coreclasses.Game;
-
 public class SaveListener implements ActionListener {
-	Game game;
-	JFrame frame;
+	SwingFiller mainFrame;
 
-	public SaveListener(Game game, JFrame frame) {
-		this.game = game;
-		this.frame = frame;
+	public SaveListener(SwingFiller mainFrame) {
+		this.mainFrame = mainFrame;
 	}
-
+	
 	private void saveFile(String formatName, File outputFile) {
 		PrintStream out;
 		try {
 			out = new PrintStream(new FileOutputStream(outputFile));
-			out.print(game.toString());
+			out.print(mainFrame.game.toString());
 			out.close();
+			mainFrame.stateChangedSinceLastSave = false;
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "SAVE ERROR!", "Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -130,8 +126,8 @@ public class SaveListener implements ActionListener {
 			}
 		};
 
-		String fileName = game.getTeam1().getName() + " vs "
-				+ game.getTeam2().getName() + " " + game.getDate().toString();
+		String fileName = mainFrame.game.getTeam1().getName() + " vs "
+				+ mainFrame.game.getTeam2().getName() + " " + mainFrame.game.getDate().toString();
 		fc.setSelectedFile(new File(fileName));
 		fc.setDialogTitle("Save As");
 
@@ -141,7 +137,7 @@ public class SaveListener implements ActionListener {
 		fc.setFileFilter(ExtensionFileFilter.all[0]);
 
 		// OPEN DIALOG
-		fc.showSaveDialog(frame);
+		fc.showSaveDialog(mainFrame.frame);
 	}
 
 }

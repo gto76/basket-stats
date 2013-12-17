@@ -2,7 +2,6 @@ package si.gto76.basketstats.swingui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -29,25 +28,6 @@ public class AboutDialog extends JFrame {
 	protected JOptionPane op;
 
     public AboutDialog() throws URISyntaxException {
-    	/* Buton to website
-    	final URI uri = new URI("http://www.yahoo.com");
-        class OpenUrlAction implements ActionListener {
-          @Override public void actionPerformed(ActionEvent e) {
-            open(uri);
-          }
-        }
-        
-        JButton button = new JButton();
-        button.setText("<HTML><FONT color=\"#000099\"><U>homepage</U></FONT></HTML>");
-        button.setHorizontalAlignment(SwingConstants.LEFT);
-        button.setBorderPainted(false);
-        button.setOpaque(false);
-        button.setBackground(Color.WHITE);
-        button.setToolTipText(uri.toString());
-        button.addActionListener(new OpenUrlAction());
-    	*/
-    	//////////////
-        
 		p = new JPanel();
     	p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
     	op = new JOptionPane(p,
@@ -70,20 +50,15 @@ public class AboutDialog extends JFrame {
 	    label.setAlignmentX(Component.CENTER_ALIGNMENT);
     	p.add(label);
     	// Other info
-    	//addLabelToPanel(" ", p);
     	addLabelToPanel("Version: " + Conf.VERSION, p);
-    	//addLabelToPanel(" ", p);
     	addLabelToPanel("Author: Jure Šorn", p);
     	addLabelToPanel("<sornjure@hotmail.com>", p);
-    	//addLabelToPanel(" ", p);
-    	//p.add(button);
     	
     	dlg.setSize(240, 105);
     	dlg.pack();
     	dlg.setAlwaysOnTop(true);
     	dlg.setVisible(true);
     	dlg.dispose();
-    	
 	}
     
     private static void addLabelToPanel(String txt, JPanel pnl) {
@@ -98,18 +73,7 @@ public class AboutDialog extends JFrame {
     	p.add(lbl);
     	
     	lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
-    	pnl.add(p); //lbl);
+    	pnl.add(p);
     }
-	  
-    /*
-	private static void open(URI uri) {
-	    if (Desktop.isDesktopSupported()) {
-	    	try {
-	    		Desktop.getDesktop().browse(uri);
-	    	} catch (IOException e) {
-	    	}
-	    }
-	}
-	*/
     
 }

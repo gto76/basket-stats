@@ -8,6 +8,7 @@ public class BasketMenu {
 	JMenuBar menuBar = new JMenuBar();
 
 	JMenu menuFile = new JMenu();
+	JMenuItem menuFileNew = new JMenuItem();
 	JMenuItem menuFileOpen = new JMenuItem();
 	JMenuItem menuFileSaveas = new JMenuItem();
 	JMenuItem menuFileExit = new JMenuItem();
@@ -21,6 +22,7 @@ public class BasketMenu {
 
 	public BasketMenu() {
 		menuFile.setText("File");
+		menuFileNew.setText("New");
 		menuFileOpen.setText("Open...");
 		menuFileSaveas.setText("Save As...");
 		menuFileExit.setText("Exit");
@@ -32,6 +34,7 @@ public class BasketMenu {
 		menuHelpHelp.setText("Help");
 		menuHelpAbout.setText("About");
 
+		menuFile.add(menuFileNew);
 		menuFile.add(menuFileOpen);
 		menuFile.add(menuFileSaveas);
 		menuFile.add(menuFileExit);

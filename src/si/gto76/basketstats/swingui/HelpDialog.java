@@ -1,21 +1,13 @@
 package si.gto76.basketstats.swingui;
 
 import java.awt.Component;
-import java.awt.Font;
 import java.net.URISyntaxException;
-import java.net.URL;
-
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
-import si.gto76.basketstats.Conf;
 
 public class HelpDialog extends JFrame {
 
@@ -25,26 +17,13 @@ public class HelpDialog extends JFrame {
 	protected JOptionPane op;
 
     public HelpDialog() throws URISyntaxException {
-    	
 		p = new JPanel();
     	p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
     	op = new JOptionPane(p,
     		JOptionPane.PLAIN_MESSAGE,
     		JOptionPane.CLOSED_OPTION);
     	dlg = op.createDialog(this, "Help");
-    	JLabel lbl;
-
-    	// Name
-    	/*
-    	lbl = new JLabel(Conf.APP_NAME, SwingConstants.CENTER); 
-    	lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
-    	Font newLabelFont =new Font(lbl.getFont().getName(), Font.BOLD, lbl.getFont().getSize()+3);
-    	lbl.setFont(newLabelFont);
-    	lbl.setHorizontalAlignment(JLabel.CENTER);
-    	p.add(lbl);
-    	*/
     	
-    	// Other info
     	addLabelToPanel(" ", p);
     	addLabelToPanel("To change name of player name, team name,", p);
     	addLabelToPanel("venue or date, double click on the label.", p);
@@ -64,12 +43,10 @@ public class HelpDialog extends JFrame {
     	dlg.setAlwaysOnTop(true);
     	dlg.setVisible(true);
     	dlg.dispose();
-    	
 	}
     
     private static void addLabelToPanel(String txt, JPanel pnl) {
     	JLabel lbl = new JLabel(txt);
-    	
     	lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
     	pnl.add(lbl);
     }

@@ -27,16 +27,24 @@ public class LoadListener implements ActionListener {
 		int returnVal = fc.showOpenDialog(frame.frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
-				File fIn = fc.getSelectedFile();
-				Scanner sc = new Scanner(fIn);
-				String gameString = sc.useDelimiter("\\A").next();
-				sc.close();
-				Game derbi = GameLoader.createGameFromString(gameString);
-				new SwingFiller(derbi);
-				System.out.println(derbi);
-				frame.frame.hide();
+				boolean exit = true;
+				if (frame.stateChangedSinceLastSave) {
+					exit = SwingFiller.exitDialog("Game was not saved.\n" +
+							"Are you sure you want to open another game?");
+				}
+				if (exit) {
+					File fIn = fc.getSelectedFile();
+					Scanner sc = new Scanner(fIn);
+					String gameString = sc.useDelimiter("\\A").next();
+					sc.close();
+					Game derbi = GameLoader.createGameFromString(gameString);
+					new SwingFiller(derbi);
+					System.out.println(derbi);
+					frame.frame.hide();
+				}
 			} catch (IOException f) {
 			}
 		}
 	}
+	
 }

@@ -1,6 +1,5 @@
 package si.gto76.basketstats.swingui;
 
-import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,12 +11,9 @@ import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.coreclasses.HasName;
-import si.gto76.basketstats.coreclasses.Team;
 
 public class TimePanel {
 	SwingFiller swingFiller;
@@ -62,23 +58,11 @@ public class TimePanel {
 	    JSpinner.DateEditor de = new JSpinner.DateEditor(s, "HH:mm dd/MM/yyyy");
 	    s.setEditor(de);
 		
-		s.addKeyListener(new KeyListener() {
-			public void keyTyped(KeyEvent e) {}
-			public void keyReleased(KeyEvent e) {}
-			public void keyPressed(KeyEvent e) {
-			    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			    	e.consume();
-			    	Date newDate = (Date) s.getValue();
-			    	swingFiller.game.setDate(newDate);
-			    	switchBackToLabel(dateContainer);
-			    	System.out.println(swingFiller.game);
-			    }
-			    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			    	switchBackToLabel(dateContainer);
-			    }
-			}
-		});
-		dateContainer.add(s);
+	    // You need to put keylistener to spiner and its text field
+	    s.addKeyListener(new SpinnerKeyListener(s, dateContainer));
+	    ((JSpinner.DefaultEditor)s.getEditor()).getTextField().addKeyListener(new SpinnerKeyListener(s, dateContainer));
+		
+	    dateContainer.add(s);
 		dateContainer.validate();
 		s.requestFocus();
 	}
@@ -87,6 +71,31 @@ public class TimePanel {
 		dateContainer.removeAll();
 		dateContainer.add(new JLabel(swingFiller.game.getDate().toString()));
 		swingFiller.mainPanel.validate();
+	}
+	
+	class SpinnerKeyListener implements KeyListener {
+		JSpinner s;
+		JPanel dateContainer;
+
+		public SpinnerKeyListener(JSpinner s, JPanel dateContainer) {
+			this.s = s;
+			this.dateContainer = dateContainer;
+		}
+		
+		public void keyTyped(KeyEvent e) {}
+		public void keyReleased(KeyEvent e) {}
+		public void keyPressed(KeyEvent e) {
+		    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+		    	e.consume();
+		    	Date newDate = (Date) s.getValue();
+		    	swingFiller.game.setDate(newDate);
+		    	switchBackToLabel(dateContainer);
+		    	System.out.println(swingFiller.game);
+		    }
+		    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		    	switchBackToLabel(dateContainer);
+		    }
+		}
 	}
 	
 }

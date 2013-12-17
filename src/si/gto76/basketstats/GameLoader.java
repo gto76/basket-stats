@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -32,9 +31,9 @@ public class GameLoader {
 		}
 		// line 3
 		String location = lll[3];
-		// line 6, do :, ime prve ekipe
+		// line 6, until :, name of first team
 		String team1Name = lll[6].split(":")[0];
-		// line 8, do :, ime druge ekipe
+		// line 8, until :, name of second team
 		String team2Name = lll[8].split(":")[0];
 
 		Map<Player, PlayerStats> team1Stats = new LinkedHashMap<Player, PlayerStats>();
@@ -42,13 +41,13 @@ public class GameLoader {
 		Team team1 = new Team(team1Name, team1Stats);
 		Team team2 = new Team(team2Name, team2Stats);
 
-		// line 15 prvi igralec prve ekipe ... Do Totals
+		// line 15 first player of first team ... until "Totals"
 		int i = 15;
 		for (; !lll[i].split(SPLITTER_STR)[0].equals("Totals"); i++) {
 			addPlayerToMap(lll[i], team1Stats, team1);
 		}
 
-		// po ---- in /t prvi igralec druge ekipe ... Do Totals
+		// after ---- and /t first player of second team ... until "Totals"
 		for (i += 5; !lll[i].split(SPLITTER_STR)[0].equals("Totals"); i++) {
 			addPlayerToMap(lll[i], team2Stats, team2);
 		}
@@ -60,7 +59,6 @@ public class GameLoader {
 
 	private static void addPlayerToMap(String playerString,
 			Map<Player, PlayerStats> playersWithStats, Team team) {
-		// IGRALEC:
 		// FGM-A 3PM-A +/- OFF DEF TOT AST PF ST TO BS PTS
 		// 0-0 0-0 0 0 0 0 2 2 0 0 0 0
 		String playersName = playerString.substring(0, Conf.PLAYER_NAME_WIDTH-1).trim();

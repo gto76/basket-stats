@@ -86,4 +86,5 @@ public final class ExtensionFileFilter extends FileFilter {
 		String fileName = file.getName().toLowerCase();
 		return accept(fileName);
 	}
+	
 }

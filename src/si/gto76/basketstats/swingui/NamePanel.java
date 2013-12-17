@@ -69,7 +69,9 @@ public class NamePanel {
 			    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			    	e.consume();
 			    	String name = textField.getText();
-			    	pot.setName(name);
+			    	if (name.trim().length() != 0) {
+			    		pot.setName(name);
+			    	}
 			    	switchBackToLabel(nameContainer, pot);
 			    	System.out.println(swingFiller.game);
 			    }
