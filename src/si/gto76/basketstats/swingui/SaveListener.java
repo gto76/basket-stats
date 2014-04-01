@@ -11,9 +11,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class SaveListener implements ActionListener {
-	SwingFiller mainFrame;
+	SwinGui mainFrame;
 
-	public SaveListener(SwingFiller mainFrame) {
+	public SaveListener(SwinGui mainFrame) {
 		this.mainFrame = mainFrame;
 	}
 	

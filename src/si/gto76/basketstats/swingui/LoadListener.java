@@ -11,9 +11,9 @@ import si.gto76.basketstats.GameLoader;
 import si.gto76.basketstats.coreclasses.Game;
 
 public class LoadListener implements ActionListener {
-	SwingFiller frame;
+	SwinGui frame;
 
-	public LoadListener(SwingFiller frame) {
+	public LoadListener(SwinGui frame) {
 		this.frame = frame;
 	}
 
@@ -29,7 +29,7 @@ public class LoadListener implements ActionListener {
 			try {
 				boolean exit = true;
 				if (frame.stateChangedSinceLastSave) {
-					exit = SwingFiller.exitDialog("Game was not saved.\n" +
+					exit = SwinGui.exitDialog("Game was not saved.\n" +
 							"Are you sure you want to open another game?");
 				}
 				if (exit) {
@@ -38,7 +38,7 @@ public class LoadListener implements ActionListener {
 					String gameString = sc.useDelimiter("\\A").next();
 					sc.close();
 					Game derbi = GameLoader.createGameFromString(gameString);
-					new SwingFiller(derbi);
+					new SwinGui(derbi);
 					System.out.println(derbi);
 					frame.frame.hide();
 				}

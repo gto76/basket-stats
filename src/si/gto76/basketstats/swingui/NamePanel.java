@@ -17,15 +17,15 @@ public class NamePanel {
 	private static final int NAMEPANEL_WIDTH = 170;
 	private static final int NAMEPANEL_HEIGHT = 25;
 	private static final int TEXTFIELD_HEIGHT = 19;
-	private SwingFiller swingFiller;
+	private SwinGui swingFiller;
 	
-	public NamePanel(SwingFiller swingFiller, JPanel nameContainer, HasName pot) {
+	public NamePanel(SwinGui swingFiller, JPanel nameContainer, HasName pot) {
 		this.swingFiller = swingFiller;
 		addNamePanel(nameContainer, pot);
 	}
 
 	private void addNamePanel(final JPanel nameContainer, final HasName pot) {
-		SwingFiller.setAllSizes(nameContainer, NAMEPANEL_WIDTH, NAMEPANEL_HEIGHT);
+		SwinGui.setAllSizes(nameContainer, NAMEPANEL_WIDTH, NAMEPANEL_HEIGHT);
 		JLabel nameLabel = new JLabel(pot.getName()); //XXX
 		
 		// Updates team1Label or team2Label global variable, so that updateScore()
@@ -81,7 +81,7 @@ public class NamePanel {
 			}
 		});
 		
-		SwingFiller.setAllSizes(textField, NAMEPANEL_WIDTH, TEXTFIELD_HEIGHT); //XXX
+		SwinGui.setAllSizes(textField, NAMEPANEL_WIDTH, TEXTFIELD_HEIGHT); //XXX
 		nameContainer.add(textField);
 		nameContainer.validate();
 		textField.requestFocus();

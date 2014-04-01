@@ -16,9 +16,9 @@ import javax.swing.SpinnerDateModel;
 import si.gto76.basketstats.Conf;
 
 public class TimePanel {
-	SwingFiller swingFiller;
+	SwinGui swingFiller;
 	
-	public TimePanel(SwingFiller swingFiller, JPanel dateContainer) {
+	public TimePanel(SwinGui swingFiller, JPanel dateContainer) {
 		this.swingFiller = swingFiller;
 		addTimePanel(dateContainer);
 	}
