@@ -7,6 +7,7 @@ public class Stat {
 	private PlayerStats ps;
 	private String name;
 	private Team team;
+	private StatCats statEnumValue;
 
 	private String actionMethodName;
 	private Method actionMethod;
@@ -14,16 +15,17 @@ public class Stat {
 	private Method undoMethod;
 
 	public Stat(PlayerStats ps, String methodName, String undoMethodName,
-			String name, Team team) {
+			String name, StatCats statEnumValue, Team team) {
 		this.name = name;
 		this.ps = ps;
 		this.actionMethodName = methodName;
 		this.undoMethodName = undoMethodName;
+		this.statEnumValue = statEnumValue;
 		this.team = team;
-		createMetods();
+		createMethods();
 	}
 
-	private void createMetods() {
+	private void createMethods() {
 		try {
 			Class<PlayerStats> c = PlayerStats.class;
 			actionMethod = c.getDeclaredMethod(actionMethodName);
@@ -33,6 +35,10 @@ public class Stat {
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public int getStat() {
+		return ps.get(statEnumValue);
 	}
 
 	public String getName() {

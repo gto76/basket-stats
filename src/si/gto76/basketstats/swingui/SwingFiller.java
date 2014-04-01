@@ -354,12 +354,17 @@ public class SwingFiller implements KeyListener {
 
 	private JButton createStatButton(final Stat stat) {
 		String statsName = stat.getName();
-		JButton button = new JButton(statsName);
+		final JButton button = new JButton(statsName);
 		if (statsName.equals("Off") || statsName.equals("Def")) {
-			button.setBackground(Color.GRAY);
+			button.setBackground(Conf.REBOUND_BUTTON_COLOR);
 		}
 		button.addKeyListener(this);
-
+		if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
+			button.setText(formatButtonText(stat.getName(), stat.getStat()));
+		} else {
+			button.setText(stat.getName());
+		}
+			
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -370,9 +375,16 @@ public class SwingFiller implements KeyListener {
 				}
 				pushCommandOnStack(stat);
 				System.out.println(game);
+				if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
+					button.setText(formatButtonText(stat.getName(), stat.getStat()));
+				}
 			}
 		});
 		return button;
+	}
+	
+	private static String formatButtonText(String name, int value) {
+		return name + Conf.BUTTON_TEXT_SEPARATOR + value;
 	}
 	
 	/*

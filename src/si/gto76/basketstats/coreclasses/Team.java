@@ -136,7 +136,7 @@ public class Team implements HasName {
 		append(emptyPlayersName()).
 		append(padTab("FGM-A")).append(padTab("3PM-A"));
 		for (StatCats sc : StatCats.nonScoringValues()) {
-			sb.append(padTab(sc.getName()));
+			sb.append(padTab(sc.getName().toUpperCase()));
 		}
 		sb.append("\n");
 

@@ -25,17 +25,17 @@ public class PlayerStats {
 	
 	{
 		methodNames = Arrays.asList(
-			"made2p", "unMade2p", "2PM",
-			"missed2p", "unMissed2p", "2PA",
-			"made3p", "unmade3p", "3PM",
-			"missed3p", "unMissed3p", "3PA", 
-			"madeOff", "unMadeOff", "Off",
-			"madeDef", "unmadeDef", "Def",
-			"madeAst", "unmadeAst", "Ast",
-			"madePf", "unmadePf", "Pf",
-			"madeSt", "unmadeSt", "St",
-			"madeTo", "unmadeTo", "To",
-			"madeBs", "unmadeBs", "Bs"
+			"made2p", "unMade2p", "2PM", "2pm",
+			"missed2p", "unMissed2p", "2PF", "2pf",
+			"made3p", "unmade3p", "3PM", "3pm",
+			"missed3p", "unMissed3p", "3PF", "3pf",
+			"madeOff", "unMadeOff", "Off", "off",
+			"madeDef", "unmadeDef", "Def", "def",
+			"madeAst", "unmadeAst", "Ast", "ast",
+			"madePf", "unmadePf", "Pf", "pf",
+			"madeSt", "unmadeSt", "St", "st",
+			"madeTo", "unmadeTo", "To", "to",
+			"madeBs", "unmadeBs", "Bs", "bs"
 		);
 	}
 	
@@ -43,7 +43,7 @@ public class PlayerStats {
 		this.team = team;
 		Iterator<String> it = methodNames.iterator();
 		while (it.hasNext()) {
-			stats.add( new Stat(this, it.next(), it.next(), it.next(), team) );
+			stats.add( new Stat(this, it.next(), it.next(), it.next(), StatCats.get(it.next()), team) );
 		}
 	}
 	
@@ -189,6 +189,11 @@ public class PlayerStats {
 			case TO: return getTo();
 			case TPA: return getTpa();
 			case TPM: return getTpm();
+			case TPF: return getTpf();
+			case IIPM: return get2pm();
+			case IIPF: return get2pf();
+			//case 2PA: return get2pa();
+			//case 2PM: return get2pm();
 			default : return -1;
 		}
 	}
@@ -204,6 +209,15 @@ public class PlayerStats {
 	}
 	public int getTpa() {
 		return shots.getTpa();
+	}
+	public int getTpf() {
+		return shots.getTpf();
+	}
+	public int get2pm() {
+		return shots.get2pm();
+	}
+	public int get2pf() {
+		return shots.get2pf();
 	}
 	public int getPts() {
 		return shots.getPts();

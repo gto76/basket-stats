@@ -1,5 +1,6 @@
 package si.gto76.basketstats;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,8 @@ public class Conf {
 	
 	public static final long DOUBLE_CLICK_LAG =  250000000;
 	
+	public static final Color REBOUND_BUTTON_COLOR = Color.GRAY;
+	
 	// Icons
 	public static final String ICON_FILENAME_S = "/resources/ba16.png"; 
 	public static final String ICON_FILENAME_S_BLUE = "/resources/ba16blue.png"; // b8cfe5 is color of background
@@ -34,10 +37,12 @@ public class Conf {
 	public static final String ICON_FILENAME_XL = "/resources/ba128.png";
 	
 	public static final int PLAYERS_NAME_COLUMN_WIDTH = 80;
+	public static final boolean SHOW_STAT_VALUE_ON_BUTTON_LABEL = true;
+	public static final String BUTTON_TEXT_SEPARATOR = "  -  ";
 	
 	public static Game getDefaultGame() {
-		List<Player> ppp1 = new ArrayList<>();
-		List<Player> ppp2 = new ArrayList<>();
+		List<Player> ppp1 = new ArrayList<Player>();
+		List<Player> ppp2 = new ArrayList<Player>();
 		for (int i = 0; i < Conf.INITAIAL_NUMBER_OF_PLAYERS_IN_ONE_TEAM; i++) {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
