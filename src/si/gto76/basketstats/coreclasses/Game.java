@@ -80,7 +80,7 @@ public class Game {
 	private String oneTabLine = "--------";
 	{
 		StringBuffer sb = new StringBuffer();
-		for (int i = Stat.boxValues().length
+		for (int i = Stat.boxScoreValues().length
 				+ Conf.NUMBER_OF_TABS_FOR_PLAYER_NAME - 2; i > 0; i--) {
 			sb.append(oneTabLine);
 		}

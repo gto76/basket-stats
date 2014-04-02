@@ -1,29 +1,10 @@
 package si.gto76.basketstats.coreclasses;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class PlayerStats {
 	//FGM-A	3PM-A	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
-	
-	private static List<String> methodNames;
-	{
-		methodNames = Arrays.asList(
-			"made2p", "unMade2p", "2PM", "2pm",
-			"missed2p", "unMissed2p", "2PF", "2pf",
-			"made3p", "unmade3p", "3PM", "3pm",
-			"missed3p", "unMissed3p", "3PF", "3pf",
-			"madeOff", "unMadeOff", "Off", "off",
-			"madeDef", "unmadeDef", "Def", "def",
-			"madeAst", "unmadeAst", "Ast", "ast",
-			"madePf", "unmadePf", "Pf", "pf",
-			"madeSt", "unmadeSt", "St", "st",
-			"madeTo", "unmadeTo", "To", "to",
-			"madeBs", "unmadeBs", "Bs", "bs"
-		);
-	}
 	////////////////////////////////////////
 	private final Team team;
 	private Shots shots = new Shots();
@@ -35,14 +16,13 @@ public class PlayerStats {
 				st = 0,
 				to = 0,
 				bs = 0;	
-	private final List<Event> events = new ArrayList<Event>();
+	private final List<Action> actions = new ArrayList<Action>();
 	////////////////////////////////////////
 	
 	public PlayerStats(Team team) {
 		this.team = team;
-		Iterator<String> it = methodNames.iterator();
-		while (it.hasNext()) {
-			events.add( new Event(this, it.next(), it.next(), it.next(), Stat.get(it.next()), team) );
+		for (Stat stat :  Stat.inputValues()) {
+			actions.add(new Action(stat, this));
 		}
 	}
 	
@@ -196,8 +176,6 @@ public class PlayerStats {
 			case TPF: return getTpf();
 			case IIPM: return get2pm();
 			case IIPF: return get2pf();
-			//case 2PA: return get2pa();
-			//case 2PM: return get2pm();
 			default : return -1;
 		}
 	}
@@ -258,12 +236,16 @@ public class PlayerStats {
 	
 	////////////////////////////////////////
 
-	public List<Event> getEvents() {
-		return events;
+	public List<Action> getActions() {
+		return actions;
 	}
 	
 	public Team getTeam() {
 		return team;
+	}
+	
+	public Player getPlayer() {
+		return team.getPlayer(this);
 	}
 	
 	@Override
