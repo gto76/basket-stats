@@ -7,56 +7,43 @@ import java.util.List;
 import java.util.Map;
 
 public enum Stat {
-	FGM("fgm", "FGM", "", ""),
-	FGA("fga", "FGA", "", ""),
-	TPM("3pm", "3PM", "made3p", "unmade3p"),
-	TPA("3pa", "3PA", "", ""),
+	FGM("FGM", "Field goal made"),
+	FGA("FGA", "Field goal attempted"),
+	TPM("3PM", "Three pointer made"),
+	TPA("3PA", "Three pointer attempted"),
 	/////
-	PM("+/-", "+/-", "", ""),
-	OFF("off", "Off", "madeOff", "unMadeOff"),
-	DEF("def", "Def", "madeDef", "unmadeDef"),
-	REB("tot", "Tot", "", ""),
-	AST("ast", "Ast", "madeAst", "unmadeAst"),
-	PF("pf", "Pf", "madePf", "unmadePf"),
-	ST("st", "St", "madeSt", "unmadeSt"),
-	TO("to", "To", "madeTo", "unmadeTo"),
-	BS("bs", "Bs", "madeBs", "unmadeBs"),
-	PTS("pts", "Pts", "", ""),
+	PM("+/-", "Scoring difference"),
+	OFF("Off", "Offensive rebound"),
+	DEF("Def", "Deffensive rebound"),
+	REB("Tot", "Rebound"),
+	AST("Ast", "Assist"),
+	PF("Pf", "Personal foul"),
+	ST("St", "Steal"),
+	TO("To", "Turnover"),
+	BS("Bs", "Blocked shot"),
+	PTS("Pts", "Points"),
 	/////
-	TPF("3pf", "3PF", "missed3p", "unMissed3p"),
-	IIPM("2pm", "2PM", "made2p", "unMade2p"),
-	IIPF("2pf", "2PF", "missed2p", "unMissed2p")
+	TPF("3PF", "Three pointer missed"),
+	IIPM("2PM", "Two pointer made"),
+	IIPF("2PF", "Two pointer missed")
 	;;;;;
-	private static final Map<String, Stat> lookup = new HashMap<String, Stat>();
-	static {
-		for(Stat s : Stat.values())
-			lookup.put(s.getName(), s);
-	}
-	//////////////////////////////
-	private final String name;
-	private final String buttonName;
-	private final String triggerMethodName;
-	private final String undoMethodName;
-	//////////////////////////////
-	
-	Stat(String name, String buttonName, String triggerMethodName, String undoMethodName) {
-		this.name = name;
-		this.buttonName = buttonName;
-		this.triggerMethodName = triggerMethodName;
-		this.undoMethodName = undoMethodName;
-	}
 	/////////////////////////////////////
+	private final String name;
+	private final String explanation;
+	/////////////////////////////////////
+	
+	Stat(String name, String explanation) {
+		this.name = name;
+		this.explanation = explanation;
+	}
+	
+	/////////////////////////////////////
+	
 	public String getName() {
 		return name;
 	}
-	public String getButtonName() {
-		return buttonName;
-	}
-	public String getActionMethodName() {
-		return triggerMethodName;
-	}
-	public String getUndoMethodName() {
-		return undoMethodName;
+	public String getExplanation() {
+		return explanation;
 	}
 	public boolean isScoringValue() {
 		return Arrays.asList(scoringValuesAndPoints()).contains(this);
@@ -64,7 +51,9 @@ public enum Stat {
 	public boolean isInputValueOrPlusMinus() {
 		return Arrays.asList(inputValuesAndPlusMinus()).contains(this);
 	}
+	
 	/////////////////////////////////////
+	
 	public static Stat[] nonScoringValuesAndPoints() {
 		Stat[] values = Stat.values();
 		return Arrays.copyOfRange(values, 4, values.length-3);
@@ -89,11 +78,5 @@ public enum Stat {
 		Stat[] scoringValues = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, PTS};
 		return scoringValues;
 	}
-	/////////////////////////////////////
-	public static Stat get(String name) { 
-		Stat sc = lookup.get(name); 
-		if (sc == null)
-			throw new NullPointerException("Could not find proper enum for stat: " + name);
-		return sc;
-	}
+
 }

@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -21,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
 
 import si.gto76.basketstats.Conf;
@@ -30,9 +32,11 @@ import si.gto76.basketstats.coreclasses.Action;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
-public class SwinGui implements KeyListener {
+public class SwinGui {
     private static ArrayList<Image> iconsActive;
     private static ArrayList<Image> iconsNotActive;
+    private static String os = System.getProperty("os.name");
+    private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     ////////////////////////////////////////
 	Game game;
 	private Deque<Action> stackOfCommands = new ArrayDeque<Action>();
@@ -44,8 +48,8 @@ public class SwinGui implements KeyListener {
 	private JLabel team1Label = new JLabel();
 	private JLabel team2Label = new JLabel();
 
-	private int windowWidth = Conf.WINDOW_WIDTH;
-	private int windowHeight = Conf.WINDOW_HEIGHT;
+	private int windowWidth = Math.min(Conf.WINDOW_WIDTH, screenSize.width - 50);
+	private int windowHeight = Math.min(Conf.WINDOW_HEIGHT, screenSize.height - 50);
 	
 	Map<Action, JButton> buttonMap = new HashMap<Action, JButton>();
 	////////////////////////////////////////
@@ -57,6 +61,8 @@ public class SwinGui implements KeyListener {
 	 */
 	{
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+	    ToolTipManager.sharedInstance().setInitialDelay(Conf.TOOLTIP_DELAY);
+	    System.out.print(screenSize);
 	}
 	public SwinGui(final Game game) {
 		this.game = game;
@@ -84,7 +90,20 @@ public class SwinGui implements KeyListener {
 			private static final long serialVersionUID = -337325274310404675L;
 			{add(iconImgS.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
     	};
-        frame.setIconImages(iconsActive);
+    	
+    	if (os.startsWith("linux")) {
+    		frame.setIconImages(iconsActive);
+			frame.addWindowFocusListener(new WindowAdapter() {
+	            public void windowGainedFocus(WindowEvent e) {
+	              frame.setIconImages(SwinGui.iconsActive);
+	            }
+	            public void windowLostFocus(WindowEvent e) {
+	              frame.setIconImages(SwinGui.iconsNotActive);
+	            }
+	        });
+    	} else {
+    		frame.setIconImages(iconsNotActive);
+    	}
 	}
 	
 	/*
@@ -124,6 +143,8 @@ public class SwinGui implements KeyListener {
 	private void sealContainer() {
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 6, 1, 2));
 		frame.setContentPane(mainPanel);
+		System.out.print(windowWidth + " " + windowHeight);
+		//frame.setSize(300,300);
 		frame.setSize(windowWidth, windowHeight);
 		frame.setVisible(true);
 	}
@@ -167,8 +188,8 @@ public class SwinGui implements KeyListener {
 		Action action = stackOfCommands.peek();
 		if (action != null) {
 			menu.menuEditUndo.setEnabled(true);
-			menu.menuEditUndo.setText("Undo " + action.getStatName() + " "
-				+ action.getPlayer().getName());
+			menu.menuEditUndo.setText("Undo \"" + action.getStat().getExplanation() +
+					" by " + action.getPlayer().getName() + "\"");
 		} else {
 			menu.menuEditUndo.setEnabled(false);
 			menu.menuEditUndo.setText("Undo");
@@ -204,6 +225,12 @@ public class SwinGui implements KeyListener {
 		} else {
 			team2Label = teamLabel;
 		}
+		updateAddNewPlayerMenuItem();
+	}
+	
+	private void updateAddNewPlayerMenuItem() {
+		menu.menuEditAddPlayer1.setText("Add Player to " + game.getTeam1().getName());
+		menu.menuEditAddPlayer2.setText("Add Player to " + game.getTeam2().getName());
 	}
 	
 	protected void addNewPlayerToTeam(Team team) {
@@ -215,7 +242,7 @@ public class SwinGui implements KeyListener {
 		setUpNewContainer();
 		System.out.println(game);
 	}
-
+	
 	/*
 	 * ON EXIT
 	 */
@@ -231,18 +258,6 @@ public class SwinGui implements KeyListener {
 		if (exitDialog("Game was not saved.\n" +
 				"Are you sure you want to exit?")) {
 			System.exit(0);
-		}
-	}
-	
-	/*
-	 * KEY LISTENER METHODS
-	 */
-	public void keyPressed(KeyEvent arg0) {	}
-	public void keyReleased(KeyEvent arg0) { }
-	public void keyTyped(KeyEvent arg0) {
-		char c = arg0.getKeyChar();
-		if (c == 26) {
-			undo();
 		}
 	}
 	

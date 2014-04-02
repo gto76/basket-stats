@@ -18,7 +18,11 @@ public class Action {
 	}
 
 	public String getStatName() {
-		return stat.getButtonName();
+		return stat.getName();
+	}
+	
+	public Stat getStat() {
+		return stat;
 	}
 
 	public Team getTeam() {

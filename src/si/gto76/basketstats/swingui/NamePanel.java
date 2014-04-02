@@ -17,10 +17,10 @@ public class NamePanel {
 	private static final int NAMEPANEL_WIDTH = 170;
 	private static final int NAMEPANEL_HEIGHT = 25;
 	private static final int TEXTFIELD_HEIGHT = 19;
-	private SwinGui swingFiller;
+	private SwinGui swinGui;
 	
 	public NamePanel(SwinGui swingFiller, JPanel nameContainer, HasName pot) {
-		this.swingFiller = swingFiller;
+		this.swinGui = swingFiller;
 		addNamePanel(nameContainer, pot);
 	}
 
@@ -31,7 +31,7 @@ public class NamePanel {
 		// Updates team1Label or team2Label global variable, so that updateScore()
 		// can update score located by teams name.
 		if (pot instanceof Team) {
-			swingFiller.updateTeamLabelReference((Team) pot, nameLabel);
+			swinGui.updateTeamLabelReference((Team) pot, nameLabel);
 		}
 		
 		nameContainer.addMouseListener(new MouseListener() {
@@ -73,7 +73,7 @@ public class NamePanel {
 			    		pot.setName(name);
 			    	}
 			    	switchBackToLabel(nameContainer, pot);
-			    	System.out.println(swingFiller.game);
+			    	System.out.println(swinGui.game);
 			    }
 			    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			    	switchBackToLabel(nameContainer, pot);
@@ -92,7 +92,7 @@ public class NamePanel {
 		nameContainer.removeAll();
 		nameContainer.updateUI();
 		nameContainer.add(new JLabel(pot.getName()));
-		swingFiller.mainPanel.validate();
+		swinGui.mainPanel.validate();
 		if (pot instanceof Team) {
     		updateTeamLabel(nameContainer, pot);
     	}
@@ -102,8 +102,8 @@ public class NamePanel {
 		// Extra work because of score by team name
 		JLabel teamLabel = (JLabel) nameContainer.getComponent(0);
 		Team team = (Team) pot;
-		swingFiller.updateTeamLabelReference(team, teamLabel);
-		swingFiller.updateScore();
+		swinGui.updateTeamLabelReference(team, teamLabel);
+		swinGui.updateScore();
 	}
 	
 }

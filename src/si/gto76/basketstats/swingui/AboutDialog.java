@@ -33,13 +33,13 @@ public class AboutDialog extends JFrame {
     	op = new JOptionPane(p,
     		JOptionPane.PLAIN_MESSAGE,
     		JOptionPane.CLOSED_OPTION);
-    	dlg = op.createDialog(this, "About");
+    	dlg = op.createDialog(this, "About...");
     	JLabel lbl;
 
     	// Name
     	lbl = new JLabel(Conf.APP_NAME, SwingConstants.CENTER); 
     	lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
-    	Font newLabelFont =new Font(lbl.getFont().getName(), Font.BOLD, lbl.getFont().getSize()+3);
+    	Font newLabelFont =new Font(lbl.getFont().getName(), Font.BOLD, lbl.getFont().getSize()+6);
     	lbl.setFont(newLabelFont);
     	lbl.setHorizontalAlignment(JLabel.CENTER);
     	p.add(lbl);
@@ -50,9 +50,9 @@ public class AboutDialog extends JFrame {
 	    label.setAlignmentX(Component.CENTER_ALIGNMENT);
     	p.add(label);
     	// Other info
-    	addLabelToPanel("Version: " + Conf.VERSION, p);
-    	addLabelToPanel("Author: Jure Å orn", p);
-    	addLabelToPanel("<sornjure@hotmail.com>", p);
+    	addLabelToPanel("Version " + Conf.VERSION, p);
+    	addLabelToPanel("Copyright © 2013-2014 Jure Šorn", p);
+    	addLabelToPanel("sornjure@hotmail.com", p);
     	
     	dlg.setSize(240, 105);
     	dlg.pack();

@@ -23,6 +23,7 @@ import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.Action;
+import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class MainContainer {
@@ -165,7 +166,7 @@ public class MainContainer {
 	private List<JButton> createPlayersButtons(PlayerStats stats) {
 		List<JButton> buttons = new ArrayList<JButton>();
 		for (Action action : stats.getActions()) {
-			JButton button = createEventButton(action);
+			JButton button = createActionButton(action);
 			SwinGui.setAllSizes(button, 100, 10);
 			buttons.add(button);
 			mainWindow.buttonMap.put(action, button);
@@ -191,13 +192,26 @@ public class MainContainer {
 		mainPanel.add(panel, c);
 	}
 
-	private JButton createEventButton(final Action action) {
-		String statsName = action.getStatName();
-		final JButton button = new JButton(statsName);
-		if (statsName.equals("Off") || statsName.equals("Def")) {
+	private JButton createActionButton(final Action action) {
+		Stat stat = action.getStat();
+		final JButton button = new JButton(stat.getName());
+		// Colors
+		if (stat == Stat.OFF || stat == Stat.DEF) {
 			button.setBackground(Conf.REBOUND_BUTTON_COLOR);
 		}
-		button.addKeyListener(mainWindow);
+		if (Conf.COLORED_MADE_BUTTONS && (stat == Stat.IIPM || stat == Stat.TPM)) {
+			button.setBackground(Conf.MADE_SHOT_BUTTON_COLOR);
+		}
+		if (Conf.COLORED_MISSED_BUTTONS && (stat == Stat.IIPF || stat == Stat.TPF)) {
+			button.setBackground(Conf.MISSED_SHOT_BUTTON_COLOR);
+		}
+		if (Conf.COLORED_TURNOVER_BUTTONS && stat == Stat.TO) {
+			button.setBackground(Conf.TURNOVER_BUTTON_COLOR);
+		}
+		// Tool Tip
+		if (Conf.BUTTONS_TOOLTIP) {
+			button.setToolTipText(stat.getExplanation());
+		}
 		setButtonText(button, action);
 			
 		button.addActionListener(new ActionListener() {
