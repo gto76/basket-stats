@@ -1,77 +1,55 @@
 package si.gto76.basketstats.coreclasses;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Stat {
-	private PlayerStats ps;
-	private String name;
-	private Team team;
-	private StatCats statEnumValue;
-
-	private String actionMethodName;
-	private Method actionMethod;
-	private String undoMethodName;
-	private Method undoMethod;
-
-	public Stat(PlayerStats ps, String methodName, String undoMethodName,
-			String name, StatCats statEnumValue, Team team) {
-		this.name = name;
-		this.ps = ps;
-		this.actionMethodName = methodName;
-		this.undoMethodName = undoMethodName;
-		this.statEnumValue = statEnumValue;
-		this.team = team;
-		createMethods();
+public enum Stat {
+	FGM("fgm"),
+	FGA("fga"),
+	TPM("3pm"),
+	TPA("3pa"),
+	PM("+/-"),
+	OFF("off"),
+	DEF("def"),
+	REB("tot"),
+	AST("ast"),
+	PF("pf"),
+	ST("st"),
+	TO("to"),
+	BS("bs"),
+	PTS("pts"),
+	/////
+	TPF("3pf"),
+	IIPM("2pm"),
+	IIPF("2pf")
+	;;;;;
+	private static final Map<String, Stat> lookup = new HashMap<String, Stat>();
+	static {
+		for(Stat s : Stat.values())
+			lookup.put(s.getName(), s);
 	}
-
-	private void createMethods() {
-		try {
-			Class<PlayerStats> c = PlayerStats.class;
-			actionMethod = c.getDeclaredMethod(actionMethodName);
-			undoMethod = c.getDeclaredMethod(undoMethodName);
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
+  
+	String name;
+	Stat(String name) {
+		this.name = name;
 	}
 	
-	public int getStat() {
-		return ps.get(statEnumValue);
-	}
-
 	public String getName() {
-		return name;
+		return name;//.toUpperCase();
 	}
-
-	public Team getTeam() {
-		return team;
+	public static Stat get(String name) { 
+		Stat sc = lookup.get(name); 
+		if (sc == null)
+			throw new NullPointerException("Could not find proper enum for stat: " + name);
+		return sc;
 	}
-
-	public Player getPlayer() {
-		return team.getPlayer(ps);
+	public static Stat[] nonScoringValues() {
+		Stat[] values = Stat.values();
+		return Arrays.copyOfRange(values, 4, values.length-3);
 	}
-
-	public Integer fireAction() {
-		return invokeMethod(actionMethod);
+	public static Stat[] boxValues() {
+		Stat[] values = Stat.values();
+		return Arrays.copyOfRange(values, 0, values.length-3);
 	}
-
-	public Integer undoAction() {
-		return invokeMethod(undoMethod);
-	}
-
-	private Integer invokeMethod(Method method) {
-		try {
-			return (Integer) method.invoke(ps);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 }

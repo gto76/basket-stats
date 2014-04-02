@@ -1,8 +1,9 @@
 package si.gto76.basketstats.coreclasses;
 
 public class Shots {
+	////////////////////////////////////////
 	int made2p = 0, missed2p = 0, made3p = 0, missed3p = 0;
-
+	////////////////////////////////////////
 	public Shots() {
 	}
 
@@ -12,7 +13,7 @@ public class Shots {
 		this.made3p = tpm;
 		this.missed3p = tpa - tpm;
 	}
-
+	////////////////////////////////////////
 	public int getFgm() {
 		return made2p + made3p;
 	}

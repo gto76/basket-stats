@@ -6,23 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class PlayerStats {
-	public static final int STAT_COUNT = 13;
-	public static final int ASSIGNABLES_COUNT = 11;
 	//FGM-A	3PM-A	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
-	private final Team team;
-	private Shots shots = new Shots();
-	private int plusMinus = 0,
-				off = 0, 
-				def = 0,
-				ast = 0,
-				pf = 0,
-				st = 0,
-				to = 0,
-				bs = 0;
 	
-	private List<Stat> stats = new ArrayList<Stat>();
 	private static List<String> methodNames;
-	
 	{
 		methodNames = Arrays.asList(
 			"made2p", "unMade2p", "2PM", "2pm",
@@ -38,12 +24,25 @@ public class PlayerStats {
 			"madeBs", "unmadeBs", "Bs", "bs"
 		);
 	}
+	////////////////////////////////////////
+	private final Team team;
+	private Shots shots = new Shots();
+	private int plusMinus = 0,
+				off = 0, 
+				def = 0,
+				ast = 0,
+				pf = 0,
+				st = 0,
+				to = 0,
+				bs = 0;	
+	private final List<Event> events = new ArrayList<Event>();
+	////////////////////////////////////////
 	
 	public PlayerStats(Team team) {
 		this.team = team;
 		Iterator<String> it = methodNames.iterator();
 		while (it.hasNext()) {
-			stats.add( new Stat(this, it.next(), it.next(), it.next(), StatCats.get(it.next()), team) );
+			events.add( new Event(this, it.next(), it.next(), it.next(), Stat.get(it.next()), team) );
 		}
 	}
 	
@@ -60,6 +59,8 @@ public class PlayerStats {
 		this.to = to;
 		this.bs = bs;
 	}
+	
+	////////////////////////////////////////
 
 	//
 	// SETERS:
@@ -169,11 +170,14 @@ public class PlayerStats {
 		return null;
 	}
 	
+	////////////////////////////////////////
+	
 	//
 	// GETTERS
 	//
+	
 	//FGM-A	3PM-A	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
-	public int get(StatCats statCat) {
+	public int get(Stat statCat) {
 		switch (statCat) {
 			case AST : return getAst();
 			case BS: return getBs();
@@ -251,9 +255,11 @@ public class PlayerStats {
 	public int getBs() {
 		return bs;
 	}
+	
+	////////////////////////////////////////
 
-	public List<Stat> getStats() {
-		return stats;
+	public List<Event> getEvents() {
+		return events;
 	}
 	
 	public Team getTeam() {
@@ -266,7 +272,7 @@ public class PlayerStats {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Team.padTab(getFgm()+"-"+getFga()))
 		.append(Team.padTab(getTpm()+"-"+getTpa()));
-		for (StatCats sc : StatCats.nonScoringValues()) {
+		for (Stat sc : Stat.nonScoringValues()) {
 			sb.append(Team.padTab(Integer.toString(get(sc))));
 		}
 		return sb.toString();
