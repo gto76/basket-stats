@@ -1,7 +1,9 @@
 package si.gto76.basketstats.coreclasses;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public enum Stat {
@@ -9,6 +11,7 @@ public enum Stat {
 	FGA("fga", "FGA", "", ""),
 	TPM("3pm", "3PM", "made3p", "unmade3p"),
 	TPA("3pa", "3PA", "", ""),
+	/////
 	PM("+/-", "+/-", "", ""),
 	OFF("off", "Off", "madeOff", "unMadeOff"),
 	DEF("def", "Def", "madeDef", "unmadeDef"),
@@ -55,8 +58,14 @@ public enum Stat {
 	public String getUndoMethodName() {
 		return undoMethodName;
 	}
+	public boolean isScoringValue() {
+		return Arrays.asList(scoringValuesAndPoints()).contains(this);
+	}
+	public boolean isInputValueOrPlusMinus() {
+		return Arrays.asList(inputValuesAndPlusMinus()).contains(this);
+	}
 	/////////////////////////////////////
-	public static Stat[] nonScoringValues() {
+	public static Stat[] nonScoringValuesAndPoints() {
 		Stat[] values = Stat.values();
 		return Arrays.copyOfRange(values, 4, values.length-3);
 	}
@@ -67,6 +76,18 @@ public enum Stat {
 	public static Stat[] inputValues() {
 		Stat[] inputValues = {IIPM, IIPF, TPM, TPF, OFF, DEF, AST, PF, ST, TO, BS};
 		return inputValues;
+	}
+	public static Stat[] inputValuesAndPlusMinus() {
+		Stat[] inputValues = {IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
+		return inputValues;
+	}
+	public static Stat[] nonScoringInputValuesAndPlusMinus() {
+		Stat[] inputValues = {PM, OFF, DEF, AST, PF, ST, TO, BS};
+		return inputValues;
+	}
+	public static Stat[] scoringValuesAndPoints() {
+		Stat[] scoringValues = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, PTS};
+		return scoringValues;
 	}
 	/////////////////////////////////////
 	public static Stat get(String name) { 

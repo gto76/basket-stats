@@ -138,7 +138,7 @@ public class Team implements HasName {
 		sb.append(name).append("\n").
 		append(emptyPlayersName()).
 		append(padTab("FGM-A")).append(padTab("3PM-A"));
-		for (Stat sc : Stat.nonScoringValues()) {
+		for (Stat sc : Stat.nonScoringValuesAndPoints()) {
 			sb.append(padTab(sc.getName().toUpperCase()));
 		}
 		sb.append("\n");
@@ -154,7 +154,7 @@ public class Team implements HasName {
 		sb.append(padEnd("Totals", Conf.PLAYER_NAME_WIDTH, ' ')).
 		append(padTab(get(Stat.FGM)+"-"+get(Stat.FGA))).
 		append(padTab(get(Stat.TPM)+"-"+get(Stat.TPA)));
-		for (Stat sc : Stat.nonScoringValues()) {
+		for (Stat sc : Stat.nonScoringValuesAndPoints()) {
 			if (sc == Stat.PM) {
 				sb.append(padTab(""));
 				continue;
