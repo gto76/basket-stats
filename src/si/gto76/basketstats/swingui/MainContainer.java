@@ -108,6 +108,9 @@ public class MainContainer {
 		}
 	}
 	
+	/*
+	 * PLAYER:
+	 */
 	private void addPlayer(Player player, PlayerStats playerStats) {
 		// NAME:
 		addPlayersName(player);
@@ -121,6 +124,9 @@ public class MainContainer {
 		lastFilledRow++;
 	}
 
+	/*
+	 * NAME
+	 */
 	private void addPlayersName(Player player) {
 		JPanel playersNameContainer = new JPanel();
 		new NamePanel(mainWindow, playersNameContainer, player);
@@ -165,6 +171,9 @@ public class MainContainer {
 		mainPanel.add(checkBox, c);
 	}
 
+	/*
+	 * BUTTONS
+	 */
 	private List<JButton> createPlayersButtons(PlayerStats stats) {
 		List<JButton> buttons = new ArrayList<JButton>();
 		for (Action action : stats.getActions()) {
@@ -194,9 +203,13 @@ public class MainContainer {
 		mainPanel.add(panel, c);
 	}
 
+	/*
+	 * BUTTON
+	 */
 	private JButton createActionButton(final Action action) {
 		Stat stat = action.getStat();
 		final JButton button = new JButton(stat.getName());
+		button.setMargin(new Insets(0, 0, 0, 0));
 		// Colors
 		if (stat == Stat.OFF || stat == Stat.DEF) {
 			button.setBackground(Conf.REBOUND_BUTTON_COLOR);
@@ -212,7 +225,7 @@ public class MainContainer {
 		}
 		// Tool Tip
 		if (Conf.BUTTONS_TOOLTIP) {
-			button.setToolTipText(stat.getExplanation());
+			button.setToolTipText(action.getPlayer() + " - " + stat.getExplanation());
 		}
 		setButtonText(button, action);
 			

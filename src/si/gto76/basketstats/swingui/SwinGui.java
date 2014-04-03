@@ -93,7 +93,7 @@ public class SwinGui {
 			{add(iconImgS.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
     	};
     	
-    	if (os.startsWith("linux")) {
+   /* 	if (os.startsWith("linux")) {
     		frame.setIconImages(iconsActive);
 			frame.addWindowFocusListener(new WindowAdapter() {
 	            public void windowGainedFocus(WindowEvent e) {
@@ -103,9 +103,9 @@ public class SwinGui {
 	              frame.setIconImages(SwinGui.iconsNotActive);
 	            }
 	        });
-    	} else {
+    	} else {*/
     		frame.setIconImages(iconsNotActive);
-    	}
+    	//}
 	}
 	
 	/*

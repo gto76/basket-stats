@@ -28,7 +28,7 @@ public class Conf {
 	public static boolean SHOW_STAT_VALUE_ON_BUTTON_LABEL = true;
 	public static String BUTTON_TEXT_SEPARATOR = "  -  ";
 	public static final boolean BUTTONS_TOOLTIP = true;
-	public static final int TOOLTIP_DELAY = 2000;
+	public static final int TOOLTIP_DELAY = 1000;
 	public static Color REBOUND_BUTTON_COLOR = Color.GRAY;
 	public static boolean COLORED_MADE_BUTTONS = true;
 	public static Color MADE_SHOT_BUTTON_COLOR = Color.getHSBColor((float)0.25,(float)0.35,(float)0.95);
