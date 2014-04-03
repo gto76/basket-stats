@@ -12,18 +12,25 @@ import si.gto76.basketstats.Conf;
 
 public class Team implements HasName {
 	private static final DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
-
+	////////////////////////////////////////
 	private String name;
 	private Map<Player, PlayerStats> allPlayersStats = new LinkedHashMap<Player, PlayerStats>();
 	Set<Player> playersOnTheFloor = new HashSet<Player>();
-
+	////////////////////////////////////////
+	
 	public Team(String name, List<Player> players) {
 		setName(name);
 		for (Player player : players) {
 			addPlayer(player);
 		}
+	}	
+	
+	public Team(String name, Map<Player, PlayerStats> allPlayersStats) {
+		this.name = name;
+		this.allPlayersStats = allPlayersStats;
 	}
-
+	
+	////////////////////////////////////////
 	@Override
 	public void setName(String name) {
 		name = name.trim();
@@ -40,11 +47,7 @@ public class Team implements HasName {
 		allPlayersStats.put(player, ps);
 		playersOnTheFloor.add(player);
 	}
-	
-	public Team(String name, Map<Player, PlayerStats> allPlayersStats) {
-		this.name = name;
-		this.allPlayersStats = allPlayersStats;
-	}
+
 
 	public void addAllPlayersOnTheFloor() {
 		playersOnTheFloor.addAll(allPlayersStats.keySet());
@@ -87,8 +90,16 @@ public class Team implements HasName {
 		playersOnTheFloor.add(player);
 	}
 
-	public void getPlayerOffTheFloor(Player player) {
+	public void putPlayerOffTheFloor(Player player) {
 		playersOnTheFloor.remove(player);
+	}
+	
+	public Set<Player> getPlayersOnTheFloor() {
+		return playersOnTheFloor;
+	}
+	
+	public void setPlayersOnTheFloor(Set<Player> players) {
+		playersOnTheFloor = players;
 	}
 
 	public void changePlusMinus(int points) {
@@ -98,9 +109,9 @@ public class Team implements HasName {
 		}
 	}
 
-	public Integer get(StatCats statCat) {
+	public Integer get(Stat statCat) {
 		// plusMinus of team doesn't make sense;
-		if (statCat == StatCats.PM) {
+		if (statCat == Stat.PM) {
 			return null;
 		}
 		int sum = 0;
@@ -111,14 +122,14 @@ public class Team implements HasName {
 	}
 
 	public double getFgPercent() {
-		int fgm = get(StatCats.FGM);
-		int fga = get(StatCats.FGA);
+		int fgm = get(Stat.FGM);
+		int fga = get(Stat.FGA);
 		return zeroIfDevideByZero(fgm, fga);
 	}
 
 	public double getTpPercent() {
-		int tpm = get(StatCats.TPM);
-		int tpa = get(StatCats.TPA);
+		int tpm = get(Stat.TPM);
+		int tpa = get(Stat.TPA);
 		return zeroIfDevideByZero(tpm, tpa);
 	}
 
@@ -135,8 +146,8 @@ public class Team implements HasName {
 		sb.append(name).append("\n").
 		append(emptyPlayersName()).
 		append(padTab("FGM-A")).append(padTab("3PM-A"));
-		for (StatCats sc : StatCats.nonScoringValues()) {
-			sb.append(padTab(sc.getName()));
+		for (Stat sc : Stat.nonScoringValuesAndPoints()) {
+			sb.append(padTab(sc.getName().toUpperCase()));
 		}
 		sb.append("\n");
 
@@ -149,10 +160,10 @@ public class Team implements HasName {
 		
 		// TOTALS
 		sb.append(padEnd("Totals", Conf.PLAYER_NAME_WIDTH, ' ')).
-		append(padTab(get(StatCats.FGM)+"-"+get(StatCats.FGA))).
-		append(padTab(get(StatCats.TPM)+"-"+get(StatCats.TPA)));
-		for (StatCats sc : StatCats.nonScoringValues()) {
-			if (sc == StatCats.PM) {
+		append(padTab(get(Stat.FGM)+"-"+get(Stat.FGA))).
+		append(padTab(get(Stat.TPM)+"-"+get(Stat.TPA)));
+		for (Stat sc : Stat.nonScoringValuesAndPoints()) {
+			if (sc == Stat.PM) {
 				sb.append(padTab(""));
 				continue;
 			}
@@ -168,6 +179,12 @@ public class Team implements HasName {
 
 		return sb.toString();
 	}
+	
+	/*
+	 * ##### ##### ##### ##### ##### ##### #####
+	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 
+	 * ##### ##### ##### ##### ##### ##### #####
+	 */
 	
 	public static  double zeroIfDevideByZero(int devidee, int devider) {
 		if (devider == 0) {

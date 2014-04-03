@@ -5,9 +5,11 @@ import java.util.Date;
 import si.gto76.basketstats.Conf;
 
 public class Game {
+	////////////////////////////////////////
 	private Location location;
 	private Date date;
 	private Team team1, team2;
+	////////////////////////////////////////
 
 	public Game(Team team1, Team team2, Date date, Location location) {
 		this.team1 = team1;
@@ -15,7 +17,10 @@ public class Game {
 		this.date = date;
 		this.location = location;
 	}
-
+	
+	/*
+	 * GETTERS:
+	 */
 	public Date getDate() {
 		return date;
 	}
@@ -55,15 +60,17 @@ public class Game {
 			return team1;
 		}
 	}
+	
+	////////////////////////////////////////
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n").append(lb).append(date).append("\n").append(location)
 				.append("\n").append(lb).append("\n").append(team1.getName())
-				.append(": ").append(team1.get(StatCats.PTS)).append("\n\n")
+				.append(": ").append(team1.get(Stat.PTS)).append("\n\n")
 				.append(team2.getName()).append(": ")
-				.append(team2.get(StatCats.PTS)).append("\n\n").append(lb)
+				.append(team2.get(Stat.PTS)).append("\n\n").append(lb)
 				.append("BOX SCORE:\n").append(lb).append(team1).append(lb)
 				.append(team2).append(lb);
 		return sb.toString();
@@ -73,7 +80,7 @@ public class Game {
 	private String oneTabLine = "--------";
 	{
 		StringBuffer sb = new StringBuffer();
-		for (int i = StatCats.values().length
+		for (int i = Stat.boxScoreValues().length
 				+ Conf.NUMBER_OF_TABS_FOR_PLAYER_NAME - 2; i > 0; i--) {
 			sb.append(oneTabLine);
 		}
