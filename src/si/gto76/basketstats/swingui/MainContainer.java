@@ -114,6 +114,7 @@ public class MainContainer {
 		// CHECKBOX:
 		List<JButton> buttons = createPlayersButtons(playerStats);
 		PlayersCheckBox checkBox = createPlayersCheckBox(player, playerStats.getTeam(), buttons);
+		mainWindow.checkBoxMap.put(player, checkBox);
 		addPlayersCheckBox(checkBox);
 		// BUTTONS:
 		addPlayersButtons(buttons);
@@ -133,22 +134,23 @@ public class MainContainer {
 		mainPanel.add(playersNameContainer, c);
 	}
 	
+	/*
+	 * ON FLOOR SELECTOR
+	 */
 	private PlayersCheckBox createPlayersCheckBox(Player player, Team team, List<JButton> buttons) {
-		// ON FLOOR SELECTOR
-		PlayersCheckBox onFloorSelector = new PlayersCheckBox(player,
-				team, buttons);
+		PlayersCheckBox onFloorSelector = new PlayersCheckBox(player, team, buttons);
 		onFloorSelector.setSelected(true);
 		onFloorSelector.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent itemEvent) {
-				PlayersCheckBox cb = (PlayersCheckBox) itemEvent.getItem();
+				PlayersCheckBox checkBox = (PlayersCheckBox) itemEvent.getItem();
 				int state = itemEvent.getStateChange();
 				if (state == ItemEvent.SELECTED) {
-					cb.team.putPlayerOnTheFloor(cb.player);
-					cb.enableAllButtons();
+					checkBox.team.putPlayerOnTheFloor(checkBox.player);
+					checkBox.enableAllButtons();
 				} else if (state == ItemEvent.DESELECTED) {
-					cb.team.getPlayerOffTheFloor(cb.player);
-					cb.disableAllButtons();
+					checkBox.team.putPlayerOffTheFloor(checkBox.player);
+					checkBox.disableAllButtons();
 				}
 			}
 		});

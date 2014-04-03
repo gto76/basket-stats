@@ -1,10 +1,6 @@
 package si.gto76.basketstats.coreclasses;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public enum Stat {
 	FGM("FGM", "Field goal made"),

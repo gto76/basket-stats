@@ -8,8 +8,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import si.gto76.basketstats.Conf;
-
 public class Menu {
 	JMenuBar menuBar = new JMenuBar();
 

@@ -90,8 +90,16 @@ public class Team implements HasName {
 		playersOnTheFloor.add(player);
 	}
 
-	public void getPlayerOffTheFloor(Player player) {
+	public void putPlayerOffTheFloor(Player player) {
 		playersOnTheFloor.remove(player);
+	}
+	
+	public Set<Player> getPlayersOnTheFloor() {
+		return playersOnTheFloor;
+	}
+	
+	public void setPlayersOnTheFloor(Set<Player> players) {
+		playersOnTheFloor = players;
 	}
 
 	public void changePlusMinus(int points) {

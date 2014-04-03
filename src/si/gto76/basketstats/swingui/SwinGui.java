@@ -5,15 +5,16 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -26,6 +27,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
 
 import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.coreclasses.Event;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.Action;
@@ -39,7 +41,7 @@ public class SwinGui {
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     ////////////////////////////////////////
 	Game game;
-	private Deque<Action> stackOfCommands = new ArrayDeque<Action>();
+	private Deque<Event> stackOfCommands = new ArrayDeque<Event>();
 	boolean stateChangedSinceLastSave = false;
 	
 	JFrame frame = new JFrame(Conf.APP_NAME);
@@ -52,6 +54,7 @@ public class SwinGui {
 	private int windowHeight = Math.min(Conf.WINDOW_HEIGHT, screenSize.height - 50);
 	
 	Map<Action, JButton> buttonMap = new HashMap<Action, JButton>();
+	Map<Player, PlayersCheckBox> checkBoxMap = new HashMap<Player, PlayersCheckBox>();
 	////////////////////////////////////////
 	
     /*
@@ -62,7 +65,6 @@ public class SwinGui {
 	{
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	    ToolTipManager.sharedInstance().setInitialDelay(Conf.TOOLTIP_DELAY);
-	    System.out.print(screenSize);
 	}
 	public SwinGui(final Game game) {
 		this.game = game;
@@ -143,8 +145,6 @@ public class SwinGui {
 	private void sealContainer() {
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 6, 1, 2));
 		frame.setContentPane(mainPanel);
-		System.out.print(windowWidth + " " + windowHeight);
-		//frame.setSize(300,300);
 		frame.setSize(windowWidth, windowHeight);
 		frame.setVisible(true);
 	}
@@ -159,34 +159,61 @@ public class SwinGui {
 		if (stackOfCommands.size() == 0) {
 			return;
 		}
-		Action lastCommand = popCommandFromStack();
-		Integer scoreDelta = lastCommand.undo();
+		// Put right players on floor
+		Event lastCommand = popCommandFromStack();
+		setPlayersOnFloorAndUpdatePlayersRow(lastCommand);
+		// Undo the action
+		Action lastAction = lastCommand.action;
+		Integer scoreDelta = lastAction.undo();
 		if (scoreDelta != null) {
-			Team team = lastCommand.getTeam();
+			Team team = lastAction.getTeam();
 			setPlusMinus(scoreDelta, team);
 		}
-		JButton button = buttonMap.get(lastCommand);
-		MainContainer.setButtonText(button, lastCommand);
+		// Update the button
+		JButton button = buttonMap.get(lastAction);
+		MainContainer.setButtonText(button, lastAction);
+		// Print
 		System.out.println(game);
 		System.out.println("UNDO!");
 	}
 
+	private void setPlayersOnFloorAndUpdatePlayersRow(Event command) {
+		Set<Player> team1players = command.team1PlayersOnTheFloor;
+		Set<Player> team2players = command.team2PlayersOnTheFloor;
+		game.getTeam1().setPlayersOnTheFloor(team1players);
+		game.getTeam2().setPlayersOnTheFloor(team2players);
+		
+		for (Entry<Player,PlayersCheckBox> tuple : checkBoxMap.entrySet()) {
+			Player player = tuple.getKey(); 
+			PlayersCheckBox box = tuple.getValue();
+			if (team1players.contains(player) || team2players.contains(player)) {
+				box.setSelected(true);
+				box.enableAllButtons();
+			} else {
+				box.setSelected(false);
+				box.disableAllButtons();
+			}
+		}
+	}
 	protected void pushCommandOnStack(Action action) {
 		stateChangedSinceLastSave = true;
-		stackOfCommands.push(action);
+		Event event = new Event(action, new HashSet<Player>(game.getTeam1().getPlayersOnTheFloor()), 
+				new HashSet<Player>(game.getTeam2().getPlayersOnTheFloor()));
+		stackOfCommands.push(event);
 		updateUndoLabel();
 	}
 
-	private Action popCommandFromStack() {
+	private Event popCommandFromStack() {
 		stateChangedSinceLastSave = true;
-		Action command = stackOfCommands.pop();
+		Event command = stackOfCommands.pop();
 		updateUndoLabel();
 		return command;
 	}
 	
 	private void updateUndoLabel() {
-		Action action = stackOfCommands.peek();
-		if (action != null) {
+		Event command = stackOfCommands.peek();
+		if (command != null) {
+			Action action = command.action;
 			menu.menuEditUndo.setEnabled(true);
 			menu.menuEditUndo.setText("Undo \"" + action.getStat().getExplanation() +
 					" by " + action.getPlayer().getName() + "\"");

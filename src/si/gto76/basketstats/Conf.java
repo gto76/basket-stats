@@ -13,7 +13,7 @@ import si.gto76.basketstats.coreclasses.Team;
 public class Conf {
 	// App Name and Version
 	public static final String APP_NAME = "HoopStats";
-	public static final String VERSION = "0.9.1";
+	public static final String VERSION = "0.9.2";
 	
 	// Window
 	static public final int WINDOW_WIDTH = 1365;
