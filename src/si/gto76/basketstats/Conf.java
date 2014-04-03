@@ -36,8 +36,8 @@ public class Conf {
 	public static final int PLAYERS_NAME_COLUMN_WIDTH = 80;
 	
 	public static Game getDefaultGame() {
-		List<Player> ppp1 = new ArrayList<>();
-		List<Player> ppp2 = new ArrayList<>();
+		List<Player> ppp1 = new ArrayList<Player>();
+		List<Player> ppp2 = new ArrayList<Player>();
 		for (int i = 0; i < Conf.INITAIAL_NUMBER_OF_PLAYERS_IN_ONE_TEAM; i++) {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
