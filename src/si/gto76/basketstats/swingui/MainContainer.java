@@ -1,5 +1,6 @@
 package si.gto76.basketstats.swingui;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -143,7 +144,7 @@ public class MainContainer {
 	/*
 	 * ON FLOOR SELECTOR
 	 */
-	private PlayersCheckBox createPlayersCheckBox(Player player, Team team, List<JButton> buttons) {
+	private PlayersCheckBox createPlayersCheckBox(final Player player, Team team, List<JButton> buttons) {
 		PlayersCheckBox onFloorSelector = new PlayersCheckBox(player, team, buttons);
 		onFloorSelector.setSelected(true);
 		onFloorSelector.addItemListener(new ItemListener() {
@@ -154,9 +155,11 @@ public class MainContainer {
 				if (state == ItemEvent.SELECTED) {
 					checkBox.team.putPlayerOnTheFloor(checkBox.player);
 					checkBox.enableAllButtons();
+					mainWindow.namePanelMap.get(player).getLabel().setForeground(Color.BLACK);
 				} else if (state == ItemEvent.DESELECTED) {
 					checkBox.team.putPlayerOffTheFloor(checkBox.player);
 					checkBox.disableAllButtons();
+					mainWindow.namePanelMap.get(player).getLabel().setForeground(Color.GRAY);
 				}
 			}
 		});

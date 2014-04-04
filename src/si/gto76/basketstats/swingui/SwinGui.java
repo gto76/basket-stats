@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import si.gto76.basketstats.Conf;
@@ -55,6 +56,7 @@ public class SwinGui {
 	
 	Map<Action, JButton> buttonMap = new HashMap<Action, JButton>();
 	Map<Player, PlayersCheckBox> checkBoxMap = new HashMap<Player, PlayersCheckBox>();
+	Map<Player, NamePanel> namePanelMap = new HashMap<Player, NamePanel>();
 	////////////////////////////////////////
 	
     /*
@@ -127,7 +129,7 @@ public class SwinGui {
 	/*
 	 * 3. ADD CONTAINER
 	 */
-	private void setUpNewContainer() {
+	protected void setUpNewContainer() {
 		initializeContainer();
 		fillContainer();
 		sealContainer();
