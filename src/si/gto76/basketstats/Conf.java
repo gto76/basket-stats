@@ -1,13 +1,18 @@
 package si.gto76.basketstats;
 
 import java.awt.Color;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
+import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class Conf {
@@ -56,11 +61,13 @@ public class Conf {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
 		}
-		
+		Set<Stat> recordingStats = Util.arrayToSet(Stat.inputValuesAndPlusMinus());
+		Stat[] sss = {Stat.AST, Stat.TPF, Stat.IIPF};
+		//recordingStats.removeAll(Arrays.asList(sss));
 		Team
-		team1 = new Team("TEAM A", ppp1),
-		team2 = new Team("TEAM B", ppp2);
-		return new Game(team1, team2, new Date(), new Location("Venue"));
+		team1 = new Team("TEAM A", ppp1, recordingStats),
+		team2 = new Team("TEAM B", ppp2, recordingStats);
+		return new Game(team1, team2, new Date(), new Location("Venue"), recordingStats);
 	}
 	
 }

@@ -3,15 +3,19 @@ package si.gto76.basketstats;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
+import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class GameLoader {
@@ -38,8 +42,9 @@ public class GameLoader {
 
 		Map<Player, PlayerStats> team1Stats = new LinkedHashMap<Player, PlayerStats>();
 		Map<Player, PlayerStats> team2Stats = new LinkedHashMap<Player, PlayerStats>();
-		Team team1 = new Team(team1Name, team1Stats);
-		Team team2 = new Team(team2Name, team2Stats);
+		Set<Stat> recordingStats = new HashSet<Stat>(Arrays.asList(Stat.inputValuesAndPlusMinus()));
+		Team team1 = new Team(team1Name, team1Stats, recordingStats);
+		Team team2 = new Team(team2Name, team2Stats, recordingStats);
 
 		// line 15 first player of first team ... until "Totals"
 		int i = 15;
@@ -54,7 +59,7 @@ public class GameLoader {
 
 		team1.addAllPlayersOnTheFloor();
 		team2.addAllPlayersOnTheFloor();
-		return new Game(team1, team2, date, new Location(location));
+		return new Game(team1, team2, date, new Location(location), recordingStats);
 	}
 
 	private static void addPlayerToMap(String playerString,

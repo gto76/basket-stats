@@ -1,23 +1,27 @@
 package si.gto76.basketstats.coreclasses;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.Util;
 
 public class Game {
 	////////////////////////////////////////
 	private Location location;
 	private Date date;
 	private Team team1, team2;
+	final Set<Stat> recordingStats;
 	////////////////////////////////////////
-
-	public Game(Team team1, Team team2, Date date, Location location) {
+	
+	public Game(Team team1, Team team2, Date date, Location location, Set<Stat> recordingStats) {
 		this.team1 = team1;
 		this.team2 = team2;
 		this.date = date;
 		this.location = location;
+		this.recordingStats = recordingStats;
 	}
 	
 	/*
@@ -42,6 +46,10 @@ public class Game {
 	public Location getLocation() {
 		return location;
 	}
+//	
+//	public Set<Stat> getRecordingStats() {
+//		return Collections.unmodifiableSet(recordingStats);
+//	}
 
 	public int getNumberOfPlayers() {
 		return team1.getNumberOfPlayers() + team2.getNumberOfPlayers();
@@ -74,26 +82,28 @@ public class Game {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\n").append(lb).append(date).append("\n").append(location)
-				.append("\n").append(lb).append("\n").append(team1.getName())
+		sb.append("\n").append(lb()).append(date).append("\n").append(location)
+				.append("\n").append(lb()).append("\n").append(team1.getName())
 				.append(": ").append(team1.get(Stat.PTS)).append("\n\n")
 				.append(team2.getName()).append(": ")
-				.append(team2.get(Stat.PTS)).append("\n\n").append(lb)
-				.append("BOX SCORE:\n").append(lb).append(team1).append(lb)
-				.append(team2).append(lb);
+				.append(team2.get(Stat.PTS)).append("\n\n").append(lb())
+				.append("BOX SCORE:\n").append(lb()).append(team1).append(lb())
+				.append(team2).append(lb());
 		return sb.toString();
 	}
-
-	private String lb;
-	private String oneTabLine = "--------";
-	{
+	
+	private final String ONE_TAB_LINE = "--------";
+	
+	private String lb() {
 		StringBuffer sb = new StringBuffer();
-		for (int i = Stat.boxScoreValues().length
-				+ Conf.NUMBER_OF_TABS_FOR_PLAYER_NAME - 2; i > 0; i--) {
-			sb.append(oneTabLine);
+		Set<Stat> boxStats = Util.arrayToSet(Stat.getOutputStatsFromInput(recordingStats));
+		boxStats.remove(Stat.FGA);
+		boxStats.remove(Stat.TPA);
+		for (int i = boxStats.size() + Conf.NUMBER_OF_TABS_FOR_PLAYER_NAME; i > 0; i--) {
+			sb.append(ONE_TAB_LINE);
 		}
 		sb.append("\n");
-		lb = sb.toString();
+		return sb.toString();
 	}
 
 }

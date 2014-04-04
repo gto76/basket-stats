@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class PlayerStats {
+public class PlayerStats implements HasStats {
 	////////////////////////////////////////
 	private Shots shots = new Shots();
 	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();	
@@ -67,9 +68,9 @@ public class PlayerStats {
 	}
 	
 	private void checkArgument(Stat stat) {
-		if (!stat.isInputValueOrPlusMinus()) {
+		if (!team.getRecordingStats().contains(stat)) {
 			throw new IllegalArgumentException("Tried to input non input stat.");
-		}	
+		}
 	}
 	
 	public Integer changePlusMinus(int points) {
@@ -116,11 +117,7 @@ public class PlayerStats {
 	public String toString() {
 		//FGM-A	3PM-A +/-	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
 		StringBuilder sb = new StringBuilder();
-		sb.append(Team.padTab(get(Stat.FGM)+"-"+get(Stat.FGA)))
-		.append(Team.padTab(get(Stat.TPM)+"-"+get(Stat.TPA)));
-		for (Stat sc : Stat.nonScoringValuesAndPoints()) {
-			sb.append(Team.padTab(Integer.toString(get(sc))));
-		}
+		team.appendStatsRow(sb, this);
 		return sb.toString();
 	}
 

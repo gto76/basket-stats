@@ -19,6 +19,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Action;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
@@ -158,10 +159,13 @@ public class PlayersRow {
 	private List<JButton> createPlayersButtons(PlayerStats stats) {
 		List<JButton> buttons = new ArrayList<JButton>();
 		for (Action action : stats.getActions()) {
-			JButton button = createActionButton(action);
-			Util.setAllSizes(button, 100, 10);
-			buttons.add(button);
-			mainWindow.buttonMap.put(action, button);
+			// If we are recording this action, acording to recording stats:
+			if (playerStats.getTeam().getRecordingStats().contains(action.getStat())) {
+				JButton button = createActionButton(action);
+				Util.setAllSizes(button, 100, 10);
+				buttons.add(button);
+				mainWindow.buttonMap.put(action, button);
+			}
 		}
 		return buttons;
 	}

@@ -10,28 +10,37 @@ import java.util.Map;
 import java.util.Set;
 
 import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.Util;
 
-public class Team implements HasName {
+public class Team implements HasName, HasStats {
 	private static final DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
 	////////////////////////////////////////
 	private String name;
 	private Map<Player, PlayerStats> allPlayersStats = new LinkedHashMap<Player, PlayerStats>();
 	Set<Player> playersOnTheFloor = new HashSet<Player>();
+	private final Set<Stat> recordingStats;
 	////////////////////////////////////////
 	
-	public Team(String name, List<Player> players) {
+	public Team(String name, List<Player> players, Set<Stat> recordingStats) {
 		setName(name);
+		this.recordingStats = recordingStats;
 		for (Player player : players) {
 			addPlayer(player);
 		}
 	}	
 	
-	public Team(String name, Map<Player, PlayerStats> allPlayersStats) {
+	public Team(String name, Map<Player, PlayerStats> allPlayersStats, Set<Stat> recordingStats) {
 		this.name = name;
+		this.recordingStats = recordingStats;
 		this.allPlayersStats = allPlayersStats;
 	}
-	
+
 	////////////////////////////////////////
+	
+	/*
+	 * GETTERS, SETTERS
+	 */
+	
 	@Override
 	public void setName(String name) {
 		name = name.trim();
@@ -41,6 +50,10 @@ public class Team implements HasName {
 	@Override
 	public String getName() {
 		return name;
+	}
+	
+	public Set<Stat> getRecordingStats() {
+		return Collections.unmodifiableSet(recordingStats);
 	}
 	
 	public void addPlayer(Player player) {
@@ -110,14 +123,14 @@ public class Team implements HasName {
 		}
 	}
 
-	public Integer get(Stat statCat) {
-		// plusMinus of team doesn't make sense;
-		if (statCat == Stat.PM) {
-			return null;
+	public int get(Stat stat) {
+		// plusMinus of team doesn't make sense
+		if (stat == Stat.PM) {
+			throw new IllegalArgumentException("Can not return plus minus of a team");
 		}
 		int sum = 0;
 		for (PlayerStats ps : allPlayersStats.values()) {
-			sum += ps.get(statCat);
+			sum += ps.get(stat);
 		}
 		return sum;
 	}
@@ -125,60 +138,86 @@ public class Team implements HasName {
 	public double getFgPercent() {
 		int fgm = get(Stat.FGM);
 		int fga = get(Stat.FGA);
-		return zeroIfDevideByZero(fgm, fga);
+		return Util.zeroIfDevideByZero(fgm, fga);
 	}
 
 	public double getTpPercent() {
 		int tpm = get(Stat.TPM);
 		int tpa = get(Stat.TPA);
-		return zeroIfDevideByZero(tpm, tpa);
+		return Util.zeroIfDevideByZero(tpm, tpa);
 	}
 
 	public boolean hasPlayer(Player player) {
 		return allPlayersStats.keySet().contains(player);
 	}
 
+	/*
+	 * TO STRING
+	 */
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		appendHeader(sb);
+		appendPlayerStats(sb);
+		appendTotals(sb);
+		appendPercents(sb);
+		return sb.toString();
+	}
 
-		// HEADER
+	private void appendHeader(StringBuilder sb) {
 		//FGM-A	3PM-A +/-	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
 		sb.append(name).append("\n").
-		append(emptyPlayersName()).
-		append(padTab("FGM-A")).append(padTab("3PM-A"));
-		for (Stat sc : Stat.nonScoringValuesAndPoints()) {
+		append(emptyPlayersName());
+		appendScoringHeader(sb);
+		appendNonScoringHeader(sb);
+	}
+	
+	private void appendScoringHeader(StringBuilder sb) {
+		if (recordingStats.contains(Stat.IIPF) || recordingStats.contains(Stat.TPF)) {
+			sb.append(padTab("FGM-A"));
+		} else {
+			sb.append(padTab("FGM"));
+		}
+		if (recordingStats.contains(Stat.TPM)) {
+			if (recordingStats.contains(Stat.TPF)) {
+				sb.append(padTab("3PM-A"));
+			} else {
+				sb.append(padTab("3PM"));
+			}
+		}
+	}
+	
+	private void appendNonScoringHeader(StringBuilder sb) {
+		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(recordingStats)) {
 			sb.append(padTab(sc.getName().toUpperCase()));
 		}
 		sb.append("\n");
+	}
 
-		// PLAYER STATS
+	private void appendPlayerStats(StringBuilder sb) {
 		for (Player player : allPlayersStats.keySet()) {
 			String playersName = player.getName();
 			sb.append(padEnd(playersName, Conf.PLAYER_NAME_WIDTH, ' ')).
 			append(allPlayersStats.get(player)).append("\n");
 		}
-		
-		// TOTALS
-		sb.append(padEnd("Totals", Conf.PLAYER_NAME_WIDTH, ' ')).
-		append(padTab(get(Stat.FGM)+"-"+get(Stat.FGA))).
-		append(padTab(get(Stat.TPM)+"-"+get(Stat.TPA)));
-		for (Stat sc : Stat.nonScoringValuesAndPoints()) {
-			if (sc == Stat.PM) {
-				sb.append(padTab(""));
-				continue;
-			}
-			sb.append( padTab(get(sc).toString()) );
+	}
+	
+	private void appendTotals(StringBuilder sb) {
+		sb.append(padEnd("Totals", Conf.PLAYER_NAME_WIDTH, ' '));		
+		appendStatsRow(sb, this);
+		sb.append("\n");
+	}
+	
+	private void appendPercents(StringBuilder sb) {
+		sb.append(emptyPlayersName());
+		if (recordingStats.contains(Stat.IIPF)) {				
+			sb.append( padTab(oneDigit.format(getFgPercent())+"%") );
+		}
+		if (recordingStats.contains(Stat.TPF)) {				
+			sb.append(oneDigit.format(getTpPercent())+"%");
 		}
 		sb.append("\n");
-
-		// PERCENTS
-		sb.append(emptyPlayersName()).
-		append( padTab(oneDigit.format(getFgPercent())+"%") ).
-		append(oneDigit.format(getTpPercent())+"%").
-		append("\n");
-
-		return sb.toString();
 	}
 	
 	/*
@@ -187,11 +226,30 @@ public class Team implements HasName {
 	 * ##### ##### ##### ##### ##### ##### #####
 	 */
 	
-	public static  double zeroIfDevideByZero(int devidee, int devider) {
-		if (devider == 0) {
-			return 0;
+	protected StringBuilder appendStatsRow(StringBuilder sb, HasStats hs) {
+		// Scoring
+		if (recordingStats.contains(Stat.IIPF) || recordingStats.contains(Stat.TPF)) {
+			sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
+		} else {
+			sb.append(padTab(hs.get(Stat.FGM) + ""));
 		}
-		return ((double) devidee / devider) * 100.0;
+		if (recordingStats.contains(Stat.TPM)) {
+			if (recordingStats.contains(Stat.TPF)) {
+				sb.append(padTab(hs.get(Stat.TPM)+"-"+hs.get(Stat.TPA)));
+			} else {
+				sb.append(padTab(hs.get(Stat.TPM) + ""));
+			}
+		}
+		// Non-scoring
+		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(recordingStats)) {
+			// For team totals we don't need plus minus
+			if (hs instanceof Team && sc == Stat.PM) {
+				sb.append(padTab(""));
+				continue;
+			}
+			sb.append(padTab(hs.get(sc) + ""));
+		}
+		return sb;
 	}
 	
 	public static String emptyPlayersName() {
@@ -203,7 +261,7 @@ public class Team implements HasName {
 	}
 
 	public static String padEnd(String string, int minLength, char padChar) {
-	    checkNotNull(string);  // eager for GWT.
+	    Util.checkNotNull(string);  // eager for GWT.
 	    if (string.length() >= minLength) {
 	      return string;
 	    }
@@ -213,13 +271,6 @@ public class Team implements HasName {
 	      sb.append(padChar);
 	    }
 	    return sb.toString();
-	}
-	
-	public static <T> T checkNotNull(T reference) {
-	    if (reference == null) {
-	      throw new NullPointerException();
-	    }
-	    return reference;
 	}
 	
 }
