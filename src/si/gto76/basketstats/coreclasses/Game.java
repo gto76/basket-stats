@@ -1,6 +1,8 @@
 package si.gto76.basketstats.coreclasses;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import si.gto76.basketstats.Conf;
 
@@ -59,6 +61,12 @@ public class Game {
 		} else {
 			return team1;
 		}
+	}
+	
+	public Set<Player> getPlayersOnTheFloor() {
+		Set<Player> playersOnFloor = new HashSet<Player>(team1.getPlayersOnTheFloor());
+		playersOnFloor.addAll(team2.getPlayersOnTheFloor());
+		return playersOnFloor;
 	}
 	
 	////////////////////////////////////////

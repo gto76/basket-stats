@@ -62,7 +62,6 @@ public class MainContainer {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;       
 		c.gridy = 0;       
-		//c.gridwidth = 2;   
 		c.anchor = GridBagConstraints.WEST;
 		mainPanel.add(placeContainer, c);
 	}
@@ -105,165 +104,14 @@ public class MainContainer {
 	
 	private void addPlayers(Map<Player, PlayerStats> allPlayerStats) {
 		for (Entry<Player, PlayerStats> playerAndStats : allPlayerStats.entrySet()) {
-			addPlayer(playerAndStats.getKey(), playerAndStats.getValue());
+			Player player = playerAndStats.getKey();
+			PlayerStats playerStats = playerAndStats.getValue();
+			boolean enabled = game.getPlayersOnTheFloor().contains(player);
+			PlayersRow playersRow = PlayersRow.fill(mainWindow, player, playerStats, mainPanel, 
+					lastFilledRow, enabled);
+			mainWindow.playersRowMap.put(player, playersRow);
+			lastFilledRow++;
 		}
-	}
-	
-	/*
-	 * PLAYER:
-	 */
-	private void addPlayer(Player player, PlayerStats playerStats) {
-		// NAME:
-		addPlayersName(player);
-		// CHECKBOX:
-		List<JButton> buttons = createPlayersButtons(playerStats);
-		PlayersCheckBox checkBox = createPlayersCheckBox(player, playerStats.getTeam(), buttons);
-		mainWindow.checkBoxMap.put(player, checkBox);
-		addPlayersCheckBox(checkBox);
-		// BUTTONS:
-		addPlayersButtons(buttons);
-		lastFilledRow++;
-	}
-
-	/*
-	 * NAME
-	 */
-	private void addPlayersName(Player player) {
-		JPanel playersNameContainer = new JPanel();
-		new NamePanel(mainWindow, playersNameContainer, player);
-		
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;       
-		c.gridy = lastFilledRow;       
-		c.weighty = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.CENTER;
-		mainPanel.add(playersNameContainer, c);
-	}
-	
-	/*
-	 * ON FLOOR SELECTOR
-	 */
-	private PlayersCheckBox createPlayersCheckBox(final Player player, Team team, List<JButton> buttons) {
-		PlayersCheckBox onFloorSelector = new PlayersCheckBox(player, team, buttons);
-		onFloorSelector.setSelected(true);
-		onFloorSelector.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent itemEvent) {
-				PlayersCheckBox checkBox = (PlayersCheckBox) itemEvent.getItem();
-				int state = itemEvent.getStateChange();
-				if (state == ItemEvent.SELECTED) {
-					checkBox.team.putPlayerOnTheFloor(checkBox.player);
-					checkBox.enableAllButtons();
-					mainWindow.namePanelMap.get(player).getLabel().setForeground(Color.BLACK);
-				} else if (state == ItemEvent.DESELECTED) {
-					checkBox.team.putPlayerOffTheFloor(checkBox.player);
-					checkBox.disableAllButtons();
-					mainWindow.namePanelMap.get(player).getLabel().setForeground(Color.GRAY);
-				}
-			}
-		});
-		return onFloorSelector;
-	}
-	
-	private void addPlayersCheckBox(PlayersCheckBox checkBox) {
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 1;       
-		c.gridy = lastFilledRow;       
-		c.weighty = 1.0;
-		mainPanel.add(checkBox, c);
-	}
-
-	/*
-	 * BUTTONS
-	 */
-	private List<JButton> createPlayersButtons(PlayerStats stats) {
-		List<JButton> buttons = new ArrayList<JButton>();
-		for (Action action : stats.getActions()) {
-			JButton button = createActionButton(action);
-			SwinGui.setAllSizes(button, 100, 10);
-			buttons.add(button);
-			mainWindow.buttonMap.put(action, button);
-		}
-		return buttons;
-	}
-	
-	private void addPlayersButtons(List<JButton> bbb) {
-		GridLayout layout = new GridLayout(1, bbb.size());
-		layout.setHgap(1);
-		JPanel panel = new JPanel(layout);
-		for (JButton b : bbb) {
-			panel.add(b);
-		}
-		
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 2;       
-		c.gridy = lastFilledRow;       
-		c.weighty = 1.0;
-		c.weightx = 1.0;
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(2, 0, 2, 0); 
-		mainPanel.add(panel, c);
-	}
-
-	/*
-	 * BUTTON
-	 */
-	private JButton createActionButton(final Action action) {
-		Stat stat = action.getStat();
-		final JButton button = new JButton(stat.getName());
-		button.setMargin(new Insets(0, 0, 0, 0));
-		// Colors
-		if (stat == Stat.OFF || stat == Stat.DEF) {
-			button.setBackground(Conf.REBOUND_BUTTON_COLOR);
-		}
-		if (Conf.COLORED_MADE_BUTTONS && (stat == Stat.IIPM || stat == Stat.TPM)) {
-			button.setBackground(Conf.MADE_SHOT_BUTTON_COLOR);
-		}
-		if (Conf.COLORED_MISSED_BUTTONS && (stat == Stat.IIPF || stat == Stat.TPF)) {
-			button.setBackground(Conf.MISSED_SHOT_BUTTON_COLOR);
-		}
-		if (Conf.COLORED_TURNOVER_BUTTONS && stat == Stat.TO) {
-			button.setBackground(Conf.TURNOVER_BUTTON_COLOR);
-		}
-		// Tool Tip
-		if (Conf.BUTTONS_TOOLTIP) {
-			button.setToolTipText(action.getPlayer() + " - " + stat.getExplanation());
-		}
-		setButtonText(button, action);
-			
-		button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Integer scoreDelta = action.trigger();
-				if (scoreDelta != null) {
-					Team playersTeam = action.getTeam();
-					mainWindow.setPlusMinus(scoreDelta, playersTeam);
-				}
-				mainWindow.pushCommandOnStack(action);
-				System.out.println(game);
-				if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
-					setButtonText(button, action);
-				}
-			}
-		});
-		return button;
-	}
-	
-	/*
-	 * UTILS
-	 */
-	
-	protected static void setButtonText(JButton button, Action action) {
-		if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
-			button.setText(formatButtonText(action.getStatName(), action.getStatValue()));
-		} else {
-			button.setText(action.getStatName());
-		}
-	}
-	
-	private static String formatButtonText(String name, int value) {
-		return name + Conf.BUTTON_TEXT_SEPARATOR + value;
 	}
 	
 }

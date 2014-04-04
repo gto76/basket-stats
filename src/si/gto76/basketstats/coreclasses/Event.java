@@ -1,5 +1,6 @@
 package si.gto76.basketstats.coreclasses;
 
+import java.util.Collections;
 import java.util.Set;
 
 public class Event {
@@ -11,7 +12,8 @@ public class Event {
 			Set<Player> team2PlayersOnTheFloor) {
 		super();
 		this.action = action;
-		this.team1PlayersOnTheFloor = team1PlayersOnTheFloor;
-		this.team2PlayersOnTheFloor = team2PlayersOnTheFloor;
+		this.team1PlayersOnTheFloor = Collections.unmodifiableSet(team1PlayersOnTheFloor);
+		this.team2PlayersOnTheFloor = Collections.unmodifiableSet(team2PlayersOnTheFloor);
 	}
+
 }

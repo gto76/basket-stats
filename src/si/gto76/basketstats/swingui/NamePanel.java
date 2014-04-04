@@ -34,18 +34,13 @@ public class NamePanel {
 	 * ADD NAME PANEL
 	 */
 	private void addNamePanel(final JPanel nameContainer, final HasName pot) {
-		SwinGui.setAllSizes(nameContainer, NAMEPANEL_WIDTH, NAMEPANEL_HEIGHT);
+		Util.setAllSizes(nameContainer, NAMEPANEL_WIDTH, NAMEPANEL_HEIGHT);
 		nameLabel = new JLabel(pot.getName()); //XXX
 		
 		// Updates team1Label or team2Label global variable, so that updateScore()
 		// can update score located by teams name.
 		if (pot instanceof Team) {
 			swinGui.updateTeamLabelReference((Team) pot, nameLabel);
-		}
-		// Keep track of labels, so that when player goes off the floor,
-		// his name can be greyed out.
-		if (pot instanceof Player) {
-			swinGui.namePanelMap.put((Player) pot, this);
 		}
 		
 		nameContainer.addMouseListener(new MouseListener() {
@@ -96,7 +91,7 @@ public class NamePanel {
 			}
 		});
 		
-		SwinGui.setAllSizes(textField, NAMEPANEL_WIDTH, TEXTFIELD_HEIGHT); //XXX
+		Util.setAllSizes(textField, NAMEPANEL_WIDTH, TEXTFIELD_HEIGHT);
 		nameContainer.add(textField);
 		nameContainer.validate();
 		textField.requestFocus();

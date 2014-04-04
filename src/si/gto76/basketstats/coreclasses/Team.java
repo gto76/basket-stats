@@ -2,6 +2,7 @@ package si.gto76.basketstats.coreclasses;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,7 +59,7 @@ public class Team implements HasName {
 	}
 
 	public Map<Player, PlayerStats> getAllPlayersStats() {
-		return allPlayersStats;
+		return Collections.unmodifiableMap(allPlayersStats);
 	}
 
 	public Player getPlayer(PlayerStats ps) {
@@ -95,11 +96,11 @@ public class Team implements HasName {
 	}
 	
 	public Set<Player> getPlayersOnTheFloor() {
-		return playersOnTheFloor;
+		return Collections.unmodifiableSet(playersOnTheFloor);
 	}
 	
 	public void setPlayersOnTheFloor(Set<Player> players) {
-		playersOnTheFloor = players;
+		playersOnTheFloor = new HashSet<Player>(players);
 	}
 
 	public void changePlusMinus(int points) {

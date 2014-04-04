@@ -40,7 +40,8 @@ public class SwinGui {
     private static ArrayList<Image> iconsNotActive;
     private static String os = System.getProperty("os.name");
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    ////////////////////////////////////////
+    
+    //////////////////////////////////////////////////////////////
 	Game game;
 	private Deque<Event> stackOfCommands = new ArrayDeque<Event>();
 	boolean stateChangedSinceLastSave = false;
@@ -54,10 +55,11 @@ public class SwinGui {
 	private int windowWidth = Math.min(Conf.WINDOW_WIDTH, screenSize.width - 50);
 	private int windowHeight = Math.min(Conf.WINDOW_HEIGHT, screenSize.height - 50);
 	
-	Map<Action, JButton> buttonMap = new HashMap<Action, JButton>();
-	Map<Player, PlayersCheckBox> checkBoxMap = new HashMap<Player, PlayersCheckBox>();
-	Map<Player, NamePanel> namePanelMap = new HashMap<Player, NamePanel>();
-	////////////////////////////////////////
+	final Map<Action, JButton> buttonMap = new HashMap<Action, JButton>();
+	//Map<Player, PlayersCheckBox> checkBoxMap = new HashMap<Player, PlayersCheckBox>();
+	//Map<Player, NamePanel> namePanelMap = new HashMap<Player, NamePanel>();
+	final Map<Player, PlayersRow> playersRowMap = new HashMap<Player, PlayersRow>();
+	//////////////////////////////////////////////////////////////
 	
     /*
 	 * #### #### #### #### #### #### ####
@@ -173,7 +175,7 @@ public class SwinGui {
 		}
 		// Update the button
 		JButton button = buttonMap.get(lastAction);
-		MainContainer.setButtonText(button, lastAction);
+		Util.setButtonText(button, lastAction);
 		// Print
 		System.out.println(game);
 		System.out.println("UNDO!");
@@ -182,21 +184,18 @@ public class SwinGui {
 	private void setPlayersOnFloorAndUpdatePlayersRow(Event command) {
 		Set<Player> team1players = command.team1PlayersOnTheFloor;
 		Set<Player> team2players = command.team2PlayersOnTheFloor;
-		game.getTeam1().setPlayersOnTheFloor(team1players);
-		game.getTeam2().setPlayersOnTheFloor(team2players);
-		
-		for (Entry<Player,PlayersCheckBox> tuple : checkBoxMap.entrySet()) {
+
+		for (Entry<Player, PlayersRow> tuple : playersRowMap.entrySet()) {
 			Player player = tuple.getKey(); 
-			PlayersCheckBox box = tuple.getValue();
+			PlayersRow playersRow = tuple.getValue();
 			if (team1players.contains(player) || team2players.contains(player)) {
-				box.setSelected(true);
-				box.enableAllButtons();
+				playersRow.enable();
 			} else {
-				box.setSelected(false);
-				box.disableAllButtons();
+				playersRow.disable();
 			}
 		}
 	}
+	
 	protected void pushCommandOnStack(Action action) {
 		stateChangedSinceLastSave = true;
 		Event event = new Event(action, new HashSet<Player>(game.getTeam1().getPlayersOnTheFloor()), 
@@ -295,13 +294,6 @@ public class SwinGui {
 	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 
 	 * ##### ##### ##### ##### ##### ##### #####
 	 */
-	
-	protected static void setAllSizes(Component comp, int width, int height) {
-		Dimension dim = new Dimension(width, height);
-		comp.setMinimumSize(dim);
-		comp.setMaximumSize(dim);
-		comp.setPreferredSize(dim);
-	}
 	
 	protected static boolean exitDialog(String text) {
 		String ObjButtons[] = { "Yes", "No" };
