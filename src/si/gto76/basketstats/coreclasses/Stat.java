@@ -66,12 +66,20 @@ public enum Stat {
 		Stat[] inputValues = {IIPM, IIPF, TPM, TPF, OFF, DEF, AST, PF, ST, TO, BS};
 		return inputValues;
 	}
+	public static Stat[] inputValuesNoOffDef() {
+		Stat[] inputValues = {IIPM, IIPF, TPM, TPF, REB, AST, PF, ST, TO, BS};
+		return inputValues;
+	}
 	public static Stat[] inputValuesAndPlusMinus() {
 		Stat[] inputValues = {IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
 		return inputValues;
 	}
 	public static Stat[] nonScoringInputValuesAndPlusMinus() {
 		Stat[] inputValues = {PM, OFF, DEF, AST, PF, ST, TO, BS};
+		return inputValues;
+	}
+	public static Stat[] nonScoringInputValuesNoOffDefAndPlusMinus() {
+		Stat[] inputValues = {PM, REB, AST, PF, ST, TO, BS};
 		return inputValues;
 	}
 	public static Stat[] scoringValuesAndPoints() {

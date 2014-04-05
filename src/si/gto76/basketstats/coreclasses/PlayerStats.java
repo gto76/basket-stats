@@ -7,19 +7,32 @@ import java.util.Map;
 import java.util.Set;
 
 public class PlayerStats implements HasStats {
-	////////////////////////////////////////
-	private Shots shots = new Shots();
-	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();	
+	////////////////////////////////////////	
 	private final Team team;
+	private Shots shots = new Shots();
+	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();
 	private final List<Action> actions = new ArrayList<Action>();
 	////////////////////////////////////////
 	
 	public PlayerStats(Team team) {
 		this.team = team;
-		for (Stat stat :  Stat.inputValues()) {
+		// Diferent init depending on are we deferentiating between OFF and DEF rebounds,
+		// or are we loging them together under REB.
+		if (team.hasOnlyReb()) {
+			//System.out.print("ONLY REB");
+			initValuesAndActions(Stat.inputValuesNoOffDef(), 
+					Stat.nonScoringInputValuesNoOffDefAndPlusMinus());
+		} else {
+			initValuesAndActions(Stat.inputValues(), 
+					Stat.nonScoringInputValuesAndPlusMinus());
+		}
+	}
+	
+	private void initValuesAndActions(Stat[] actionSet, Stat[] valueSet) {
+		for (Stat stat :  actionSet) {
 			actions.add(new Action(stat, this));
 		}
-		for (Stat stat : Stat.nonScoringInputValuesAndPlusMinus()) {
+		for (Stat stat : valueSet) {
 			values.put(stat, 0);
 		}
 	}
@@ -93,7 +106,11 @@ public class PlayerStats implements HasStats {
 		if (stat.isScoringValue()) {
 			return shots.get(stat);
 		} else if (stat == Stat.REB) {
-			return values.get(Stat.OFF) + values.get(Stat.DEF);
+			if (team.hasOnlyReb()) {
+				return values.get(Stat.REB);
+			} else {
+				return values.get(Stat.OFF) + values.get(Stat.DEF);
+			}
 		} else {
 			return values.get(stat);
 		}

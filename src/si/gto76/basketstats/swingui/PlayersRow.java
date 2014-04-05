@@ -40,6 +40,14 @@ public class PlayersRow {
 	List<JButton> buttons;
 	////////////////////////////
 
+	public static PlayersRow fill(SwinGui mainWindow, Player player, PlayerStats playerStats, 
+			JPanel mainPanel, int row, boolean enabled) {
+		PlayersRow playersRow = new PlayersRow(mainWindow, player, playerStats, mainPanel, row);
+		playersRow.buildPlayersRow();
+		playersRow.setEnabled(enabled);
+		return playersRow;
+	}
+	
 	private PlayersRow(SwinGui mainWindow, Player player,
 			PlayerStats playerStats, JPanel mainPanel, int row) {
 		this.mainWindow = mainWindow;
@@ -48,14 +56,6 @@ public class PlayersRow {
 		this.mainPanel = mainPanel;
 		this.row = row;
 	}	
-	
-	public static PlayersRow fill(SwinGui mainWindow, Player player, PlayerStats playerStats, 
-			JPanel mainPanel, int row, boolean enabled) {
-		PlayersRow playersRow = new PlayersRow(mainWindow, player, playerStats, mainPanel, row);
-		playersRow.buildPlayersRow();
-		playersRow.setEnabled(enabled);
-		return playersRow;
-	}
 	
 	//////////////////////////////
 	

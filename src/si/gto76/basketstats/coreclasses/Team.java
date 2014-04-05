@@ -150,6 +150,15 @@ public class Team implements HasName, HasStats {
 	public boolean hasPlayer(Player player) {
 		return allPlayersStats.keySet().contains(player);
 	}
+	
+	public boolean hasOnlyReb() {
+		if (recordingStats.contains(Stat.REB) &&
+				!recordingStats.contains(Stat.OFF) &&
+				!recordingStats.contains(Stat.DEF) ) {
+			return true;
+		}
+		return true;
+	}
 
 	/*
 	 * TO STRING
