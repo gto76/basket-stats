@@ -1,5 +1,7 @@
 package si.gto76.basketstats.coreclasses;
 
+import java.util.Map;
+
 public class Shots {
 	////////////////////////////////////////
 	int made2p = 0, missed2p = 0, made3p = 0, missed3p = 0;
@@ -8,11 +10,30 @@ public class Shots {
 	}
 
 	public Shots(int fgm, int fga, int tpm, int tpa) {
+		init(fgm, fga, tpm, tpa);
+	}
+
+	public Shots(Map<Stat,Integer> stats) {
+		init(getStat(stats,Stat.FGM), getStat(stats,Stat.FGA), 
+			getStat(stats,Stat.TPM), getStat(stats,Stat.TPA));
+	}
+	
+	private int getStat(Map<Stat, Integer> stats, Stat stat) {
+		Integer statValue = stats.get(stat);
+		if (statValue == null) {
+			return 0;
+		} else {
+			return statValue;
+		}
+	}
+
+	private void init(int fgm, int fga, int tpm, int tpa) {
 		this.made2p = fgm - tpm;
 		this.missed2p = fga - fgm - tpa + tpm;
 		this.made3p = tpm;
 		this.missed3p = tpa - tpm;
 	}
+	
 	////////////////////////////////////////
 	
 	public Integer made(Stat stat) {

@@ -2,7 +2,9 @@ package si.gto76.basketstats.coreclasses;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public enum Stat {
@@ -50,6 +52,16 @@ public enum Stat {
 	}
 	public boolean isInputValueOrPlusMinus() {
 		return Arrays.asList(inputValuesAndPlusMinus()).contains(this);
+	}
+	
+	public static Stat getByName(String name) {
+		Stat[] stats = Stat.values();
+	    for (Stat stat : stats) {
+	    	if (stat.name.equals(name)) {
+	    		return stat;
+	    	}
+	    }
+	    return null;
 	}
 	
 	/////////////////////////////////////

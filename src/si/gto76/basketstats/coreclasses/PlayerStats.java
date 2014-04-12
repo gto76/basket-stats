@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import si.gto76.basketstats.A;
+
 public class PlayerStats implements HasStats {
 	////////////////////////////////////////	
 	private final Team team;
@@ -35,6 +37,26 @@ public class PlayerStats implements HasStats {
 		for (Stat stat : valueSet) {
 			values.put(stat, 0);
 		}
+	}
+	
+	public PlayerStats(Team team, Map<Stat,Integer> stats) {
+		this(team);
+		Map<Stat,Integer> shotStats = subMap(stats, Stat.getScoringValues());
+		this.shots = new Shots(shotStats);
+		Map<Stat,Integer> otherStats = subMap(stats, Stat.getNonScoringValues());
+		for (otherStat : otherStats) {
+			values.putAll() //TODO THINK!!!
+		}
+	}
+	
+	public static Map<Stat,Integer> subMap(Map<Stat,Integer> mapIn, Set<Stat> set) {
+		Map<Stat,Integer> mapOut = new HashMap<Stat,Integer>();
+		for (Stat stat : set) {
+			if (mapOut.containsKey(stat)) {
+				mapOut.put(stat, mapOut.get(stat));
+			}
+		}
+		return mapOut;
 	}
 	
 	public PlayerStats(Team team, int fgm, int fga, int tpm, int tpa, 

@@ -3,7 +3,9 @@ package si.gto76.basketstats;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JButton;
@@ -56,5 +58,6 @@ public class Util {
 		}
 		return ((double) devidee / devider) * 100.0;
 	}
+
 	
 }
