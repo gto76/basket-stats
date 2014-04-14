@@ -159,7 +159,7 @@ public class Team implements HasName, HasStats {
 				!recordingStats.contains(Stat.DEF) ) {
 			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/*

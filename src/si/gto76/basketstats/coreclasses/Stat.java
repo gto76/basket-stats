@@ -57,7 +57,7 @@ public enum Stat {
 	public static Stat[] inputValues = {IIPM, IIPF, TPM, TPF, OFF, DEF, AST, PF, ST, TO, BS};
 	public static Stat[] inputValuesNoOffDef = {IIPM, IIPF, TPM, TPF, REB, AST, PF, ST, TO, BS};
 	public static Stat[] inputValuesAndPlusMinus = {IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
-	public static Stat[] nonScoringInputValuesAndPlusMinus = {PM, OFF, DEF, AST, PF, ST, TO, BS};
+	public static Stat[] nonScoringInputValuesAndPlusMinus = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS};
 	public static Stat[] nonScoringInputValuesNoOffDefAndPlusMinus = {PM, REB, AST, PF, ST, TO, BS};
 	public static Stat[] scoringValuesAndPoints = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, PTS};
 	public static Stat[] scoringValues = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF};

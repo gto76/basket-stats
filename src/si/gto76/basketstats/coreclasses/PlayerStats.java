@@ -28,13 +28,14 @@ public class PlayerStats implements HasStats {
 		this.team = team;
 		// Diferent init depending on are we deferentiating between OFF and DEF rebounds,
 		// or are we loging them together under REB.
-		if (team.hasOnlyReb()) {
-			initValuesAndActions(Stat.inputValuesNoOffDef, 
-					Stat.nonScoringInputValuesNoOffDefAndPlusMinus);
-		} else {
+		// not necesary:
+//		if (team.hasOnlyReb()) {
+//			initValuesAndActions(Stat.inputValuesNoOffDef, 
+//					Stat.nonScoringInputValuesNoOffDefAndPlusMinus);
+//		} else {
 			initValuesAndActions(Stat.inputValues, 
 					Stat.nonScoringInputValuesAndPlusMinus);
-		}
+//		}
 	}
 	
 	private void initValuesAndActions(Stat[] actionSet, Stat[] valueSet) {
@@ -144,7 +145,7 @@ public class PlayerStats implements HasStats {
 	/*
 	 * GETTERS
 	 */
-	//FGM-A	3PM-A PM OFF DEF	TOT	AST	PF	ST	TO	BS	PTS 3PF IIPM IIPF
+	//FGM-A	3PM-A PM OFF DEF TOT AST PF ST TO BS PTS 3PF IIPM IIPF
 	public int get(Stat stat) {
 		if (stat.isScoringValueOrPoints()) {
 			return shootingValues.get(stat);
@@ -155,6 +156,7 @@ public class PlayerStats implements HasStats {
 				return values.get(Stat.OFF) + values.get(Stat.DEF);
 			}
 		} else {
+			if (DEBUG) System.out.println("Stat: " + stat);
 			return values.get(stat);
 		}
 	}

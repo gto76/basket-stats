@@ -62,10 +62,10 @@ public class Conf {
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
 		}
 		Set<Stat> recordingStats = Util.arrayToSet(Stat.inputValuesAndPlusMinus);
-		Stat[] sss = {Stat.OFF, Stat.DEF};
-		recordingStats.removeAll(Arrays.asList(sss));
-		Stat[] sss1 = {Stat.REB};
-		recordingStats.addAll(Arrays.asList(sss1));
+		//Stat[] sss = {Stat.OFF, Stat.DEF};
+		//recordingStats.removeAll(Arrays.asList(sss));
+		//Stat[] sss1 = {Stat.REB};
+		//recordingStats.addAll(Arrays.asList(sss1));
 		Team
 		team1 = new Team("TEAM A", ppp1, recordingStats),
 		team2 = new Team("TEAM B", ppp2, recordingStats);
