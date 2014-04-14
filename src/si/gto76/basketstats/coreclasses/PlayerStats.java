@@ -13,6 +13,7 @@ import java.util.Set;
  * for instance three point shoots are always initialized, even if they are not tracked.
  */
 public class PlayerStats implements HasStats {
+	private static final boolean DEBUG = false;
 	////////////////////////////////////////	
 	private final Team team;
 	private Shots shootingValues = new Shots();
@@ -28,14 +29,13 @@ public class PlayerStats implements HasStats {
 		this.team = team;
 		// Diferent init depending on are we deferentiating between OFF and DEF rebounds,
 		// or are we loging them together under REB.
-		// not necesary:
-//		if (team.hasOnlyReb()) {
-//			initValuesAndActions(Stat.inputValuesNoOffDef, 
-//					Stat.nonScoringInputValuesNoOffDefAndPlusMinus);
-//		} else {
+		if (team.hasOnlyReb()) {
+			initValuesAndActions(Stat.inputValuesNoOffDef, 
+					Stat.nonScoringInputValuesNoOffDefAndPlusMinus);
+		} else {
 			initValuesAndActions(Stat.inputValues, 
 					Stat.nonScoringInputValuesAndPlusMinus);
-//		}
+		}
 	}
 	
 	private void initValuesAndActions(Stat[] actionSet, Stat[] valueSet) {
@@ -46,19 +46,13 @@ public class PlayerStats implements HasStats {
 			values.put(stat, 0);
 		}
 	}
-
-	boolean DEBUG = true;
 	
 	public PlayerStats(Team team, Map<Stat,Integer> outputStatsWithValues) {
 		this(team);
-		if (DEBUG)
-			System.out.println("OUtput STats: " + Arrays.toString(outputStatsWithValues.keySet().toArray()));
 		Map<Stat,Integer> shotStats = subMap(outputStatsWithValues, Stat.scoringValues);
-		if (DEBUG)
-			System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
+		if (DEBUG) System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
 		this.shootingValues = new Shots(shotStats);
-		//Map<Stat,Integer> otherStats = subMap(outputStatsWithValues, Stat.nonScoringValuesWithouthPoints);
-		//values.putAll(otherStats);
+		
 		// OFF, DEF -> OFF, DEF
 		// OFF -> OFF
 		// DEF -> DEF
@@ -79,20 +73,6 @@ public class PlayerStats implements HasStats {
 			}
 		}
 		return mapOut;
-	}
-	
-	public PlayerStats(Team team, int fgm, int fga, int tpm, int tpa, 
-			int plusMinus, int off, int def, int ast, int pf, int st, int to, int bs) {
-		this(team);
-		this.shootingValues = new Shots(fgm, fga, tpm, tpa);
-		values.put(Stat.PM, plusMinus);
-		values.put(Stat.OFF, off);
-		values.put(Stat.DEF, def);
-		values.put(Stat.AST, ast);
-		values.put(Stat.PF, pf);
-		values.put(Stat.ST, st);
-		values.put(Stat.TO, to);
-		values.put(Stat.BS, bs);
 	}
 	
 	////////////////////////////////////////

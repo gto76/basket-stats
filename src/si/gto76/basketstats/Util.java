@@ -18,7 +18,11 @@ import si.gto76.basketstats.coreclasses.Stat;
 public class Util {
 	public static void setButtonText(JButton button, Action action) {
 		if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
-			button.setText(formatButtonText(action.getStatName(), action.getStatValue()));
+			String name = action.getStatName();
+			if (action.getStat() == Stat.REB) {
+				name = "Reb";
+			}
+			button.setText(formatButtonText(name, action.getStatValue()));
 		} else {
 			button.setText(action.getStatName());
 		}

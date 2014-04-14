@@ -187,16 +187,6 @@ public enum Stat {
 			}
 		}
 
-//		old - not ordered
-//		for (Stat inputStat : inputStats) {
-//			if (!inputStat.isScoringValue() && inputStat.isOutputValue()) {
-//				outputStats.add(inputStat);
-//			}
-//		}
-//		if (inputStats.contains(Stat.OFF) && inputStats.contains(Stat.DEF)) {
-//			outputStats.add(Stat.REB);
-//		}
-
 		// PTS
 		outputStats.add(Stat.PTS);
 		return (Stat[]) outputStats.toArray(new Stat[outputStats.size()]);

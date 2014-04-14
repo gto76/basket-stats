@@ -24,9 +24,9 @@ import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class GameLoader {
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
+	////////////////////////////////////////
 	final static String SPLITTER_STR = " +|\t";
-	//final static String SPLITTER_STR_2 = " +|\t|-";
 
 	public static Game createGameFromString(String gameString) {
 		String[] line = gameString.split("\n");
@@ -145,31 +145,6 @@ public class GameLoader {
 			System.out.println("CHECKING PLAYERS SCORED AST: " + plStats.get(Stat.AST));
 		}
 		playersWithStats.put(pl, plStats);
-
-//		OLD:
-//		String[] fg = sss[0].split("-");
-//		int fgm = Integer.parseInt(fg[0]);
-//		int fga = Integer.parseInt(fg[1]);
-//
-//		String[] tp = sss[1].split("-");
-//		int tpm = Integer.parseInt(tp[0]);
-//		int tpa = Integer.parseInt(tp[1]);
-//
-//		int pm = Integer.parseInt(sss[2]);
-//		int off = Integer.parseInt(sss[3]);
-//		int def = Integer.parseInt(sss[4]);
-//		// tot s[5] -> redundant information
-//		int ast = Integer.parseInt(sss[6]);
-//		int pf = Integer.parseInt(sss[7]);
-//		int st = Integer.parseInt(sss[8]);
-//		int to = Integer.parseInt(sss[9]);
-//		int bs = Integer.parseInt(sss[10]);
-//		// pts s[11] -> redundant information
-//
-//		Player pl = new Player(playersName);
-//		PlayerStats plStats = new PlayerStats(team, fgm, fga, tpm, tpa, pm,
-//				off, def, ast, pf, st, to, bs);
-
 	}
 
 	public static Date parseDate(String dateStr) throws ParseException {

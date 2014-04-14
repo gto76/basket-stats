@@ -196,7 +196,7 @@ public class PlayersRow {
 		final JButton button = new JButton(stat.getName());
 		button.setMargin(new Insets(0, 0, 0, 0));
 		// Colors
-		if (stat == Stat.OFF || stat == Stat.DEF) {
+		if (stat == Stat.OFF || stat == Stat.DEF || stat == Stat.REB) {
 			button.setBackground(Conf.REBOUND_BUTTON_COLOR);
 		}
 		if (Conf.COLORED_MADE_BUTTONS && (stat == Stat.IIPM || stat == Stat.TPM)) {
