@@ -57,7 +57,7 @@ public class Shots {
 	}
 	
 	public int get(Stat stat) {
-		if (!stat.isScoringValue()) {
+		if (!stat.isScoringValueOrPoints()) {
 			throw new IllegalArgumentException("Tried to acces non scoring stat in Shots class.");
 		}
 		switch (stat) {

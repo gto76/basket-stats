@@ -61,7 +61,7 @@ public class Conf {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
 		}
-		Set<Stat> recordingStats = Util.arrayToSet(Stat.inputValuesAndPlusMinus());
+		Set<Stat> recordingStats = Util.arrayToSet(Stat.inputValuesAndPlusMinus);
 		Stat[] sss = {Stat.OFF, Stat.DEF};
 		recordingStats.removeAll(Arrays.asList(sss));
 		Stat[] sss1 = {Stat.REB};

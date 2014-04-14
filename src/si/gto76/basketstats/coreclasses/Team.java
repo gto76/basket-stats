@@ -38,7 +38,9 @@ public class Team implements HasName, HasStats {
 	////////////////////////////////////////
 	
 	/*
-	 * GETTERS, SETTERS
+	 * ############### ############### ###############
+	 * GETTERS/SETTERS GETTERS/SETTERS GETTERS/SETTERS
+	 * ############### ############### ###############
 	 */
 	
 	@Override
@@ -161,7 +163,9 @@ public class Team implements HasName, HasStats {
 	}
 
 	/*
-	 * TO STRING
+	 * ######### ######### ######### ######### #########
+	 * TO STRING TO STRING TO STRING TO STRING TO STRING
+	 * ######### ######### ######### ######### #########
 	 */
 	
 	@Override

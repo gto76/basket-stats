@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,15 +24,14 @@ import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class GameLoader {
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	final static String SPLITTER_STR = " +|\t";
-	final static String SPLITTER_STR_2 = " +|\t|-";
+	//final static String SPLITTER_STR_2 = " +|\t|-";
 
 	public static Game createGameFromString(String gameString) {
 		String[] line = gameString.split("\n");
 		// line 2
 		String dateString = line[2];
-
 		Date date = null;
 		try {
 			date = parseDate(dateString);
@@ -48,39 +49,46 @@ public class GameLoader {
 		Map<Player, PlayerStats> team2Stats = new LinkedHashMap<Player, PlayerStats>();
 		
 		String[] statsStrings = line[14].split(SPLITTER_STR);
-		Set<Stat> recordingStats = getRcordingStats(statsStrings); 
+		statsStrings = Util.removeFirstElement(statsStrings);
+		Set<Stat> outputStats = getOutputStats(statsStrings); 
+		if (DEBUG)
+			System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
+		Set<Stat> inputStats = Stat.getInputStatsFromOutput(outputStats);
 			
-		Team team1 = new Team(team1Name, team1Stats, recordingStats);
-		Team team2 = new Team(team2Name, team2Stats, recordingStats);
+		Team team1 = new Team(team1Name, team1Stats, inputStats);
+		Team team2 = new Team(team2Name, team2Stats, inputStats);
 
+		if (DEBUG)
+			System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
+	
 		// line 15 first player of first team ... until "Totals"
 		int i = 15;
 		for (; !line[i].split(SPLITTER_STR)[0].equals("Totals"); i++) {
-			addPlayerToMap(line[i], team1Stats, team1, recordingStats); //TODO recording stats!!!
+			addPlayerToMap(line[i], team1Stats, team1, outputStats); 
 		}
 
 		// after ---- and /t first player of second team ... until "Totals"
 		for (i += 5; !line[i].split(SPLITTER_STR)[0].equals("Totals"); i++) {
-			addPlayerToMap(line[i], team2Stats, team2, recordingStats);
+			addPlayerToMap(line[i], team2Stats, team2, outputStats);
 		}
 
 		team1.addAllPlayersOnTheFloor();
 		team2.addAllPlayersOnTheFloor();
-		return new Game(team1, team2, date, new Location(location), recordingStats);
+		return new Game(team1, team2, date, new Location(location), inputStats);
 	}
 
-	private static Set<Stat> getRcordingStats(String[] statsStrings) {
+	private static Set<Stat> getOutputStats(String[] statsStrings) {
 		Set<Stat> stats = new LinkedHashSet<Stat>();
-		//{IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
-		if (statsStrings[0] == "FGM-A") {
-			stats.add(Stat.IIPM);
-			stats.add(Stat.IIPF);
+		if (DEBUG) System.out.println("statsStrings: " + Arrays.toString(statsStrings));
+		if (statsStrings[0].equals("FGM-A")) {
+			stats.add(Stat.FGM);
+			stats.add(Stat.FGA);
 		} else {
-			stats.add(Stat.IIPM);
+			stats.add(Stat.FGM);
 		}
-		if (statsStrings[1] == "3PM-A") {
+		if (statsStrings[1].equals("3PM-A")) {
 			stats.add(Stat.TPM); 
-			stats.add(Stat.TPF);
+			stats.add(Stat.TPA);
 		} else {
 			stats.add(Stat.TPM);
 		}
@@ -94,27 +102,51 @@ public class GameLoader {
 	}
 
 	private static void addPlayerToMap(String playerString,
-			Map<Player, PlayerStats> playersWithStats, Team team, Set<Stat> recordingStats) {
+			Map<Player, PlayerStats> playersWithStats, Team team, Set<Stat> outputStats) {
 		// FGM-A 3PM-A +/- OFF DEF TOT AST PF ST TO BS PTS
 		// 0-0 0-0 0 0 0 0 2 2 0 0 0 0
 		String playersName = playerString.substring(0, Conf.PLAYER_NAME_WIDTH-1).trim();
 		String playersStats = playerString.substring(Conf.PLAYER_NAME_WIDTH);
 		
-		String[] sss = playersStats.split(SPLITTER_STR_2);
+		//old: String[] tokens = playersStats.split(SPLITTER_STR);
+		List<String> tokens = new ArrayList<String>();
+		// Need to aditionaly split ones with - (3-4)
+		for (String token : playersStats.split(SPLITTER_STR)) {
+			if (token.matches("[0-9]+-[0-9]+")) {
+				for (String subToken : token.split("-")) {
+					tokens.add(subToken);
+				}
+			} else {
+				tokens.add(token);
+			}
+		}
 
 		if (DEBUG) {
 			int i = 0;
-			for (String s : sss) {
+			for (String s : tokens) {
 				System.out.println(i + ": " + s);
 				i++;
 			}
 		}
 
-		//TODO
 		Player pl = new Player(playersName);
-//		PlayerStats plStats = new PlayerStats(team, fgm, fga, tpm, tpa, pm,
-//				off, def, ast, pf, st, to, bs);
+		Map<Stat,Integer> stats = new HashMap<Stat,Integer>();
 		
+		Iterator<Stat> ite =  outputStats.iterator();
+		for (String token : tokens) {
+			Stat next = ite.next();
+			if (DEBUG) System.out.println(next + " : " + token);
+			stats.put(next, Integer.valueOf(token));
+		}
+		
+		PlayerStats plStats = new PlayerStats(team, stats);
+		if (DEBUG) {
+			System.out.println("CHECKING PLAYERS SCORED 2P: " + plStats.get(Stat.IIPM));
+			System.out.println("CHECKING PLAYERS SCORED AST: " + plStats.get(Stat.AST));
+		}
+		playersWithStats.put(pl, plStats);
+
+//		OLD:
 //		String[] fg = sss[0].split("-");
 //		int fgm = Integer.parseInt(fg[0]);
 //		int fga = Integer.parseInt(fg[1]);
@@ -138,7 +170,6 @@ public class GameLoader {
 //		PlayerStats plStats = new PlayerStats(team, fgm, fga, tpm, tpa, pm,
 //				off, def, ast, pf, st, to, bs);
 
-		playersWithStats.put(pl, plStats);
 	}
 
 	public static Date parseDate(String dateStr) throws ParseException {

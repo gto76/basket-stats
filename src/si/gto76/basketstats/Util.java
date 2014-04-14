@@ -2,9 +2,11 @@ package si.gto76.basketstats;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,6 +59,12 @@ public class Util {
 			return 0;
 		}
 		return ((double) devidee / devider) * 100.0;
+	}
+
+	public static String[] removeFirstElement(String[] arrayIn) {
+		List<String> list = new ArrayList(Arrays.asList(arrayIn));
+		list.remove(0);
+		return list.toArray(new String[0]); 
 	}
 
 	

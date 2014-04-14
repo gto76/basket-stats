@@ -1,19 +1,27 @@
 package si.gto76.basketstats.coreclasses;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import si.gto76.basketstats.A;
-
+/**
+ * Class for storing players stat values.
+ * What is actualy tracked is defined in Team.recordingStats set, so some values may be redundand;
+ * for instance three point shoots are always initialized, even if they are not tracked.
+ */
 public class PlayerStats implements HasStats {
 	////////////////////////////////////////	
 	private final Team team;
-	private Shots shots = new Shots();
+	private Shots shootingValues = new Shots();
 	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();
-	private final List<Action> actions = new ArrayList<Action>();
+	/*
+	 * Used for linking buttons with this classes specific setters, and also
+	 * kept on stack after execution for possible later undo.
+	 */
+	private final List<Action> actions = new ArrayList<Action>(); 
 	////////////////////////////////////////
 	
 	public PlayerStats(Team team) {
@@ -21,12 +29,11 @@ public class PlayerStats implements HasStats {
 		// Diferent init depending on are we deferentiating between OFF and DEF rebounds,
 		// or are we loging them together under REB.
 		if (team.hasOnlyReb()) {
-			//System.out.print("ONLY REB");
-			initValuesAndActions(Stat.inputValuesNoOffDef(), 
-					Stat.nonScoringInputValuesNoOffDefAndPlusMinus());
+			initValuesAndActions(Stat.inputValuesNoOffDef, 
+					Stat.nonScoringInputValuesNoOffDefAndPlusMinus);
 		} else {
-			initValuesAndActions(Stat.inputValues(), 
-					Stat.nonScoringInputValuesAndPlusMinus());
+			initValuesAndActions(Stat.inputValues, 
+					Stat.nonScoringInputValuesAndPlusMinus);
 		}
 	}
 	
@@ -38,22 +45,36 @@ public class PlayerStats implements HasStats {
 			values.put(stat, 0);
 		}
 	}
+
+	boolean DEBUG = true;
 	
-	public PlayerStats(Team team, Map<Stat,Integer> stats) {
+	public PlayerStats(Team team, Map<Stat,Integer> outputStatsWithValues) {
 		this(team);
-		Map<Stat,Integer> shotStats = subMap(stats, Stat.getScoringValues());
-		this.shots = new Shots(shotStats);
-		Map<Stat,Integer> otherStats = subMap(stats, Stat.getNonScoringValues());
-		for (otherStat : otherStats) {
-			values.putAll() //TODO THINK!!!
+		if (DEBUG)
+			System.out.println("OUtput STats: " + Arrays.toString(outputStatsWithValues.keySet().toArray()));
+		Map<Stat,Integer> shotStats = subMap(outputStatsWithValues, Stat.scoringValues);
+		if (DEBUG)
+			System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
+		this.shootingValues = new Shots(shotStats);
+		//Map<Stat,Integer> otherStats = subMap(outputStatsWithValues, Stat.nonScoringValuesWithouthPoints);
+		//values.putAll(otherStats);
+		// OFF, DEF -> OFF, DEF
+		// OFF -> OFF
+		// DEF -> DEF
+		// REB -> REB
+		for (Stat outputStat : outputStatsWithValues.keySet()) {
+			if (!outputStat.isScoringValue() && outputStat.isInputValue()) {
+				values.put(outputStat, outputStatsWithValues.get(outputStat));
+			}
 		}
+	
 	}
 	
-	public static Map<Stat,Integer> subMap(Map<Stat,Integer> mapIn, Set<Stat> set) {
+	public static Map<Stat,Integer> subMap(Map<Stat,Integer> mapIn, Stat[] set) {
 		Map<Stat,Integer> mapOut = new HashMap<Stat,Integer>();
 		for (Stat stat : set) {
-			if (mapOut.containsKey(stat)) {
-				mapOut.put(stat, mapOut.get(stat));
+			if (mapIn.containsKey(stat)) {
+				mapOut.put(stat, mapIn.get(stat));
 			}
 		}
 		return mapOut;
@@ -62,7 +83,7 @@ public class PlayerStats implements HasStats {
 	public PlayerStats(Team team, int fgm, int fga, int tpm, int tpa, 
 			int plusMinus, int off, int def, int ast, int pf, int st, int to, int bs) {
 		this(team);
-		this.shots = new Shots(fgm, fga, tpm, tpa);
+		this.shootingValues = new Shots(fgm, fga, tpm, tpa);
 		values.put(Stat.PM, plusMinus);
 		values.put(Stat.OFF, off);
 		values.put(Stat.DEF, def);
@@ -84,8 +105,8 @@ public class PlayerStats implements HasStats {
 	 */
 	public Integer made(Stat stat) {
 		checkArgument(stat);	
-		if (stat.isScoringValue()) {
-			return shots.made(stat);
+		if (stat.isScoringValueOrPoints()) {
+			return shootingValues.made(stat);
 		} else {
 			addToValue(stat, 1);
 			return null;
@@ -94,8 +115,8 @@ public class PlayerStats implements HasStats {
 	
 	public Integer unMade(Stat stat) {
 		checkArgument(stat);
-		if (stat.isScoringValue()) {
-			return shots.unMade(stat);
+		if (stat.isScoringValueOrPoints()) {
+			return shootingValues.unMade(stat);
 		} else {
 			addToValue(stat, -1);
 			return null;
@@ -123,10 +144,10 @@ public class PlayerStats implements HasStats {
 	/*
 	 * GETTERS
 	 */
-	//FGM-A	3PM-A PM OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS 3PF IIPM IIPF
+	//FGM-A	3PM-A PM OFF DEF	TOT	AST	PF	ST	TO	BS	PTS 3PF IIPM IIPF
 	public int get(Stat stat) {
-		if (stat.isScoringValue()) {
-			return shots.get(stat);
+		if (stat.isScoringValueOrPoints()) {
+			return shootingValues.get(stat);
 		} else if (stat == Stat.REB) {
 			if (team.hasOnlyReb()) {
 				return values.get(Stat.REB);
