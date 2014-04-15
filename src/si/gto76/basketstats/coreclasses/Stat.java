@@ -52,8 +52,8 @@ public enum Stat {
 
 	public static Stat[] actionSet = {IIPM, IIPF, TPM, TPF, OFF, DEF, REB, AST, PF, ST, TO, BS};
 	public static Stat[] playerStatsValues = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS};
-	public static Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
 	public static Stat[] scoringValues = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF};
+	public static Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
 
 	/////////////////////////////////////
 	

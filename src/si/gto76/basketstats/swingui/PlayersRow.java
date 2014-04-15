@@ -213,11 +213,9 @@ public class PlayersRow {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Integer scoreDelta = action.trigger();
-				if (scoreDelta != null) {
-					Team playersTeam = action.getTeam();
-					mainWindow.setPlusMinus(scoreDelta, playersTeam);
-				}
+				//Integer scoreDelta = action.trigger();
+				action.trigger();
+				mainWindow.updateScore();
 				mainWindow.pushCommandOnStack(action);
 				System.out.println(mainWindow.game);
 				if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {

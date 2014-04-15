@@ -55,8 +55,6 @@ public class SwinGui {
 	private int windowHeight = Math.min(Conf.WINDOW_HEIGHT, screenSize.height - 50);
 	
 	final Map<Action, JButton> buttonMap = new HashMap<Action, JButton>();
-	//Map<Player, PlayersCheckBox> checkBoxMap = new HashMap<Player, PlayersCheckBox>();
-	//Map<Player, NamePanel> namePanelMap = new HashMap<Player, NamePanel>();
 	final Map<Player, PlayersRow> playersRowMap = new HashMap<Player, PlayersRow>();
 	//////////////////////////////////////////////////////////////
 	
@@ -167,11 +165,9 @@ public class SwinGui {
 		setPlayersOnFloorAndUpdatePlayersRow(lastCommand);
 		// Undo the action
 		Action lastAction = lastCommand.action;
-		Integer scoreDelta = lastAction.undo();
-		if (scoreDelta != null) {
-			Team team = lastAction.getTeam();
-			setPlusMinus(scoreDelta, team);
-		}
+		//Integer scoreDelta = lastAction.undo();
+		lastAction.undo();
+		updateScore();
 		// Update the button
 		JButton button = buttonMap.get(lastAction);
 		Util.setButtonText(button, lastAction);
@@ -234,16 +230,6 @@ public class SwinGui {
 		team1Label.setText(getTeamNameAndScore(team1));
 		Team team2 = game.getTeam2();
 		team2Label.setText(getTeamNameAndScore(team2));
-	}
-	
-	/*
-	 * Run after every score change.
-	 */
-	protected void setPlusMinus(Integer scoreDelta, Team team) {
-		team.changePlusMinus(scoreDelta);
-		Team otherTeam = game.getOtherTeam(team);
-		otherTeam.changePlusMinus(scoreDelta * (-1));
-		updateScore();
 	}
 	
 	protected void updateTeamLabelReference(Team team, JLabel teamLabel) {

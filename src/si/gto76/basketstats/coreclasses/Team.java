@@ -18,20 +18,20 @@ public class Team implements HasName, HasStats {
 	private String name;
 	private Map<Player, PlayerStats> allPlayersStats = new LinkedHashMap<Player, PlayerStats>();
 	Set<Player> playersOnTheFloor = new HashSet<Player>();
-	private final Set<Stat> recordingStats;
+	protected final Game game;
 	////////////////////////////////////////
 	
-	public Team(String name, List<Player> players, Set<Stat> recordingStats) {
+	public Team(String name, List<Player> players, Game game) {
+		this.game = game;
 		setName(name);
-		this.recordingStats = recordingStats;
 		for (Player player : players) {
 			addPlayer(player);
 		}
 	}	
 	
-	public Team(String name, Map<Player, PlayerStats> allPlayersStats, Set<Stat> recordingStats) {
-		this.name = name;
-		this.recordingStats = recordingStats;
+	public Team(String name, Map<Player, PlayerStats> allPlayersStats, Game game) {
+		this.game = game;
+		setName(name);
 		this.allPlayersStats = allPlayersStats;
 	}
 
@@ -55,7 +55,7 @@ public class Team implements HasName, HasStats {
 	}
 	
 	public Set<Stat> getRecordingStats() {
-		return Collections.unmodifiableSet(recordingStats);
+		return Collections.unmodifiableSet(game.recordingStats);
 	}
 	
 	public void addPlayer(Player player) {
@@ -154,9 +154,9 @@ public class Team implements HasName, HasStats {
 	}
 	
 	public boolean hasOnlyReb() {
-		if (recordingStats.contains(Stat.REB) &&
-				!recordingStats.contains(Stat.OFF) &&
-				!recordingStats.contains(Stat.DEF) ) {
+		if (game.recordingStats.contains(Stat.REB) &&
+				!game.recordingStats.contains(Stat.OFF) &&
+				!game.recordingStats.contains(Stat.DEF) ) {
 			return true;
 		}
 		return false;
@@ -187,13 +187,13 @@ public class Team implements HasName, HasStats {
 	}
 	
 	private void appendScoringHeader(StringBuilder sb) {
-		if (recordingStats.contains(Stat.IIPF) || recordingStats.contains(Stat.TPF)) {
+		if (game.recordingStats.contains(Stat.IIPF) || game.recordingStats.contains(Stat.TPF)) {
 			sb.append(padTab("FGM-A"));
 		} else {
 			sb.append(padTab("FGM"));
 		}
-		if (recordingStats.contains(Stat.TPM)) {
-			if (recordingStats.contains(Stat.TPF)) {
+		if (game.recordingStats.contains(Stat.TPM)) {
+			if (game.recordingStats.contains(Stat.TPF)) {
 				sb.append(padTab("3PM-A"));
 			} else {
 				sb.append(padTab("3PM"));
@@ -202,7 +202,7 @@ public class Team implements HasName, HasStats {
 	}
 	
 	private void appendNonScoringHeader(StringBuilder sb) {
-		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(recordingStats)) {
+		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats)) {
 			sb.append(padTab(sc.getName().toUpperCase()));
 		}
 		sb.append("\n");
@@ -224,10 +224,10 @@ public class Team implements HasName, HasStats {
 	
 	private void appendPercents(StringBuilder sb) {
 		sb.append(emptyPlayersName());
-		if (recordingStats.contains(Stat.IIPF)) {				
+		if (game.recordingStats.contains(Stat.IIPF)) {				
 			sb.append( padTab(oneDigit.format(getFgPercent())+"%") );
 		}
-		if (recordingStats.contains(Stat.TPF)) {				
+		if (game.recordingStats.contains(Stat.TPF)) {				
 			sb.append(oneDigit.format(getTpPercent())+"%");
 		}
 		sb.append("\n");
@@ -241,20 +241,20 @@ public class Team implements HasName, HasStats {
 	
 	protected StringBuilder appendStatsRow(StringBuilder sb, HasStats hs) {
 		// Scoring
-		if (recordingStats.contains(Stat.IIPF) || recordingStats.contains(Stat.TPF)) {
+		if (game.recordingStats.contains(Stat.IIPF) || game.recordingStats.contains(Stat.TPF)) {
 			sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
 		} else {
 			sb.append(padTab(hs.get(Stat.FGM) + ""));
 		}
-		if (recordingStats.contains(Stat.TPM)) {
-			if (recordingStats.contains(Stat.TPF)) {
+		if (game.recordingStats.contains(Stat.TPM)) {
+			if (game.recordingStats.contains(Stat.TPF)) {
 				sb.append(padTab(hs.get(Stat.TPM)+"-"+hs.get(Stat.TPA)));
 			} else {
 				sb.append(padTab(hs.get(Stat.TPM) + ""));
 			}
 		}
 		// Non-scoring
-		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(recordingStats)) {
+		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats)) {
 			// For team totals we don't need plus minus
 			if (hs instanceof Team && sc == Stat.PM) {
 				sb.append(padTab(""));

@@ -26,21 +26,11 @@ public class PlayerStats implements HasStats {
 	
 	public PlayerStats(Team team) {
 		this.team = team;
-		// Diferent init depending on are we deferentiating between OFF and DEF rebounds,
-		// or are we loging them together under REB.
-		
-		//if (team.hasOnlyReb()) {
-		//	initValuesAndActions(Stat.actionSetOnlyReb, Stat.valueSetOnlyReb);
-		//} else {
-		//	initValuesAndActions(Stat.actionSet, Stat.valueSet);
-		//}
-		
 		initValuesAndActions(Stat.actionSet, Stat.playerStatsValues);
-		
 	}
 	
 	private void initValuesAndActions(Stat[] actionSet, Stat[] valueSet) {
-		for (Stat stat :  actionSet) {
+		for (Stat stat : actionSet) {
 			actions.add(new Action(stat, this));
 		}
 		for (Stat stat : valueSet) {
@@ -85,23 +75,28 @@ public class PlayerStats implements HasStats {
 	/*
 	 * Return value is for plus minus handling which is executed in SwinGui class.
 	 */
-	public Integer made(Stat stat) {
-		checkArgument(stat);	
-		if (stat.isScoringValueOrPoints()) {
-			return shootingValues.made(stat);
-		} else {
-			addToValue(stat, 1);
-			return null;
-		}
+	public void made(Stat stat) {
+		changeState(stat, true, 1);
 	}
 	
-	public Integer unMade(Stat stat) {
+	public void unMade(Stat stat) {
+		changeState(stat, false, -1);
+	}
+	
+	private void changeState(Stat stat, boolean made, int delta) {
 		checkArgument(stat);
 		if (stat.isScoringValueOrPoints()) {
-			return shootingValues.unMade(stat);
+			Integer scoreDelta;
+			if (made) {
+				scoreDelta = shootingValues.made(stat);
+			} else {
+				scoreDelta = shootingValues.unMade(stat);
+			}
+			if (scoreDelta != null) {
+				team.game.setPlusMinus(scoreDelta, team);
+			}
 		} else {
-			addToValue(stat, -1);
-			return null;
+			addToValue(stat, delta);
 		}
 	}
 	

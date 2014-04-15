@@ -53,22 +53,18 @@ public class Conf {
 	static public final int PLAYER_NAME_WIDTH = NUMBER_OF_TABS_FOR_PLAYER_NAME * TAB_WIDTH;
 	
 	public static Game getDefaultGame() {
+		Set<Stat> recordingStats = Util.arrayToSet(Stat.nbaRecordingStats);
+		return getDefaultGame(recordingStats);
+	}
+	
+	public static Game getDefaultGame(Set<Stat> recordingStats) {
 		List<Player> ppp1 = new ArrayList<Player>();
 		List<Player> ppp2 = new ArrayList<Player>();
 		for (int i = 0; i < Conf.INITAIAL_NUMBER_OF_PLAYERS_IN_ONE_TEAM; i++) {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
 		}
-		Set<Stat> recordingStats = Util.arrayToSet(Stat.nbaRecordingStats);
-		Stat[] sss = {Stat.OFF, Stat.DEF, Stat.IIPF, Stat.TPF};
-		Stat[] sss2 = {Stat.OFF, Stat.DEF, Stat.TPM, Stat.TPF};
-		recordingStats.removeAll(Arrays.asList(sss2));
-		Stat[] sss1 = {Stat.REB};
-		recordingStats.addAll(Arrays.asList(sss1));
-		Team
-		team1 = new Team("TEAM A", ppp1, recordingStats),
-		team2 = new Team("TEAM B", ppp2, recordingStats);
-		return new Game(team1, team2, new Date(), new Location("Venue"), recordingStats);
+		return new Game("TEAM A", ppp1, "TEAM B", ppp2, new Date(), new Location("Venue"), recordingStats);
 	}
 	
 }

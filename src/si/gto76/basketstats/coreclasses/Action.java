@@ -33,12 +33,12 @@ public class Action {
 		return playersStats.getPlayer();
 	}
 
-	public Integer trigger() {
-		return playersStats.made(stat);
+	public void trigger() {
+		playersStats.made(stat);
 	}
 
-	public Integer undo() {
-		return playersStats.unMade(stat);
+	public void undo() {
+		playersStats.unMade(stat);
 	}
 
 }

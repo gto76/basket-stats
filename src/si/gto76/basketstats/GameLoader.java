@@ -54,9 +54,12 @@ public class GameLoader {
 		if (DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 		Set<Stat> inputStats = Stat.getInputStatsFromOutput(outputStats);
 			
-		Team team1 = new Team(team1Name, team1Stats, inputStats);
-		Team team2 = new Team(team2Name, team2Stats, inputStats);
-
+		//Team team1 = new Team(team1Name, team1Stats, inputStats);
+		//Team team2 = new Team(team2Name, team2Stats, inputStats);
+		Game game = new Game(team1Name, team1Stats, team2Name, team2Stats, date, new Location(location), inputStats);
+		Team team1 = game.getTeam1();
+		Team team2 = game.getTeam2();
+		
 		if (DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 	
 		// line 15 first player of first team ... until "Totals"
@@ -70,9 +73,11 @@ public class GameLoader {
 			addPlayerToMap(line[i], team2Stats, team2, outputStats);
 		}
 
-		team1.addAllPlayersOnTheFloor();
-		team2.addAllPlayersOnTheFloor();
-		return new Game(team1, team2, date, new Location(location), inputStats);
+		//team1.addAllPlayersOnTheFloor();
+		//team2.addAllPlayersOnTheFloor();
+		//return new Game(team1, team2, date, new Location(location), inputStats);
+		game.addAllPlayersOnTheFloor();
+		return game;
 	}
 
 	private static Set<Stat> getOutputStats(String[] statsStrings) {
