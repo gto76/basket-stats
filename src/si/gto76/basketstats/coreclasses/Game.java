@@ -14,7 +14,7 @@ public class Game {
 	private Location location;
 	private Date date;
 	private Team team1, team2;
-	Set<Stat> recordingStats;
+	public Set<Stat> recordingStats;
 	////////////////////////////////////////
 	
 	public Game(String team1Name, List<Player> team1Players, 
@@ -98,11 +98,14 @@ public class Game {
 	 * SETERS:
 	 */
 	
+	/**
+	 * Called from PlayerStats after every score change.
+	 * It sets plusMinus stat of all players that are on the floor.
+	 */
 	protected void setPlusMinus(Integer scoreDelta, Team team) {
 		team.changePlusMinus(scoreDelta);
 		Team otherTeam = getOtherTeam(team);
 		otherTeam.changePlusMinus(scoreDelta * (-1));
-		//updateScore();
 	}
 	
 	public void addAllPlayersOnTheFloor() {

@@ -6,13 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import si.gto76.basketstats.Conf;
+
 /**
  * Class for storing players stat values.
  * What is actualy tracked is defined in Team.recordingStats set, so some values may be redundand;
  * for instance three point shoots are always initialized, even if they are not tracked.
  */
 public class PlayerStats implements HasStats {
-	private static final boolean DEBUG = false;
 	////////////////////////////////////////	
 	private final Team team;
 	private Shots shootingValues = new Shots();
@@ -41,7 +42,7 @@ public class PlayerStats implements HasStats {
 	public PlayerStats(Team team, Map<Stat,Integer> outputStatsWithValues) {
 		this(team);
 		Map<Stat,Integer> shotStats = subMap(outputStatsWithValues, Stat.scoringValues);
-		if (DEBUG) System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
+		if (Conf.DEBUG) System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
 		this.shootingValues = new Shots(shotStats);
 		
 		// OFF, DEF -> OFF, DEF
@@ -104,9 +105,13 @@ public class PlayerStats implements HasStats {
 		if (!team.getRecordingStats().contains(stat)) {
 			throw new IllegalArgumentException("Tried to input non input stat.");
 		}
+		if (stat == Stat.PM) {
+			throw new IllegalArgumentException("Tried to change Plus minus with made/unmade method. " +
+					"Must use protected method changePlusMinus");
+		}
 	}
 	
-	public Integer changePlusMinus(int points) {
+	protected Integer changePlusMinus(int points) {
 		addToValue(Stat.PM, points);
 		return null;
 	}
@@ -132,7 +137,7 @@ public class PlayerStats implements HasStats {
 				return values.get(Stat.OFF) + values.get(Stat.DEF);
 			}
 		} else {
-			if (DEBUG) System.out.println("Stat: " + stat);
+			if (Conf.DEBUG) System.out.println("Stat: " + stat);
 			return values.get(stat);
 		}
 	}

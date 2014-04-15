@@ -118,7 +118,7 @@ public class Team implements HasName, HasStats {
 		playersOnTheFloor = new HashSet<Player>(players);
 	}
 
-	public void changePlusMinus(int points) {
+	protected void changePlusMinus(int points) {
 		for (Player player : playersOnTheFloor) {
 			PlayerStats playersStats = allPlayersStats.get(player);
 			playersStats.changePlusMinus(points);

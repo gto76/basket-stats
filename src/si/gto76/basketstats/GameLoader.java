@@ -23,7 +23,6 @@ import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class GameLoader {
-	private static final boolean DEBUG = true;
 	////////////////////////////////////////
 	final static String SPLITTER_STR = " +|\t";
 
@@ -51,16 +50,14 @@ public class GameLoader {
 		statsStrings = Util.removeFirstElement(statsStrings);
 		
 		Set<Stat> outputStats = getOutputStats(statsStrings); 
-		if (DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
+		if (Conf.DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 		Set<Stat> inputStats = Stat.getInputStatsFromOutput(outputStats);
 			
-		//Team team1 = new Team(team1Name, team1Stats, inputStats);
-		//Team team2 = new Team(team2Name, team2Stats, inputStats);
 		Game game = new Game(team1Name, team1Stats, team2Name, team2Stats, date, new Location(location), inputStats);
 		Team team1 = game.getTeam1();
 		Team team2 = game.getTeam2();
 		
-		if (DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
+		if (Conf.DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 	
 		// line 15 first player of first team ... until "Totals"
 		int i = 15;
@@ -73,28 +70,13 @@ public class GameLoader {
 			addPlayerToMap(line[i], team2Stats, team2, outputStats);
 		}
 
-		//team1.addAllPlayersOnTheFloor();
-		//team2.addAllPlayersOnTheFloor();
-		//return new Game(team1, team2, date, new Location(location), inputStats);
 		game.addAllPlayersOnTheFloor();
 		return game;
 	}
 
 	private static Set<Stat> getOutputStats(String[] statsStrings) {
 		Set<Stat> stats = new LinkedHashSet<Stat>();
-		if (DEBUG) System.out.println("statsStrings: " + Arrays.toString(statsStrings));
-//		if (statsStrings[0].equals("FGM-A")) {
-//			stats.add(Stat.FGM);
-//			stats.add(Stat.FGA);
-//		} else {
-//			stats.add(Stat.FGM);
-//		}
-//		if (statsStrings[1].equals("3PM-A")) {
-//			stats.add(Stat.TPM); 
-//			stats.add(Stat.TPA);
-//		} else if (statsStrings[1].equals("3PM")) {
-//			stats.add(Stat.TPM);
-//		}
+		if (Conf.DEBUG) System.out.println("statsStrings: " + Arrays.toString(statsStrings));
 
 		if (statsStrings[0].equals("FGM-A")) {
 			stats.add(Stat.FGM);
@@ -136,7 +118,7 @@ public class GameLoader {
 			}
 		}
 
-		if (DEBUG) {
+		if (Conf.DEBUG) {
 			int i = 0;
 			for (String s : tokens) {
 				System.out.println(i + ": " + s);
@@ -150,12 +132,12 @@ public class GameLoader {
 		Iterator<Stat> ite =  outputStats.iterator();
 		for (String token : tokens) {
 			Stat next = ite.next();
-			if (DEBUG) System.out.println(next + " : " + token);
+			if (Conf.DEBUG) System.out.println(next + " : " + token);
 			stats.put(next, Integer.valueOf(token));
 		}
 		
 		PlayerStats plStats = new PlayerStats(team, stats);
-		if (DEBUG) {
+		if (Conf.DEBUG) {
 			System.out.println("CHECKING PLAYERS SCORED 2P: " + plStats.get(Stat.IIPM));
 			System.out.println("CHECKING PLAYERS SCORED AST: " + plStats.get(Stat.AST));
 		}
