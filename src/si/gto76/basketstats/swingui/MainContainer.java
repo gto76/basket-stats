@@ -1,30 +1,17 @@
 package si.gto76.basketstats.swingui;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
-import si.gto76.basketstats.coreclasses.Action;
-import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class MainContainer {

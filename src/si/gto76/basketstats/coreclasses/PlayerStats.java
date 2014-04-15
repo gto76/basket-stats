@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Class for storing players stat values.
@@ -29,13 +28,15 @@ public class PlayerStats implements HasStats {
 		this.team = team;
 		// Diferent init depending on are we deferentiating between OFF and DEF rebounds,
 		// or are we loging them together under REB.
-		if (team.hasOnlyReb()) {
-			initValuesAndActions(Stat.inputValuesNoOffDef, 
-					Stat.nonScoringInputValuesNoOffDefAndPlusMinus);
-		} else {
-			initValuesAndActions(Stat.inputValues, 
-					Stat.nonScoringInputValuesAndPlusMinus);
-		}
+		
+		//if (team.hasOnlyReb()) {
+		//	initValuesAndActions(Stat.actionSetOnlyReb, Stat.valueSetOnlyReb);
+		//} else {
+		//	initValuesAndActions(Stat.actionSet, Stat.valueSet);
+		//}
+		
+		initValuesAndActions(Stat.actionSet, Stat.playerStatsValues);
+		
 	}
 	
 	private void initValuesAndActions(Stat[] actionSet, Stat[] valueSet) {

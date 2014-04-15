@@ -2,11 +2,9 @@ package si.gto76.basketstats.coreclasses;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public enum Stat {
@@ -27,6 +25,7 @@ public enum Stat {
 	ST("St", "Steal", true, true, false),
 	TO("To", "Turnover", true, true, false),
 	BS("Bs", "Blocked shot", true, true, false),
+	/////
 	PTS("Pts", "Points", false, true, false),
 	/////
 	TPF("3PF", "Three pointer missed", true, false, true),
@@ -50,20 +49,13 @@ public enum Stat {
 	}
 	
 	/////////////////////////////////////
-	
-	public static Stat[] nonScoringValuesAndPoints = {PM, OFF, DEF,	REB, AST, PF, ST, TO, BS, PTS};
-	public static Stat[] nonScoringValuesWithouthPoints = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS};
-	public static Stat[] boxScoreValues  = {FGM, FGA, TPM, TPA, PM, OFF, DEF, REB, AST, PF, ST, TO, BS, PTS};
-	public static Stat[] inputValues = {IIPM, IIPF, TPM, TPF, OFF, DEF, AST, PF, ST, TO, BS};
-	public static Stat[] inputValuesNoOffDef = {IIPM, IIPF, TPM, TPF, REB, AST, PF, ST, TO, BS};
-	public static Stat[] inputValuesAndPlusMinus = {IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
-	public static Stat[] nonScoringInputValuesAndPlusMinus = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS};
-	public static Stat[] nonScoringInputValuesNoOffDefAndPlusMinus = {PM, REB, AST, PF, ST, TO, BS};
-	public static Stat[] scoringValuesAndPoints = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, PTS};
+
+	public static Stat[] actionSet = {IIPM, IIPF, TPM, TPF, OFF, DEF, REB, AST, PF, ST, TO, BS};
+	public static Stat[] playerStatsValues = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS};
+	public static Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
 	public static Stat[] scoringValues = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF};
 
 	/////////////////////////////////////
-	
 	
 	public String getName() {
 		return name;
@@ -81,14 +73,10 @@ public enum Stat {
 	public boolean isScoringValue() {
 		return scoringValue;
 	}
-	
 	public boolean isScoringValueOrPoints() {
-		return Arrays.asList(scoringValuesAndPoints).contains(this);
+		return scoringValue || (this.equals(PTS));
+		// OLD return Arrays.asList(scoringValuesAndPoints).contains(this);
 	}
-	public boolean isInputValueOrPlusMinus() {
-		return Arrays.asList(inputValuesAndPlusMinus).contains(this);
-	}
-	
 	
 	public static Stat getByName(String name) {
 		Stat[] stats = Stat.values();
@@ -102,8 +90,8 @@ public enum Stat {
 	
 	/////////////////////////////////////
 	
-	public static Set<Stat> getInputStatsFromOutput(Set<Stat> outputStats) {
-		//Set<Stat> outputStats = new LinkedHashSet<Stat>(outputStatsIn);
+	public static Set<Stat> getInputStatsFromOutput(Set<Stat> outputStatsIn) {
+		Set<Stat> outputStats = new HashSet<Stat>(outputStatsIn);
 		Set<Stat> inputStats = new HashSet<Stat>();
 		// SCORING
 		// TPA -> IIPM, TPM, IIPF, TPF
@@ -120,16 +108,14 @@ public enum Stat {
 		if (outputStats.contains(Stat.TPA)) {
 			inputStats.add(Stat.TPF);
 		}
-		
-		// OFF, DEF -> OFF, DEF
+		// OFF, DEF, REB -> OFF, DEF
 		// OFF -> OFF
 		// DEF -> DEF
 		// REB -> REB
+		if (outputStats.contains(Stat.REB) && (outputStats.contains(Stat.OFF) || outputStats.contains(Stat.DEF))) {
+			outputStats.remove(Stat.REB);
+		}
 		for (Stat outputStat : outputStats) {
-			if (outputStat == null)
-				System.out.println("NuLL");
-			boolean a = !outputStat.isScoringValue(); 
-			boolean b = outputStat.isInputValue(); 
 			if (!outputStat.isScoringValue() && outputStat.isInputValue()) {
 				inputStats.add(outputStat);
 			}
@@ -164,7 +150,6 @@ public enum Stat {
 	
 	public static Stat[] getNonScoringOutputStatsFromInput(Set<Stat> inputStats) {
 		Set<Stat> outputStats = new LinkedHashSet<Stat>();
-
 		// if OFF, DEF  -> OFF, DEF, REB
 		// else if OFF -> OFF
 		// else if DEF -> DEF
@@ -186,7 +171,6 @@ public enum Stat {
 				}
 			}
 		}
-
 		// PTS
 		outputStats.add(Stat.PTS);
 		return (Stat[]) outputStats.toArray(new Stat[outputStats.size()]);

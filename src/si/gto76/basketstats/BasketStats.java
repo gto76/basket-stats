@@ -1,9 +1,6 @@
 package si.gto76.basketstats;
 
 import java.io.FileNotFoundException;
-import java.util.Collections;
-import java.util.Set;
-
 import si.gto76.basketstats.coreclasses.*;
 import si.gto76.basketstats.swingui.SwinGui;
 

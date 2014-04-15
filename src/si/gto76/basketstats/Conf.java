@@ -1,11 +1,9 @@
 package si.gto76.basketstats;
 
 import java.awt.Color;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -61,9 +59,10 @@ public class Conf {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
 		}
-		Set<Stat> recordingStats = Util.arrayToSet(Stat.inputValuesAndPlusMinus);
+		Set<Stat> recordingStats = Util.arrayToSet(Stat.nbaRecordingStats);
 		Stat[] sss = {Stat.OFF, Stat.DEF, Stat.IIPF, Stat.TPF};
-		recordingStats.removeAll(Arrays.asList(sss));
+		Stat[] sss2 = {Stat.OFF, Stat.DEF, Stat.TPM, Stat.TPF};
+		recordingStats.removeAll(Arrays.asList(sss2));
 		Stat[] sss1 = {Stat.REB};
 		recordingStats.addAll(Arrays.asList(sss1));
 		Team

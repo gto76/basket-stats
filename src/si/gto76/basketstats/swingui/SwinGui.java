@@ -1,6 +1,5 @@
 package si.gto76.basketstats.swingui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -24,7 +23,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import si.gto76.basketstats.Conf;

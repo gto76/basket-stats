@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -24,7 +23,7 @@ import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class GameLoader {
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	////////////////////////////////////////
 	final static String SPLITTER_STR = " +|\t";
 
@@ -50,16 +49,15 @@ public class GameLoader {
 		
 		String[] statsStrings = line[14].split(SPLITTER_STR);
 		statsStrings = Util.removeFirstElement(statsStrings);
+		
 		Set<Stat> outputStats = getOutputStats(statsStrings); 
-		if (DEBUG)
-			System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
+		if (DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 		Set<Stat> inputStats = Stat.getInputStatsFromOutput(outputStats);
 			
 		Team team1 = new Team(team1Name, team1Stats, inputStats);
 		Team team2 = new Team(team2Name, team2Stats, inputStats);
 
-		if (DEBUG)
-			System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
+		if (DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 	
 		// line 15 first player of first team ... until "Totals"
 		int i = 15;
@@ -80,22 +78,34 @@ public class GameLoader {
 	private static Set<Stat> getOutputStats(String[] statsStrings) {
 		Set<Stat> stats = new LinkedHashSet<Stat>();
 		if (DEBUG) System.out.println("statsStrings: " + Arrays.toString(statsStrings));
+//		if (statsStrings[0].equals("FGM-A")) {
+//			stats.add(Stat.FGM);
+//			stats.add(Stat.FGA);
+//		} else {
+//			stats.add(Stat.FGM);
+//		}
+//		if (statsStrings[1].equals("3PM-A")) {
+//			stats.add(Stat.TPM); 
+//			stats.add(Stat.TPA);
+//		} else if (statsStrings[1].equals("3PM")) {
+//			stats.add(Stat.TPM);
+//		}
+
 		if (statsStrings[0].equals("FGM-A")) {
 			stats.add(Stat.FGM);
 			stats.add(Stat.FGA);
-		} else {
-			stats.add(Stat.FGM);
 		}
 		if (statsStrings[1].equals("3PM-A")) {
 			stats.add(Stat.TPM); 
 			stats.add(Stat.TPA);
-		} else {
-			stats.add(Stat.TPM);
 		}
 		
-		for (int i = 2; i < statsStrings.length; i++) {
+		for (int i = 0; i < statsStrings.length; i++) {
 			String statName = statsStrings[i];
-			stats.add(Stat.getByName(statName));
+			Stat stat = Stat.getByName(statName);
+			if (stat != null) {
+				stats.add(stat);
+			}
 		}
 		
 		return stats;
