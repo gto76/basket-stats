@@ -87,13 +87,13 @@ public class PlayerStats implements HasStats {
 	private void changeState(Stat stat, boolean made, int delta) {
 		checkArgument(stat);
 		if (stat.isScoringValueOrPoints()) {
-			Integer scoreDelta;
+			int scoreDelta;
 			if (made) {
 				scoreDelta = shootingValues.made(stat);
 			} else {
 				scoreDelta = shootingValues.unMade(stat);
 			}
-			if (scoreDelta != null) {
+			if (scoreDelta != 0) {
 				team.game.setPlusMinus(scoreDelta, team);
 			}
 		} else {
@@ -137,7 +137,6 @@ public class PlayerStats implements HasStats {
 				return values.get(Stat.OFF) + values.get(Stat.DEF);
 			}
 		} else {
-			if (Conf.DEBUG) System.out.println("Stat: " + stat);
 			return values.get(stat);
 		}
 	}
@@ -158,7 +157,6 @@ public class PlayerStats implements HasStats {
 	
 	@Override
 	public String toString() {
-		//FGM-A	3PM-A +/-	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
 		StringBuilder sb = new StringBuilder();
 		team.appendStatsRow(sb, this);
 		return sb.toString();

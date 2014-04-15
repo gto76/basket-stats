@@ -63,10 +63,6 @@ public class Game {
 	public Location getLocation() {
 		return location;
 	}
-//	
-//	public Set<Stat> getRecordingStats() {
-//		return Collections.unmodifiableSet(recordingStats);
-//	}
 
 	public int getNumberOfPlayers() {
 		return team1.getNumberOfPlayers() + team2.getNumberOfPlayers();
@@ -135,6 +131,7 @@ public class Game {
 		Set<Stat> boxStats = Util.arrayToSet(Stat.getOutputStatsFromInput(recordingStats));
 		boxStats.remove(Stat.FGA);
 		boxStats.remove(Stat.TPA);
+		boxStats.remove(Stat.FTA);
 		for (int i = boxStats.size() + Conf.NUMBER_OF_TABS_FOR_PLAYER_NAME; i > 0; i--) {
 			sb.append(ONE_TAB_LINE);
 		}

@@ -2,7 +2,6 @@ package si.gto76.basketstats;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -11,10 +10,8 @@ import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.Stat;
-import si.gto76.basketstats.coreclasses.Team;
 
 public class Conf {
-	
 	// Debug
 	public static final boolean DEBUG = false;
 	

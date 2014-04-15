@@ -179,7 +179,7 @@ public class Team implements HasName, HasStats {
 	}
 
 	private void appendHeader(StringBuilder sb) {
-		//FGM-A	3PM-A +/-	OFF	DEF	TOT	AST	PF	ST	TO	BS	PTS
+		//FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
 		sb.append(name).append("\n").
 		append(emptyPlayersName());
 		appendScoringHeader(sb);
@@ -187,7 +187,9 @@ public class Team implements HasName, HasStats {
 	}
 	
 	private void appendScoringHeader(StringBuilder sb) {
-		if (game.recordingStats.contains(Stat.IIPF) || game.recordingStats.contains(Stat.TPF)) {
+		if (game.recordingStats.contains(Stat.IIPF) || 
+				game.recordingStats.contains(Stat.TPF) || 
+				game.recordingStats.contains(Stat.FTF)) {
 			sb.append(padTab("FGM-A"));
 		} else {
 			sb.append(padTab("FGM"));
@@ -197,6 +199,13 @@ public class Team implements HasName, HasStats {
 				sb.append(padTab("3PM-A"));
 			} else {
 				sb.append(padTab("3PM"));
+			}
+		}
+		if (game.recordingStats.contains(Stat.FTM)) {
+			if (game.recordingStats.contains(Stat.FTF)) {
+				sb.append(padTab("FTM-A"));
+			} else {
+				sb.append(padTab("FTM"));
 			}
 		}
 	}
@@ -239,7 +248,8 @@ public class Team implements HasName, HasStats {
 	 * ##### ##### ##### ##### ##### ##### #####
 	 */
 	
-	protected StringBuilder appendStatsRow(StringBuilder sb, HasStats hs) {
+	protected void appendStatsRow(StringBuilder sb, HasStats hs) {
+		//FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
 		// Scoring
 		if (game.recordingStats.contains(Stat.IIPF) || game.recordingStats.contains(Stat.TPF)) {
 			sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
@@ -253,6 +263,13 @@ public class Team implements HasName, HasStats {
 				sb.append(padTab(hs.get(Stat.TPM) + ""));
 			}
 		}
+		if (game.recordingStats.contains(Stat.FTM)) {
+			if (game.recordingStats.contains(Stat.FTF)) {
+				sb.append(padTab(hs.get(Stat.FTM)+"-"+hs.get(Stat.FTA)));
+			} else {
+				sb.append(padTab(hs.get(Stat.FTM) + ""));
+			}
+		}
 		// Non-scoring
 		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats)) {
 			// For team totals we don't need plus minus
@@ -262,7 +279,6 @@ public class Team implements HasName, HasStats {
 			}
 			sb.append(padTab(hs.get(sc) + ""));
 		}
-		return sb;
 	}
 	
 	public static String emptyPlayersName() {

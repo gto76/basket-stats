@@ -11,8 +11,12 @@ public enum Stat {
 	/////
 	FGM("FGM", "Field goal made", false, true, true),
 	FGA("FGA", "Field goal attempted", false, true, true),
+
 	TPM("3PM", "Three pointer made", true, true, true),
 	TPA("3PA", "Three pointer attempted", false, true, true),
+	
+	FTM("FTM", "Free throw made", true, true, true),
+	FTA("FTA", "Free throw attempted", false, true, true),
 	/////
 	PM("+/-", "Scoring difference", true, true, false),
 	/////
@@ -25,12 +29,14 @@ public enum Stat {
 	ST("St", "Steal", true, true, false),
 	TO("To", "Turnover", true, true, false),
 	BS("Bs", "Blocked shot", true, true, false),
+	BA("Ba", "Blocked attempt", true, true, false),
 	/////
 	PTS("Pts", "Points", false, true, false),
 	/////
 	TPF("3PF", "Three pointer missed", true, false, true),
 	IIPM("2PM", "Two pointer made", true, false, true),
-	IIPF("2PF", "Two pointer missed", true, false, true)
+	IIPF("2PF", "Two pointer missed", true, false, true),
+	FTF("FTF", "Free throw missed", true, false, true)
 	;;;;;
 	/////////////////////////////////////
 	private final String name;
@@ -50,10 +56,10 @@ public enum Stat {
 	
 	/////////////////////////////////////
 
-	public static Stat[] actionSet = {IIPM, IIPF, TPM, TPF, OFF, DEF, REB, AST, PF, ST, TO, BS};
-	public static Stat[] playerStatsValues = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS};
-	public static Stat[] scoringValues = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF};
-	public static Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS};
+	public static Stat[] actionSet = {IIPM, IIPF, TPM, TPF, FTM, FTF, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
+	public static Stat[] playerStatsValues = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
+	public static Stat[] scoringValues = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, FTM, FTA, FTF};
+	public static Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, FTM, FTF, PM, OFF, DEF, AST, PF, ST, TO, BS, BA};
 
 	/////////////////////////////////////
 	
@@ -75,7 +81,6 @@ public enum Stat {
 	}
 	public boolean isScoringValueOrPoints() {
 		return scoringValue || (this.equals(PTS));
-		// OLD return Arrays.asList(scoringValuesAndPoints).contains(this);
 	}
 	
 	public static Stat getByName(String name) {
@@ -107,6 +112,12 @@ public enum Stat {
 		}
 		if (outputStats.contains(Stat.TPA)) {
 			inputStats.add(Stat.TPF);
+		}
+		if (outputStats.contains(Stat.FTM)) {
+			inputStats.add(Stat.FTM);
+		}
+		if (outputStats.contains(Stat.FTA)) {
+			inputStats.add(Stat.FTF);
 		}
 		// OFF, DEF, REB -> OFF, DEF
 		// OFF -> OFF
@@ -140,6 +151,12 @@ public enum Stat {
 		}
 		if (inputStats.contains(Stat.TPF)) {
 			outputStats.add(Stat.TPA);
+		}
+		if (inputStats.contains(Stat.FTM)) {
+			outputStats.add(Stat.FTM);
+		}
+		if (inputStats.contains(Stat.FTF)) {
+			outputStats.add(Stat.FTA);
 		}
 		// NON SCORING
 		Stat[] nonScoringStats = getNonScoringOutputStatsFromInput(inputStats);

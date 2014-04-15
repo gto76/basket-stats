@@ -50,24 +50,23 @@ public class GameLoader {
 		statsStrings = Util.removeFirstElement(statsStrings);
 		
 		Set<Stat> outputStats = getOutputStats(statsStrings); 
-		if (Conf.DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 		Set<Stat> inputStats = Stat.getInputStatsFromOutput(outputStats);
+		if (Conf.DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
+		if (Conf.DEBUG) System.out.println("input Stats: " + Arrays.toString(inputStats.toArray()));
 			
 		Game game = new Game(team1Name, team1Stats, team2Name, team2Stats, date, new Location(location), inputStats);
 		Team team1 = game.getTeam1();
 		Team team2 = game.getTeam2();
-		
-		if (Conf.DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 	
 		// line 15 first player of first team ... until "Totals"
 		int i = 15;
 		for (; !line[i].split(SPLITTER_STR)[0].equals("Totals"); i++) {
-			addPlayerToMap(line[i], team1Stats, team1, outputStats); 
+			loadPlayersStats(line[i], team1Stats, team1, outputStats); 
 		}
 
 		// after ---- and /t first player of second team ... until "Totals"
 		for (i += 5; !line[i].split(SPLITTER_STR)[0].equals("Totals"); i++) {
-			addPlayerToMap(line[i], team2Stats, team2, outputStats);
+			loadPlayersStats(line[i], team2Stats, team2, outputStats);
 		}
 
 		game.addAllPlayersOnTheFloor();
@@ -78,13 +77,19 @@ public class GameLoader {
 		Set<Stat> stats = new LinkedHashSet<Stat>();
 		if (Conf.DEBUG) System.out.println("statsStrings: " + Arrays.toString(statsStrings));
 
-		if (statsStrings[0].equals("FGM-A")) {
-			stats.add(Stat.FGM);
-			stats.add(Stat.FGA);
-		}
-		if (statsStrings[1].equals("3PM-A")) {
-			stats.add(Stat.TPM); 
-			stats.add(Stat.TPA);
+		for (String statLabel : statsStrings) {
+			if (statLabel.equals("FGM-A")) {
+				stats.add(Stat.FGM);
+				stats.add(Stat.FGA);
+			}
+			if (statLabel.equals("3PM-A")) {
+				stats.add(Stat.TPM); 
+				stats.add(Stat.TPA);
+			}
+			if (statLabel.equals("FTM-A")) {
+				stats.add(Stat.FTM); 
+				stats.add(Stat.FTA);
+			}
 		}
 		
 		for (int i = 0; i < statsStrings.length; i++) {
@@ -98,7 +103,7 @@ public class GameLoader {
 		return stats;
 	}
 
-	private static void addPlayerToMap(String playerString,
+	private static void loadPlayersStats(String playerString,
 			Map<Player, PlayerStats> playersWithStats, Team team, Set<Stat> outputStats) {
 		// FGM-A 3PM-A +/- OFF DEF TOT AST PF ST TO BS PTS
 		// 0-0 0-0 0 0 0 0 2 2 0 0 0 0
@@ -118,13 +123,7 @@ public class GameLoader {
 			}
 		}
 
-		if (Conf.DEBUG) {
-			int i = 0;
-			for (String s : tokens) {
-				System.out.println(i + ": " + s);
-				i++;
-			}
-		}
+		if (Conf.DEBUG) System.out.println("loadPlayersStats read values: " + Arrays.toString(tokens.toArray()));
 
 		Player pl = new Player(playersName);
 		Map<Stat,Integer> stats = new HashMap<Stat,Integer>();
@@ -137,10 +136,6 @@ public class GameLoader {
 		}
 		
 		PlayerStats plStats = new PlayerStats(team, stats);
-		if (Conf.DEBUG) {
-			System.out.println("CHECKING PLAYERS SCORED 2P: " + plStats.get(Stat.IIPM));
-			System.out.println("CHECKING PLAYERS SCORED AST: " + plStats.get(Stat.AST));
-		}
 		playersWithStats.put(pl, plStats);
 	}
 

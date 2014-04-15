@@ -13,13 +13,13 @@ import si.gto76.basketstats.coreclasses.Stat;
 public class Test {
 	public static final boolean DISPLAY = true;
 	//////////////////////////////////////////////
-	public static Stat[] nbaRecordingStats = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS};
-	public static Stat[] nbaRecordingStatsSimplified = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.PM, Stat.REB, Stat.AST};
-	public static Stat[] nbaRecordingStatsNoMises = {Stat.IIPM, Stat.TPM, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS};
-	public static Stat[] nbaRecordingStatsNoMisesSimplified = {Stat.IIPM, Stat.TPM, Stat.PM, Stat.REB, Stat.AST};
-	public static Stat[] streetBallRecordingStats = {Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS};
+	public static Stat[] nbaRecordingStats = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
+	public static Stat[] nbaRecordingStatsSimplified = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.REB, Stat.AST};
+	public static Stat[] nbaRecordingStatsNoMises = {Stat.IIPM, Stat.TPM, Stat.FTM, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
+	public static Stat[] nbaRecordingStatsNoMisesSimplified = {Stat.IIPM, Stat.TPM,  Stat.FTM, Stat.PM, Stat.REB, Stat.AST};
+	public static Stat[] streetBallRecordingStats = {Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
 	public static Stat[] streetBallRecordingStatsSimplified = {Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST};
-	public static Stat[] streetBallRecordingStatsNoMisses = {Stat.IIPM, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS};
+	public static Stat[] streetBallRecordingStatsNoMisses = {Stat.IIPM, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
 	public static Stat[] streetBallRecordingStatsNoMissesSimplified = {Stat.IIPM, Stat.PM, Stat.REB, Stat.AST};
 	public static Stat[] streetBallRecordingStatsNoMissesSimplifiedNoPM = {Stat.IIPM, Stat.REB, Stat.AST};
 	
@@ -69,13 +69,13 @@ public class Test {
 			}
 			// create new game by sending game string to game loader
 			String gameString = game.toString();
+			if (DISPLAY) System.out.println("# ORIGINAL GAME: #\n"+game);
 			Game loadedGame = GameLoader.createGameFromString(gameString);
+			if (DISPLAY) System.out.println("# LOADED GAME: #\n"+loadedGame);
 			// and compare strings
 			if (!loadedGame.toString().equals(gameString)) {
 				return 1; // Error: Game and loaded game are different
 			}
-			if (DISPLAY) System.out.println("# ORIGINAL GAME: #\n"+game);
-			if (DISPLAY) System.out.println("# LOADED GAME: #\n"+loadedGame);
 			i++;
 		}
 		return 0; // Test passed.
