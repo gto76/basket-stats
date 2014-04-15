@@ -1,9 +1,13 @@
 package si.gto76.basketstats.coreclasses;
 
+import java.util.Collection;
 import java.util.Map;
+
+import si.gto76.basketstats.Util;
 
 public class Shots {
 	////////////////////////////////////////
+	Game 	game;
 	int 	made2p = 0, 
 			missed2p = 0, 
 			made3p = 0, 
@@ -11,31 +15,22 @@ public class Shots {
 			madeFt = 0, 
 			missedFt = 0;
 	////////////////////////////////////////
-	public Shots() {
-	}
-
-	public Shots(int fgm, int fga, int tpm, int tpa, int ftm, int fta) {
-		init(fgm, fga, tpm, tpa, ftm, fta);
-	}
-
-	public Shots(Map<Stat,Integer> stats) {
-		init(getStat(stats,Stat.FGM), getStat(stats,Stat.FGA), 
-		getStat(stats,Stat.TPM), getStat(stats,Stat.TPA),
-		getStat(stats,Stat.FTM), getStat(stats,Stat.FTA));
-	}
 	
-	private int getStat(Map<Stat, Integer> stats, Stat stat) {
-		Integer statValue = stats.get(stat);
-		if (statValue == null) {
-			return 0;
-		} else {
-			return statValue;
-		}
+	public Shots(Game game) {
+		this.game = game;
 	}
 
-	private void init(int fgm, int fga, int tpm, int tpa, int ftm, int fta) {
-		assertPositive(fgm); assertPositive(fga); assertPositive(tpm); 
-		assertPositive(tpa); assertPositive(ftm); assertPositive(fta); 
+	public Shots(Map<Stat,Integer> stats, Game game) {
+		this(game);
+		Util.assertPositive(stats.values());
+		int 
+		fgm = getStat(stats, Stat.FGM),
+		fga = getStat(stats, Stat.FGA), 
+		tpm = getStat(stats, Stat.TPM),
+		tpa = getStat(stats, Stat.TPA),
+		ftm = getStat(stats, Stat.FTM), 
+		fta = getStat(stats, Stat.FTA);
+		
 		this.made2p = Math.abs(fgm - tpm);
 		this.missed2p = Math.abs(fga - fgm - tpa + tpm);
 		this.made3p = Math.abs(tpm);
@@ -44,9 +39,12 @@ public class Shots {
 		this.missedFt = Math.abs(fta - ftm);
 	}
 	
-	private void assertPositive(int i) {
-		if (i < 0) {
-			throw new IllegalArgumentException("Some of shot values are negative");
+	private static int getStat(Map<Stat, Integer> stats, Stat stat) {
+		Integer statValue = stats.get(stat);
+		if (statValue == null) {
+			return 0;
+		} else {
+			return statValue;
 		}
 	}
 	
@@ -54,11 +52,11 @@ public class Shots {
 
 	public int made(Stat stat) {
 		switch (stat) {
-			case IIPM: made2p++; return 2;
+			case IIPM: made2p++; return game.shotPoints.get(Stat.IIPM);
 			case IIPF: missed2p++; return 0;
-			case TPM: made3p++; return 3;
+			case TPM: made3p++; return game.shotPoints.get(Stat.TPM);
 			case TPF: missed3p++; return 0;
-			case FTM: madeFt++; return 1;
+			case FTM: madeFt++; return game.shotPoints.get(Stat.FTM);
 			case FTF: missedFt++; return 0;
 			default : throw new IllegalArgumentException("Wrong stat argument.");
 		}
@@ -66,11 +64,11 @@ public class Shots {
 	
 	public int unMade(Stat stat) {
 		switch (stat) {
-			case IIPM: made2p--; return -2;
+			case IIPM: made2p--; return -game.shotPoints.get(Stat.IIPM);
 			case IIPF: missed2p--; return 0;
-			case TPM: made3p--; return -3;
+			case TPM: made3p--; return -game.shotPoints.get(Stat.TPM);
 			case TPF: missed3p--; return 0;
-			case FTM: madeFt--; return -1;
+			case FTM: madeFt--; return -game.shotPoints.get(Stat.FTM);
 			case FTF: missedFt--; return 0;
 			default : throw new IllegalArgumentException("Wrong stat argument.");
 		}
@@ -83,7 +81,9 @@ public class Shots {
 		switch (stat) {
 			case FGA: return made2p + missed2p + made3p + missed3p;
 			case FGM: return made2p + made3p;
-			case PTS: return made2p * 2 + made3p * 3 + madeFt;
+			case PTS: return made2p * game.shotPoints.get(Stat.IIPM) 
+							+ made3p * game.shotPoints.get(Stat.TPM) 
+							+ madeFt * game.shotPoints.get(Stat.FTM);
 			case TPA: return made3p + missed3p;
 			case TPM: return made3p;
 			case TPF: return missed3p;

@@ -65,7 +65,8 @@ public class Conf {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
 		}
-		return new Game("TEAM A", ppp1, "TEAM B", ppp2, new Date(), new Location("Venue"), recordingStats);
+		int[] shotPoints = {1,2,3};
+		return new Game("TEAM A", ppp1, "TEAM B", ppp2, new Date(), new Location("Venue"), recordingStats, shotPoints);
 	}
 	
 }

@@ -12,6 +12,7 @@ import si.gto76.basketstats.coreclasses.Stat;
 
 public class Test {
 	public static final boolean DISPLAY = true;
+	public static final boolean DISPLAY_BOTH = false;
 	//////////////////////////////////////////////
 	public static Stat[] nbaRecordingStats = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
 	public static Stat[] nbaRecordingStatsSimplified = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.REB, Stat.AST};
@@ -69,7 +70,7 @@ public class Test {
 			}
 			// create new game by sending game string to game loader
 			String gameString = game.toString();
-			if (DISPLAY) System.out.println("# ORIGINAL GAME: #\n"+game);
+			if (DISPLAY_BOTH) System.out.println("# ORIGINAL GAME: #\n"+game);
 			Game loadedGame = GameLoader.createGameFromString(gameString);
 			if (DISPLAY) System.out.println("# LOADED GAME: #\n"+loadedGame);
 			// and compare strings

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.Util;
 
 /**
  * Class for storing players stat values.
@@ -16,7 +17,7 @@ import si.gto76.basketstats.Conf;
 public class PlayerStats implements HasStats {
 	////////////////////////////////////////	
 	private final Team team;
-	private Shots shootingValues = new Shots();
+	private Shots shootingValues;
 	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();
 	/*
 	 * Used for linking buttons with this classes specific setters, and also
@@ -27,7 +28,24 @@ public class PlayerStats implements HasStats {
 	
 	public PlayerStats(Team team) {
 		this.team = team;
+		shootingValues = new Shots(team.game);
 		initValuesAndActions(Stat.actionSet, Stat.playerStatsValues);
+	}
+		
+	public PlayerStats(Team team, Map<Stat,Integer> outputStatsWithValues) {
+		this(team);
+		Map<Stat,Integer> shotStats = Util.subMap(outputStatsWithValues, Stat.scoringValues);
+		if (Conf.DEBUG) System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
+		this.shootingValues = new Shots(shotStats, team.game);
+		// OFF, DEF -> OFF, DEF
+		// OFF -> OFF
+		// DEF -> DEF
+		// REB -> REB
+		for (Stat outputStat : outputStatsWithValues.keySet()) {
+			if (!outputStat.isScoringValue() && outputStat.isInputValue()) {
+				values.put(outputStat, outputStatsWithValues.get(outputStat));
+			}
+		}
 	}
 	
 	private void initValuesAndActions(Stat[] actionSet, Stat[] valueSet) {
@@ -38,35 +56,7 @@ public class PlayerStats implements HasStats {
 			values.put(stat, 0);
 		}
 	}
-	
-	public PlayerStats(Team team, Map<Stat,Integer> outputStatsWithValues) {
-		this(team);
-		Map<Stat,Integer> shotStats = subMap(outputStatsWithValues, Stat.scoringValues);
-		if (Conf.DEBUG) System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
-		this.shootingValues = new Shots(shotStats);
-		
-		// OFF, DEF -> OFF, DEF
-		// OFF -> OFF
-		// DEF -> DEF
-		// REB -> REB
-		for (Stat outputStat : outputStatsWithValues.keySet()) {
-			if (!outputStat.isScoringValue() && outputStat.isInputValue()) {
-				values.put(outputStat, outputStatsWithValues.get(outputStat));
-			}
-		}
-	
-	}
-	
-	public static Map<Stat,Integer> subMap(Map<Stat,Integer> mapIn, Stat[] set) {
-		Map<Stat,Integer> mapOut = new HashMap<Stat,Integer>();
-		for (Stat stat : set) {
-			if (mapIn.containsKey(stat)) {
-				mapOut.put(stat, mapIn.get(stat));
-			}
-		}
-		return mapOut;
-	}
-	
+
 	////////////////////////////////////////
 
 	/*

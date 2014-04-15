@@ -4,8 +4,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JButton;
@@ -68,6 +71,23 @@ public class Util {
 		list.remove(0);
 		return list.toArray(new String[0]); 
 	}
-
+	
+	public static Map<Stat,Integer> subMap(Map<Stat,Integer> mapIn, Stat[] set) {
+		Map<Stat,Integer> mapOut = new HashMap<Stat,Integer>();
+		for (Stat stat : set) {
+			if (mapIn.containsKey(stat)) {
+				mapOut.put(stat, mapIn.get(stat));
+			}
+		}
+		return mapOut;
+	}
+	
+	public static void assertPositive(Collection<Integer> values) {
+		for (Integer value : values) {
+			if (value < 0) {
+				throw new IllegalArgumentException("Some of shot values are negative");
+			}
+		}
+	}	
 	
 }
