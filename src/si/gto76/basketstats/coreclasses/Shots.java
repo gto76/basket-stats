@@ -1,6 +1,5 @@
 package si.gto76.basketstats.coreclasses;
 
-import java.util.Collection;
 import java.util.Map;
 
 import si.gto76.basketstats.Util;
@@ -30,7 +29,7 @@ public class Shots {
 		tpa = getStat(stats, Stat.TPA),
 		ftm = getStat(stats, Stat.FTM), 
 		fta = getStat(stats, Stat.FTA);
-		
+		////
 		this.made2p = Math.abs(fgm - tpm);
 		this.missed2p = Math.abs(fga - fgm - tpa + tpm);
 		this.made3p = Math.abs(tpm);
@@ -39,40 +38,29 @@ public class Shots {
 		this.missedFt = Math.abs(fta - ftm);
 	}
 	
-	private static int getStat(Map<Stat, Integer> stats, Stat stat) {
-		Integer statValue = stats.get(stat);
-		if (statValue == null) {
-			return 0;
-		} else {
-			return statValue;
+	////////////////////////////////////////
+
+	public int made(Stat stat) {
+		return changeState(stat, 1);
+	}
+	
+	public int unMade(Stat stat) {
+		return changeState(stat, -1);
+	}
+	
+	private int changeState(Stat stat, int delta) {
+		switch (stat) {
+			case IIPM: made2p += delta; return delta * game.shotPoints.get(Stat.IIPM);
+			case IIPF: missed2p += delta; return 0;
+			case TPM: made3p += delta; return delta * game.shotPoints.get(Stat.TPM);
+			case TPF: missed3p += delta; return 0;
+			case FTM: madeFt += delta; return delta * game.shotPoints.get(Stat.FTM);
+			case FTF: missedFt += delta; return 0;
+			default : throw new IllegalArgumentException("Wrong stat argument.");
 		}
 	}
 	
 	////////////////////////////////////////
-
-	public int made(Stat stat) {
-		switch (stat) {
-			case IIPM: made2p++; return game.shotPoints.get(Stat.IIPM);
-			case IIPF: missed2p++; return 0;
-			case TPM: made3p++; return game.shotPoints.get(Stat.TPM);
-			case TPF: missed3p++; return 0;
-			case FTM: madeFt++; return game.shotPoints.get(Stat.FTM);
-			case FTF: missedFt++; return 0;
-			default : throw new IllegalArgumentException("Wrong stat argument.");
-		}
-	}
-	
-	public int unMade(Stat stat) {
-		switch (stat) {
-			case IIPM: made2p--; return -game.shotPoints.get(Stat.IIPM);
-			case IIPF: missed2p--; return 0;
-			case TPM: made3p--; return -game.shotPoints.get(Stat.TPM);
-			case TPF: missed3p--; return 0;
-			case FTM: madeFt--; return -game.shotPoints.get(Stat.FTM);
-			case FTF: missedFt--; return 0;
-			default : throw new IllegalArgumentException("Wrong stat argument.");
-		}
-	}
 	
 	public int get(Stat stat) {
 		if (!stat.isScoringValueOrPoints()) {
@@ -93,6 +81,17 @@ public class Shots {
 			case FTF: return missedFt; 
 			case FTA: return madeFt + missedFt;
 			default : throw new IllegalArgumentException("The wanted scoring stat geter is not implemented.");
+		}
+	}
+	
+	////////////////////////////////////////
+	
+	private static int getStat(Map<Stat, Integer> stats, Stat stat) {
+		Integer statValue = stats.get(stat);
+		if (statValue == null) {
+			return 0;
+		} else {
+			return statValue;
 		}
 	}
 
