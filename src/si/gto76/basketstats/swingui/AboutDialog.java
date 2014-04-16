@@ -50,9 +50,9 @@ public class AboutDialog extends JFrame {
 	    label.setAlignmentX(Component.CENTER_ALIGNMENT);
     	p.add(label);
     	// Other info
-    	addLabelToPanel("Version " + Conf.VERSION, p);
-    	addLabelToPanel("Copyright © 2013-2014 Jure Šorn", p);
-    	addLabelToPanel("sornjure@hotmail.com", p);
+    	addLabelToPanel(" version " + Conf.VERSION + " ", p);
+    	addLabelToPanel("Copyright (c) " +Conf.YEARS+ " " +Conf.AUTHOR, p);
+    	addLabelToPanel(Conf.EMAIL, p);
     	
     	dlg.setSize(240, 105);
     	dlg.pack();

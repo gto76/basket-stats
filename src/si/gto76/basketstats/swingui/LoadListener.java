@@ -11,10 +11,10 @@ import si.gto76.basketstats.GameLoader;
 import si.gto76.basketstats.coreclasses.Game;
 
 public class LoadListener implements ActionListener {
-	SwinGui frame;
+	SwinGui mainWindow;
 
-	public LoadListener(SwinGui frame) {
-		this.frame = frame;
+	public LoadListener(SwinGui mainWindow) {
+		this.mainWindow = mainWindow;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -24,11 +24,11 @@ public class LoadListener implements ActionListener {
 			fc.addChoosableFileFilter(filter);
 		}
 		fc.setFileFilter(ExtensionFileFilter.hsg);
-		int returnVal = fc.showOpenDialog(frame.frame);
+		int returnVal = fc.showOpenDialog(mainWindow.frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
 				boolean exit = true;
-				if (frame.stateChangedSinceLastSave) {
+				if (mainWindow.stateChangedSinceLastSave) {
 					exit = SwinGui.exitDialog("Game was not saved.\n" +
 							"Are you sure you want to open another game?");
 				}
@@ -40,7 +40,7 @@ public class LoadListener implements ActionListener {
 					Game derbi = GameLoader.createGameFromString(gameString);
 					new SwinGui(derbi);
 					System.out.println(derbi);
-					frame.frame.hide();
+					mainWindow.frame.hide();
 				}
 			} catch (IOException f) {
 			}

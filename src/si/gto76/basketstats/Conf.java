@@ -18,6 +18,9 @@ public class Conf {
 	// App Name and Version
 	public static final String APP_NAME = "HoopStats";
 	public static final String VERSION = "0.9.2";
+	public static final String AUTHOR = "Jure Sorn";
+	public static final String EMAIL = "sornjure@gmail.com";
+	public static final String YEARS = "2013-2014";
 	
 	// Window
 	static public final int WINDOW_WIDTH = 1365;
@@ -53,6 +56,7 @@ public class Conf {
 	static public final int TAB_WIDTH = 8;
 	static public final int PLAYER_NAME_WIDTH = NUMBER_OF_TABS_FOR_PLAYER_NAME * TAB_WIDTH;
 	
+	// Default Game
 	public static Game getDefaultGame() {
 		Set<Stat> recordingStats = Util.arrayToSet(Stat.nbaRecordingStats);
 		return getDefaultGame(recordingStats);
@@ -68,5 +72,21 @@ public class Conf {
 		int[] shotPoints = {1,2,3};
 		return new Game("TEAM A", ppp1, "TEAM B", ppp2, new Date(), new Location("Venue"), recordingStats, shotPoints);
 	}
+	
+	// Help Text
+	static public final String HELP_TEXT =
+		" \n" +
+		"To change players name, team name,\n" +
+		"venue or date, double click on the label.\n" +
+		" \n" +
+		"If you want to delete a player or change\n" +
+		"a stat, save a game, then open the game file\n" +
+		"with any plain text editor (Notepad, but not Word)\n" +
+		"and edit it there. Just don't change the formating.\n" +
+		"When changing stats only change players shots,\n" +
+		"def and off rebounds, ast, pf, st, to and bs.\n" +
+		"All other stats like players score, total rebounds\n" +
+		"and all team stats will be ignored and calculated\n" +
+		"anew next time you load the game in HoopStats.\n";
 	
 }

@@ -195,10 +195,10 @@ public class PlayersRow {
 		if (stat == Stat.OFF || stat == Stat.DEF || stat == Stat.REB) {
 			button.setBackground(Conf.REBOUND_BUTTON_COLOR);
 		}
-		if (Conf.COLORED_MADE_BUTTONS && (stat == Stat.IIPM || stat == Stat.TPM)) {
+		if (Conf.COLORED_MADE_BUTTONS && (stat == Stat.IIPM || stat == Stat.TPM || stat == Stat.FTM)) {
 			button.setBackground(Conf.MADE_SHOT_BUTTON_COLOR);
 		}
-		if (Conf.COLORED_MISSED_BUTTONS && (stat == Stat.IIPF || stat == Stat.TPF)) {
+		if (Conf.COLORED_MISSED_BUTTONS && (stat == Stat.IIPF || stat == Stat.TPF || stat == Stat.FTM)) {
 			button.setBackground(Conf.MISSED_SHOT_BUTTON_COLOR);
 		}
 		if (Conf.COLORED_TURNOVER_BUTTONS && stat == Stat.TO) {

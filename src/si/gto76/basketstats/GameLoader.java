@@ -40,7 +40,7 @@ public class GameLoader {
 		if (Conf.DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 		if (Conf.DEBUG) System.out.println("input Stats: " + Arrays.toString(inputStats.toArray()));
 		// NEW GAME:
-		int[] shotPoints = {noOfSpaces(line[5]), noOfSpaces(line[7]), noOfSpaces(line[9])};
+		int[] shotPoints = {line[5].length(), line[7].length(), line[9].length()};
 		Map<Player, PlayerStats> team1Stats = new LinkedHashMap<Player, PlayerStats>();
 		Map<Player, PlayerStats> team2Stats = new LinkedHashMap<Player, PlayerStats>();
 		Game game = new Game(team1Name, team1Stats, team2Name, team2Stats, date, new Location(venue), inputStats, shotPoints);
@@ -57,10 +57,6 @@ public class GameLoader {
 		}
 		game.addAllPlayersOnTheFloor();
 		return game;
-	}
-
-	private static int noOfSpaces(String line) {
-		return line.length();
 	}
 
 	private static Set<Stat> getOutputStats(String[] statsStrings) {

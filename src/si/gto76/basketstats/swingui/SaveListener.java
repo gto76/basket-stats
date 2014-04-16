@@ -11,38 +11,50 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class SaveListener implements ActionListener {
-	SwinGui mainFrame;
+	SwinGui mainWindow;
 
-	public SaveListener(SwinGui mainFrame) {
-		this.mainFrame = mainFrame;
+	public SaveListener(SwinGui mainWindow) {
+		this.mainWindow = mainWindow;
 	}
 	
 	private void saveFile(String formatName, File outputFile) {
 		PrintStream out;
 		try {
 			out = new PrintStream(new FileOutputStream(outputFile));
-			out.print(mainFrame.game.toString());
+			out.print(mainWindow.game.toString());
 			out.close();
-			mainFrame.stateChangedSinceLastSave = false;
+			mainWindow.stateChangedSinceLastSave = false;
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "SAVE ERROR!", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
+		JFileChooser fileChooser = createFileChooser();
+		String fileName = mainWindow.game.getTeam1().getName() + " vs "
+				+ mainWindow.game.getTeam2().getName() + " " + mainWindow.game.getDate().toString();
+		fileChooser.setSelectedFile(new File(fileName));
+		fileChooser.setDialogTitle("Save As");
+		// Add file filters
+		for (ExtensionFileFilter filter : ExtensionFileFilter.all) {
+			fileChooser.addChoosableFileFilter(filter);
+		}
+		fileChooser.setFileFilter(ExtensionFileFilter.all[0]);
+		// Show dialog
+		fileChooser.showSaveDialog(mainWindow.frame);
+	}
 
-		JFileChooser fc = new JFileChooser() {
+	private JFileChooser createFileChooser() {
+		return new JFileChooser() {
 			private static final long serialVersionUID = 291238218189760373L;
-
 			@Override
 			public void approveSelection() {
-
 				String formatName = "";
 				String errMessage = "";
 				File outputfile = this.getSelectedFile();
 				final String givenName = outputfile.getName();
-
 				// Filename Test:
 				// No filter chosen
 				if (this.getFileFilter().getDescription() == "All Files") {
@@ -81,11 +93,9 @@ public class SaveListener implements ActionListener {
 						errMessage = "Filename extension and file filter did not match. Image was not saved.";
 					}
 				}
-
 				// If it passed the test above -> Filename was valid and passed
 				// trough filter.
 				if (formatName != "") {
-					// ********************************************//
 					// File already exists check:
 					if (outputfile.exists() && getDialogType() == SAVE_DIALOG) {
 						int result = JOptionPane.showConfirmDialog(this,
@@ -93,10 +103,8 @@ public class SaveListener implements ActionListener {
 								JOptionPane.YES_NO_CANCEL_OPTION);
 						switch (result) {
 						case JOptionPane.YES_OPTION:
-
 							// SAVE (overwrite existing file)
 							saveFile(formatName, outputfile);
-
 							super.approveSelection();
 							return;
 						case JOptionPane.NO_OPTION:
@@ -108,10 +116,8 @@ public class SaveListener implements ActionListener {
 							return;
 						}
 					}
-
 					// SAVE (new file)
 					saveFile(formatName, outputfile);
-
 					super.approveSelection();
 					return;
 				}
@@ -122,22 +128,8 @@ public class SaveListener implements ActionListener {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-
 			}
 		};
-
-		String fileName = mainFrame.game.getTeam1().getName() + " vs "
-				+ mainFrame.game.getTeam2().getName() + " " + mainFrame.game.getDate().toString();
-		fc.setSelectedFile(new File(fileName));
-		fc.setDialogTitle("Save As");
-
-		for (ExtensionFileFilter filter : ExtensionFileFilter.all) {
-			fc.addChoosableFileFilter(filter);
-		}
-		fc.setFileFilter(ExtensionFileFilter.all[0]);
-
-		// OPEN DIALOG
-		fc.showSaveDialog(mainFrame.frame);
 	}
 
 }

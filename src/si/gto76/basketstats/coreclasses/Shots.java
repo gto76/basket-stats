@@ -5,7 +5,7 @@ import java.util.Map;
 import si.gto76.basketstats.Util;
 
 public class Shots {
-	////////////////////////////////////////
+	////////////////////////////////
 	Game 	game;
 	int 	made2p = 0, 
 			missed2p = 0, 
@@ -13,7 +13,7 @@ public class Shots {
 			missed3p = 0, 
 			madeFt = 0, 
 			missedFt = 0;
-	////////////////////////////////////////
+	////////////////////////////////
 	
 	public Shots(Game game) {
 		this.game = game;
@@ -38,7 +38,11 @@ public class Shots {
 		this.missedFt = Math.abs(fta - ftm);
 	}
 	
-	////////////////////////////////////////
+	////////////////////////////////
+	
+	/*
+	 * SETERS:
+	 */
 
 	public int made(Stat stat) {
 		return changeState(stat, 1);
@@ -60,7 +64,9 @@ public class Shots {
 		}
 	}
 	
-	////////////////////////////////////////
+	/*
+	 * GETERS:
+	 */
 	
 	public int get(Stat stat) {
 		if (!stat.isScoringValueOrPoints()) {
@@ -83,8 +89,8 @@ public class Shots {
 			default : throw new IllegalArgumentException("The wanted scoring stat geter is not implemented.");
 		}
 	}
-	
-	////////////////////////////////////////
+
+	////////////////////////////////
 	
 	private static int getStat(Map<Stat, Integer> stats, Stat stat) {
 		Integer statValue = stats.get(stat);

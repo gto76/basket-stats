@@ -42,9 +42,9 @@ public class Menu {
 		menuEditAddPlayer2.setText("Add Player to TEAM B");
 		menuEditAddPlayer2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
 		menuHelp.setText("Help");
-		menuHelpHelp.setText("Help...");
+		menuHelpHelp.setText("Help");
 		menuHelpHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
-		menuHelpAbout.setText("About...");
+		menuHelpAbout.setText("About");
 		menuHelpAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, ActionEvent.CTRL_MASK));
 
 		menuFile.add(menuFileNew);

@@ -15,26 +15,11 @@ public class MenuActionListeners {
 		 * FILE
 		 */
 		// NEW
-		meni.menuFileNew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				boolean exit = true;
-				if (mainWindow.stateChangedSinceLastSave) {
-					exit = SwinGui.exitDialog("Game was not saved.\n" +
-							"Are you sure you want to open new game?");
-				}
-				if (exit) {
-					Game derbi = Conf.getDefaultGame();
-					new SwinGui(derbi);
-					System.out.println(derbi);
-					mainWindow.frame.hide();
-				}
-			}
-		});
-		
+		meni.menuFileNew.addActionListener(new NewFileListener(mainWindow));
 		// OPEN
 		meni.menuFileOpen.addActionListener(new LoadListener(mainWindow));
 		// SAVE AS
-		meni.menuFileSaveas.addActionListener(new SaveListener(mainWindow));//game, frame));
+		meni.menuFileSaveas.addActionListener(new SaveListener(mainWindow));
 		// FILE EXIT
 		meni.menuFileExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -69,6 +54,7 @@ public class MenuActionListeners {
         /*
          * HELP
          */
+		// HELP
         meni.menuHelpHelp.addActionListener (
 			new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -80,7 +66,7 @@ public class MenuActionListeners {
                 }
             }
         );
-      
+        // ABOUT
         meni.menuHelpAbout.addActionListener (
 			new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
