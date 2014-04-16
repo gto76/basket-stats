@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import si.gto76.basketstats.Conf;
@@ -138,15 +139,21 @@ public class Team implements HasName, HasStats {
 	}
 
 	public double getFgPercent() {
-		int fgm = get(Stat.FGM);
-		int fga = get(Stat.FGA);
-		return Util.zeroIfDevideByZero(fgm, fga);
+		return getPercent(Stat.FGM,Stat.FGA);
 	}
 
 	public double getTpPercent() {
-		int tpm = get(Stat.TPM);
-		int tpa = get(Stat.TPA);
-		return Util.zeroIfDevideByZero(tpm, tpa);
+		return getPercent(Stat.TPM,Stat.TPA);
+	}
+	
+	public double getFtPercent() {
+		return getPercent(Stat.FTM,Stat.FTA);
+	}
+	
+	private double getPercent(Stat madeStat, Stat attemptsStat) {
+		int made = get(madeStat);
+		int attempts = get(attemptsStat);
+		return Util.zeroIfDevideByZero(made, attempts);
 	}
 
 	public boolean hasPlayer(Player player) {
@@ -161,7 +168,36 @@ public class Team implements HasName, HasStats {
 		}
 		return false;
 	}
+	
+	public void moveUpOneRow(Player player) {
+		move(player, true);
+	}
 
+	public void moveDownOneRow(Player player) {
+		move(player, false);
+	}
+	
+	/**
+	 * Moves player one row up or down
+	 */
+	private void move(Player player, boolean up) {
+		List<Player> playerList = new ArrayList<Player>(allPlayersStats.keySet());
+		List<Entry<Player, PlayerStats>> entryList = 
+				new ArrayList<Entry<Player, PlayerStats>>(allPlayersStats.entrySet());
+		int index = playerList.indexOf(player);
+		if (index == -1	|| (up && index == 0)
+			|| (!up && index == playerList.size()-1) ) {
+			return;
+		}
+		int delta = up ? -1 : 1;
+		Collections.swap(entryList, index, index + delta);
+		Map<Player, PlayerStats> tempMap = new LinkedHashMap<Player, PlayerStats>();
+		for (Entry<Player, PlayerStats> entry : entryList) {
+			tempMap.put(entry.getKey(), entry.getValue());
+		}
+		allPlayersStats = tempMap;
+	}
+	
 	/*
 	 * ######### ######### ######### ######### #########
 	 * TO STRING TO STRING TO STRING TO STRING TO STRING
@@ -237,17 +273,17 @@ public class Team implements HasName, HasStats {
 			sb.append( padTab(oneDigit.format(getFgPercent())+"%") );
 		}
 		if (game.recordingStats.contains(Stat.TPF)) {				
-			sb.append(oneDigit.format(getTpPercent())+"%");
+			sb.append( padTab(oneDigit.format(getTpPercent())+"%") );
+		}
+		if (game.recordingStats.contains(Stat.FTF)) {				
+			sb.append( padTab(oneDigit.format(getFtPercent())+"%") );
 		}
 		sb.append("\n");
 	}
-	
+
 	/*
-	 * ##### ##### ##### ##### ##### ##### #####
-	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 
-	 * ##### ##### ##### ##### ##### ##### #####
+	 * Also used by PlayerStat.toString()
 	 */
-	
 	protected void appendStatsRow(StringBuilder sb, HasStats hs) {
 		//FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
 		// Scoring
@@ -280,6 +316,12 @@ public class Team implements HasName, HasStats {
 			sb.append(padTab(hs.get(sc) + ""));
 		}
 	}
+	
+	/*
+	 * ##### ##### ##### ##### ##### ##### #####
+	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 
+	 * ##### ##### ##### ##### ##### ##### #####
+	 */
 	
 	public static String emptyPlayersName() {
 		return padEnd("", Conf.PLAYER_NAME_WIDTH, ' ');

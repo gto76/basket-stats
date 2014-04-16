@@ -49,13 +49,6 @@ public class Game {
 	}
 
 	////////////////////////////////////////
-	
-	private int asertPositive(int i) {
-		if (i < 0) {
-			throw new IllegalArgumentException("Shot value is negative.");
-		}
-		return i;
-	}
 
 	/*
 	 * GETTERS:
@@ -109,7 +102,6 @@ public class Game {
 	/*
 	 * SETERS:
 	 */
-	
 	/**
 	 * Called from PlayerStats after every score change.
 	 * It sets plusMinus stat of all players that are on the floor.
@@ -126,17 +118,24 @@ public class Game {
 	}
 	
 	////////////////////////////////////////
-
+	
+	/*
+	 * TO STRING:
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\n").append(lb()).append(date).append("\n").append(location)
-				.append("\n").append(lb()).append(spaces(shotPoints.get(Stat.FTM))).append("\n").append(team1.getName())
-				.append(": ").append(team1.get(Stat.PTS)).append("\n").append(spaces(shotPoints.get(Stat.IIPM))).append("\n")
-				.append(team2.getName()).append(": ")
-				.append(team2.get(Stat.PTS)).append("\n").append(spaces(shotPoints.get(Stat.TPM))).append("\n").append(lb())
-				.append("BOX SCORE:\n").append(lb()).append(team1).append(lb())
-				.append(team2).append(lb());
+		sb.append("\n").append(lb())
+		.append(date).append("\n")
+		.append(location).append("\n").append(lb())
+		.append(spaces(shotPoints.get(Stat.FTM))).append("\n")
+		.append(team1.getName()).append(": ").append(team1.get(Stat.PTS)).append("\n")
+		.append(spaces(shotPoints.get(Stat.IIPM))).append("\n")
+		.append(team2.getName()).append(": ").append(team2.get(Stat.PTS)).append("\n")
+		.append(spaces(shotPoints.get(Stat.TPM))).append("\n").append(lb())
+		.append("BOX SCORE:\n").append(lb())
+		.append(team1).append(lb())
+		.append(team2).append(lb());
 		return sb.toString();
 	}
 	
@@ -163,4 +162,12 @@ public class Game {
 		return sb.toString();
 	}
 
+	////////////////////////////////////
+	
+	private int asertPositive(int i) {
+		if (i < 0) {
+			throw new IllegalArgumentException("Shot value is negative.");
+		}
+		return i;
+	}
 }
