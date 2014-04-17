@@ -55,8 +55,8 @@ public class Team implements HasName, HasStats {
 		return name;
 	}
 	
-	public Set<Stat> getRecordingStats() {
-		return Collections.unmodifiableSet(game.recordingStats);
+	public RecordingStats getRecordingStats() {
+		return game.recordingStats;
 	}
 	
 	public void addPlayer(Player player) {
@@ -161,9 +161,9 @@ public class Team implements HasName, HasStats {
 	}
 	
 	public boolean hasOnlyReb() {
-		if (game.recordingStats.contains(Stat.REB) &&
-				!game.recordingStats.contains(Stat.OFF) &&
-				!game.recordingStats.contains(Stat.DEF) ) {
+		if (game.recordingStats.values.contains(Stat.REB) &&
+				!game.recordingStats.values.contains(Stat.OFF) &&
+				!game.recordingStats.values.contains(Stat.DEF) ) {
 			return true;
 		}
 		return false;
@@ -223,22 +223,25 @@ public class Team implements HasName, HasStats {
 	}
 	
 	private void appendScoringHeader(StringBuilder sb) {
-		if (game.recordingStats.contains(Stat.IIPF) || 
-				game.recordingStats.contains(Stat.TPF) || 
-				game.recordingStats.contains(Stat.FTF)) {
+		if (!game.recordingStats.values.contains(Stat.IIPM)) {
+			return;
+		}
+		////
+		if (game.recordingStats.values.contains(Stat.IIPF) || 
+				game.recordingStats.values.contains(Stat.TPF)) {
 			sb.append(padTab("FGM-A"));
 		} else {
 			sb.append(padTab("FGM"));
 		}
-		if (game.recordingStats.contains(Stat.TPM)) {
-			if (game.recordingStats.contains(Stat.TPF)) {
+		if (game.recordingStats.values.contains(Stat.TPM)) {
+			if (game.recordingStats.values.contains(Stat.TPF)) {
 				sb.append(padTab("3PM-A"));
 			} else {
 				sb.append(padTab("3PM"));
 			}
 		}
-		if (game.recordingStats.contains(Stat.FTM)) {
-			if (game.recordingStats.contains(Stat.FTF)) {
+		if (game.recordingStats.values.contains(Stat.FTM)) {
+			if (game.recordingStats.values.contains(Stat.FTF)) {
 				sb.append(padTab("FTM-A"));
 			} else {
 				sb.append(padTab("FTM"));
@@ -247,7 +250,7 @@ public class Team implements HasName, HasStats {
 	}
 	
 	private void appendNonScoringHeader(StringBuilder sb) {
-		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats)) {
+		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats.values)) {
 			sb.append(padTab(sc.getName().toUpperCase()));
 		}
 		sb.append("\n");
@@ -269,13 +272,13 @@ public class Team implements HasName, HasStats {
 	
 	private void appendPercents(StringBuilder sb) {
 		sb.append(emptyPlayersName());
-		if (game.recordingStats.contains(Stat.IIPF)) {				
+		if (game.recordingStats.values.contains(Stat.IIPF)) {				
 			sb.append( padTab(oneDigit.format(getFgPercent())+"%") );
 		}
-		if (game.recordingStats.contains(Stat.TPF)) {				
+		if (game.recordingStats.values.contains(Stat.TPF)) {				
 			sb.append( padTab(oneDigit.format(getTpPercent())+"%") );
 		}
-		if (game.recordingStats.contains(Stat.FTF)) {				
+		if (game.recordingStats.values.contains(Stat.FTF)) {				
 			sb.append( padTab(oneDigit.format(getFtPercent())+"%") );
 		}
 		sb.append("\n");
@@ -287,27 +290,30 @@ public class Team implements HasName, HasStats {
 	protected void appendStatsRow(StringBuilder sb, HasStats hs) {
 		//FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
 		// Scoring
-		if (game.recordingStats.contains(Stat.IIPF) || game.recordingStats.contains(Stat.TPF)) {
-			sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
-		} else {
-			sb.append(padTab(hs.get(Stat.FGM) + ""));
-		}
-		if (game.recordingStats.contains(Stat.TPM)) {
-			if (game.recordingStats.contains(Stat.TPF)) {
-				sb.append(padTab(hs.get(Stat.TPM)+"-"+hs.get(Stat.TPA)));
+		// TODO split
+		if (game.recordingStats.values.contains(Stat.IIPM)) {
+			if (game.recordingStats.values.contains(Stat.IIPF) || game.recordingStats.values.contains(Stat.TPF)) {
+				sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
 			} else {
-				sb.append(padTab(hs.get(Stat.TPM) + ""));
+				sb.append(padTab(hs.get(Stat.FGM) + ""));
 			}
-		}
-		if (game.recordingStats.contains(Stat.FTM)) {
-			if (game.recordingStats.contains(Stat.FTF)) {
-				sb.append(padTab(hs.get(Stat.FTM)+"-"+hs.get(Stat.FTA)));
-			} else {
-				sb.append(padTab(hs.get(Stat.FTM) + ""));
+			if (game.recordingStats.values.contains(Stat.TPM)) {
+				if (game.recordingStats.values.contains(Stat.TPF)) {
+					sb.append(padTab(hs.get(Stat.TPM)+"-"+hs.get(Stat.TPA)));
+				} else {
+					sb.append(padTab(hs.get(Stat.TPM) + ""));
+				}
+			}
+			if (game.recordingStats.values.contains(Stat.FTM)) {
+				if (game.recordingStats.values.contains(Stat.FTF)) {
+					sb.append(padTab(hs.get(Stat.FTM)+"-"+hs.get(Stat.FTA)));
+				} else {
+					sb.append(padTab(hs.get(Stat.FTM) + ""));
+				}
 			}
 		}
 		// Non-scoring
-		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats)) {
+		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats.values)) {
 			// For team totals we don't need plus minus
 			if (hs instanceof Team && sc == Stat.PM) {
 				sb.append(padTab(""));

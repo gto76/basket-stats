@@ -92,7 +92,7 @@ public class PlayerStats implements HasStats {
 	}
 	
 	private void checkArgument(Stat stat) {
-		if (!team.getRecordingStats().contains(stat)) {
+		if (!team.getRecordingStats().values.contains(stat)) {
 			throw new IllegalArgumentException("Tried to input non input stat.");
 		}
 		if (stat == Stat.PM) {

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,9 +86,56 @@ public class Util {
 	public static void assertPositive(Collection<Integer> values) {
 		for (Integer value : values) {
 			if (value < 0) {
-				throw new IllegalArgumentException("Some of shot values are negative");
+				throw new IllegalArgumentException("Some of shot values are negative: " + values.toString());
 			}
 		}
 	}	
+	
+	public static void putSetInMap(Map<Stat, Set<Stat>> map, Stat key, Stat... values) {
+		Set<Stat> valueSet = new HashSet<Stat>();
+		for (Stat value : values) {
+			valueSet.add(value);
+		}
+		map.put(key, valueSet);
+	}
+	
+	public static Set<Stat> getSetRecursively(Map<Stat, Stat> map, Stat key) {
+		Set<Stat> valueSet = new HashSet<Stat>();
+		Stat value = map.get(key);
+		valueSet.add(value);
+		if (value != null) {
+			Set<Stat> recValueSet = getSetRecursively(map, value);
+			valueSet.addAll(recValueSet);
+		}
+		return valueSet;
+	}
+	
+	public static boolean containsAny(Set<Stat> set, Set<Stat> elements) {
+		for (Stat element : elements) {
+			if (set.contains(element)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean containsAny(Set<Stat> set, Stat... elements) {
+		for (Stat element : elements) {
+			if (set.contains(element)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static Set<Stat> getOrderedSet(Set<Stat> originalSet) {
+		Set<Stat> orderedSet = new LinkedHashSet<Stat>();
+		for (Stat stat : Stat.values()) {
+			if (originalSet.contains(stat)) {
+				orderedSet.add(stat);
+			}
+		}
+		return orderedSet;
+	}
 	
 }

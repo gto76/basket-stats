@@ -156,7 +156,7 @@ public class PlayersRow {
 		List<JButton> buttons = new ArrayList<JButton>();
 		for (Action action : stats.getActions()) {
 			// If we are recording this action, acording to recording stats:
-			if (playerStats.getTeam().getRecordingStats().contains(action.getStat())) {
+			if (playerStats.getTeam().getRecordingStats().values.contains(action.getStat())) {
 				JButton button = createActionButton(action);
 				Util.setAllSizes(button, 100, 10);
 				buttons.add(button);

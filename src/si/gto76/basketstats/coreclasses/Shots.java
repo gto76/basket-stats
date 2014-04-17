@@ -53,6 +53,7 @@ public class Shots {
 	}
 	
 	private int changeState(Stat stat, int delta) {
+		checkIfStatIsRecording(stat);
 		switch (stat) {
 			case IIPM: made2p += delta; return delta * game.shotPoints.get(Stat.IIPM);
 			case IIPF: missed2p += delta; return 0;
@@ -91,6 +92,12 @@ public class Shots {
 	}
 
 	////////////////////////////////
+	
+	private void checkIfStatIsRecording(Stat stat) {
+		if (!game.recordingStats.values.contains(stat)) {
+			throw new IllegalArgumentException("Tried to change non recording stat: " + stat);
+		}
+	}
 	
 	private static int getStat(Map<Stat, Integer> stats, Stat stat) {
 		Integer statValue = stats.get(stat);

@@ -16,13 +16,13 @@ public class Game {
 	private Location location;
 	private Date date;
 	private Team team1, team2;
-	public Set<Stat> recordingStats;
+	public RecordingStats recordingStats;
 	protected Map<Stat, Integer> shotPoints = new HashMap<Stat, Integer>();
 	////////////////////////////////////////
 	
 	public Game(String team1Name, List<Player> team1Players, 
 				String team2Name, List<Player> team2Players,
-				Date date, Location location, Set<Stat> recordingStats, int[] shotPoints) {
+				Date date, Location location, RecordingStats recordingStats, int[] shotPoints) {
 		this.team1 = new Team(team1Name, team1Players, this);
 		this.team2 = new Team(team2Name, team2Players, this);
 		init(date, location, recordingStats, shotPoints);
@@ -30,19 +30,19 @@ public class Game {
 	
 	public Game(String team1Name, Map<Player, PlayerStats> team1PlayersStats, 
 				String team2Name, Map<Player, PlayerStats> team2PlayersStats,
-				Date date, Location location, Set<Stat> recordingStats, int[] shotPoints) {
+				Date date, Location location, RecordingStats recordingStats, int[] shotPoints) {
 		this.team1 = new Team(team1Name, team1PlayersStats, this);
 		this.team2 = new Team(team2Name, team2PlayersStats, this);
 		init(date, location, recordingStats, shotPoints);
 	}
 	
-	private void init(Date date, Location location, Set<Stat> recordingStats, int[] shotPointsArray) {
+	private void init(Date date, Location location, RecordingStats recordingStats, int[] shotPointsArray) {
 		if (shotPointsArray.length != 3) {
 			throw new IllegalArgumentException("Wrong number of shotPoints elements.");
 		}
 		this.date = date;
 		this.location = location;
-		this.recordingStats = new LinkedHashSet<Stat>(recordingStats);
+		this.recordingStats = recordingStats;//new LinkedHashSet<Stat>(recordingStats);
 		shotPoints.put(Stat.FTM, asertPositive(shotPointsArray[0]));
 		shotPoints.put(Stat.IIPM, asertPositive(shotPointsArray[1]));
 		shotPoints.put(Stat.TPM, asertPositive(shotPointsArray[2]));
@@ -151,7 +151,7 @@ public class Game {
 	
 	private String lb() {
 		StringBuffer sb = new StringBuffer();
-		Set<Stat> boxStats = Util.arrayToSet(Stat.getOutputStatsFromInput(recordingStats));
+		Set<Stat> boxStats = Util.arrayToSet(Stat.getOutputStatsFromInput(recordingStats.values));
 		boxStats.remove(Stat.FGA);
 		boxStats.remove(Stat.TPA);
 		boxStats.remove(Stat.FTA);

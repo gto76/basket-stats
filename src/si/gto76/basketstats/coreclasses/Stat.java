@@ -7,15 +7,22 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import si.gto76.basketstats.Util;
+
 public enum Stat {
 	/////
 	FGM("FGM", "Field goal made", false, true, true),
 	FGA("FGA", "Field goal attempted", false, true, true),
-
+	//
+	IIPM("2PM", "Two pointer made", true, false, true),
+	IIPF("2PF", "Two pointer missed", true, false, true),
+	//
 	TPM("3PM", "Three pointer made", true, true, true),
+	TPF("3PF", "Three pointer missed", true, false, true),
 	TPA("3PA", "Three pointer attempted", false, true, true),
-	
+	//
 	FTM("FTM", "Free throw made", true, true, true),
+	FTF("FTF", "Free throw missed", true, false, true),
 	FTA("FTA", "Free throw attempted", false, true, true),
 	/////
 	PM("+/-", "Scoring difference", true, true, false),
@@ -33,10 +40,6 @@ public enum Stat {
 	/////
 	PTS("Pts", "Points", false, true, false),
 	/////
-	TPF("3PF", "Three pointer missed", true, false, true),
-	IIPM("2PM", "Two pointer made", true, false, true),
-	IIPF("2PF", "Two pointer missed", true, false, true),
-	FTF("FTF", "Free throw missed", true, false, true)
 	;;;;;
 	/////////////////////////////////////
 	private final String name;
@@ -56,11 +59,33 @@ public enum Stat {
 	
 	/////////////////////////////////////
 
-	public static Stat[] actionSet = {IIPM, IIPF, TPM, TPF, FTM, FTF, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
-	public static Stat[] playerStatsValues = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
-	public static Stat[] scoringValues = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, FTM, FTA, FTF};
-	public static Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, FTM, FTF, PM, OFF, DEF, AST, PF, ST, TO, BS, BA};
+	public static final Stat[] actionSet = {IIPM, IIPF, TPM, TPF, FTM, FTF, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
+	public static final Stat[] playerStatsValues = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
+	public static final Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, FTM, FTF, PM, OFF, DEF, AST, PF, ST, TO, BS, BA};
+	public static final Stat[] scoreChangingValues = {IIPM, TPM, FTM};
+	
+	public static Stat[] inputValues;
+	static {
+		List<Stat> inputValuesList = new ArrayList<Stat>();
+		for (Stat value : values()) {
+			if (value.isInputValue()) {
+				inputValuesList.add(value);
+			}
+		}
+		inputValues = inputValuesList.toArray(new Stat[0]);
+	}
 
+	public static final Stat[] scoringValues; // = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, FTM, FTA, FTF};
+	static {
+		List<Stat> scoringValuesList = new ArrayList<Stat>();
+		for (Stat value : values()) {
+			if (value.isScoringValue()) {
+				scoringValuesList.add(value);
+			}
+		}
+		scoringValues = scoringValuesList.toArray(new Stat[0]);
+	}
+	
 	/////////////////////////////////////
 	
 	public String getName() {
@@ -103,7 +128,10 @@ public enum Stat {
 		// TPM -> IIPM, TPM,
 		// FGA -> IIPM, IIPF
 		// else -> IIPM
-		inputStats.add(Stat.IIPM);
+		// OLD: inputStats.add(Stat.IIPM);
+		if (outputStats.contains(Stat.FGM)) {
+			inputStats.add(Stat.IIPM);
+		}
 		if (outputStats.contains(Stat.TPM)) {
 			inputStats.add(Stat.TPM);
 		}
@@ -131,8 +159,7 @@ public enum Stat {
 				inputStats.add(outputStat);
 			}
 		}
-		
-		return inputStats;
+		return Util.getOrderedSet(inputStats);
 	}
 	
 	public static Stat[] getOutputStatsFromInput(Set<Stat> inputStats) {
@@ -142,7 +169,10 @@ public enum Stat {
 		// else if TPM -> FGM, TPM
 		// else if IIPF -> FGM, FGA
 		// else -> FGM
-		outputStats.add(Stat.FGM);
+		//OLD: outputStats.add(Stat.FGM);
+		if (Util.containsAny(inputStats, Stat.IIPM, Stat.TPM)) {
+			outputStats.add(Stat.FGM);
+		}
 		if (inputStats.contains(Stat.IIPF)) {
 			outputStats.add(Stat.FGA);
 		}
@@ -189,7 +219,9 @@ public enum Stat {
 			}
 		}
 		// PTS
-		outputStats.add(Stat.PTS);
+		if (Util.containsAny(inputStats, scoreChangingValues)) {
+			outputStats.add(Stat.PTS);
+		}
 		return (Stat[]) outputStats.toArray(new Stat[outputStats.size()]);
 	}
 

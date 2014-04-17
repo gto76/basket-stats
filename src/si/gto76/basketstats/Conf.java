@@ -9,6 +9,7 @@ import java.util.Set;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
+import si.gto76.basketstats.coreclasses.RecordingStats;
 import si.gto76.basketstats.coreclasses.Stat;
 
 public class Conf {
@@ -58,11 +59,11 @@ public class Conf {
 	
 	// Default Game
 	public static Game getDefaultGame() {
-		Set<Stat> recordingStats = Util.arrayToSet(Stat.nbaRecordingStats);
+		RecordingStats recordingStats = new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
 		return getDefaultGame(recordingStats);
 	}
 	
-	public static Game getDefaultGame(Set<Stat> recordingStats) {
+	public static Game getDefaultGame(RecordingStats recordingStats) {
 		List<Player> ppp1 = new ArrayList<Player>();
 		List<Player> ppp2 = new ArrayList<Player>();
 		for (int i = 0; i < Conf.INITAIAL_NUMBER_OF_PLAYERS_IN_ONE_TEAM; i++) {
