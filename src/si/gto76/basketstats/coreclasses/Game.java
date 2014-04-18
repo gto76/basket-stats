@@ -17,35 +17,34 @@ public class Game {
 	private Date date;
 	private Team team1, team2;
 	public RecordingStats recordingStats;
-	protected Map<Stat, Integer> shotPoints = new HashMap<Stat, Integer>();
+	//protected Map<Stat, Integer> shotPoints = new HashMap<Stat, Integer>();
+	protected ShotValues shotValues;
 	////////////////////////////////////////
 	
 	public Game(String team1Name, List<Player> team1Players, 
 				String team2Name, List<Player> team2Players,
-				Date date, Location location, RecordingStats recordingStats, int[] shotPoints) {
+				Date date, Location location, RecordingStats recordingStats, ShotValues shotValues) {
 		this.team1 = new Team(team1Name, team1Players, this);
 		this.team2 = new Team(team2Name, team2Players, this);
-		init(date, location, recordingStats, shotPoints);
+		init(date, location, recordingStats, shotValues);
 	}
 	
 	public Game(String team1Name, Map<Player, PlayerStats> team1PlayersStats, 
 				String team2Name, Map<Player, PlayerStats> team2PlayersStats,
-				Date date, Location location, RecordingStats recordingStats, int[] shotPoints) {
+				Date date, Location location, RecordingStats recordingStats, ShotValues shotValues) {
 		this.team1 = new Team(team1Name, team1PlayersStats, this);
 		this.team2 = new Team(team2Name, team2PlayersStats, this);
-		init(date, location, recordingStats, shotPoints);
+		init(date, location, recordingStats, shotValues);
 	}
 	
-	private void init(Date date, Location location, RecordingStats recordingStats, int[] shotPointsArray) {
-		if (shotPointsArray.length != 3) {
-			throw new IllegalArgumentException("Wrong number of shotPoints elements.");
-		}
+	private void init(Date date, Location location, RecordingStats recordingStats, ShotValues shotValues) {
 		this.date = date;
 		this.location = location;
 		this.recordingStats = recordingStats;//new LinkedHashSet<Stat>(recordingStats);
-		shotPoints.put(Stat.FTM, asertPositive(shotPointsArray[0]));
-		shotPoints.put(Stat.IIPM, asertPositive(shotPointsArray[1]));
-		shotPoints.put(Stat.TPM, asertPositive(shotPointsArray[2]));
+		this.shotValues = shotValues;
+//		shotPoints.put(Stat.FTM, asertPositive(shotPointsArray[0]));
+//		shotPoints.put(Stat.IIPM, asertPositive(shotPointsArray[1]));
+//		shotPoints.put(Stat.TPM, asertPositive(shotPointsArray[2]));
 	}
 
 	////////////////////////////////////////
@@ -128,11 +127,11 @@ public class Game {
 		sb.append("\n").append(lb())
 		.append(date).append("\n")
 		.append(location).append("\n").append(lb())
-		.append(spaces(shotPoints.get(Stat.FTM))).append("\n")
+		.append(spaces(shotValues.values.get(Stat.FTM))).append("\n")
 		.append(team1.getName()).append(": ").append(team1.get(Stat.PTS)).append("\n")
-		.append(spaces(shotPoints.get(Stat.IIPM))).append("\n")
+		.append(spaces(shotValues.values.get(Stat.IIPM))).append("\n")
 		.append(team2.getName()).append(": ").append(team2.get(Stat.PTS)).append("\n")
-		.append(spaces(shotPoints.get(Stat.TPM))).append("\n").append(lb())
+		.append(spaces(shotValues.values.get(Stat.TPM))).append("\n").append(lb())
 		.append("BOX SCORE:\n").append(lb())
 		.append(team1).append(lb())
 		.append(team2).append(lb());

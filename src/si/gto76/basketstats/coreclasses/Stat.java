@@ -151,7 +151,8 @@ public enum Stat {
 		// OFF -> OFF
 		// DEF -> DEF
 		// REB -> REB
-		if (outputStats.contains(Stat.REB) && (outputStats.contains(Stat.OFF) || outputStats.contains(Stat.DEF))) {
+		if (outputStats.contains(Stat.REB) 
+				&& (outputStats.contains(Stat.OFF) || outputStats.contains(Stat.DEF))) {
 			outputStats.remove(Stat.REB);
 		}
 		for (Stat outputStat : outputStats) {

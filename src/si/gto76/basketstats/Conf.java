@@ -10,6 +10,7 @@ import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.RecordingStats;
+import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
 
 public class Conf {
@@ -59,19 +60,19 @@ public class Conf {
 	
 	// Default Game
 	public static Game getDefaultGame() {
-		RecordingStats recordingStats = new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
-		return getDefaultGame(recordingStats);
+		//RecordingStats recordingStats = new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
+		return getDefaultGame(RecordingStats.getDefault(), ShotValues.getDefault());
 	}
 	
-	public static Game getDefaultGame(RecordingStats recordingStats) {
+	public static Game getDefaultGame(RecordingStats recordingStats, ShotValues shotValues) {
 		List<Player> ppp1 = new ArrayList<Player>();
 		List<Player> ppp2 = new ArrayList<Player>();
 		for (int i = 0; i < Conf.INITAIAL_NUMBER_OF_PLAYERS_IN_ONE_TEAM; i++) {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
 		}
-		int[] shotPoints = {1,2,3};
-		return new Game("TEAM A", ppp1, "TEAM B", ppp2, new Date(), new Location("Venue"), recordingStats, shotPoints);
+		return new Game("TEAM A", ppp1, "TEAM B", ppp2, new Date(), new Location("Venue"), 
+				recordingStats, shotValues);
 	}
 	
 	// Help Text

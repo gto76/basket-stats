@@ -20,6 +20,7 @@ import si.gto76.basketstats.coreclasses.Location;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.RecordingStats;
+import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
@@ -41,11 +42,12 @@ public class GameLoader {
 		if (Conf.DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 		if (Conf.DEBUG) System.out.println("input Stats: " + inputStats);
 		// NEW GAME:
-		int[] shotPoints = {line[5].length(), line[7].length(), line[9].length()};
+		Integer[] shotPoints = {line[5].length(), line[7].length(), line[9].length()};
+		Map<Stat, Integer> valuesMap = ShotValues.getVluesMap(shotPoints);
 		Map<Player, PlayerStats> team1Stats = new LinkedHashMap<Player, PlayerStats>();
 		Map<Player, PlayerStats> team2Stats = new LinkedHashMap<Player, PlayerStats>();
 		Game game = new Game(team1Name, team1Stats, team2Name, team2Stats, date, new Location(venue), 
-				inputStats, shotPoints);
+				inputStats, new ShotValues(valuesMap));
 		Team team1 = game.getTeam1();
 		Team team2 = game.getTeam2();
 		// TEAM 1:

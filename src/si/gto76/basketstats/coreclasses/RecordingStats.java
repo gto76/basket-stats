@@ -13,7 +13,7 @@ import si.gto76.basketstats.Util;
 
 public class RecordingStats {
 	private static final Map<Stat,  Set<Stat>> DEPENDENCIES;
-	private static final Map<Stat, Set<Stat>> ANTI_DEPENDENCIES;
+//	private static final Map<Stat, Set<Stat>> ANTI_DEPENDENCIES;
 	// Fill the maps:
 	static {
 		// Dependent values:
@@ -27,12 +27,16 @@ public class RecordingStats {
 		DEPENDENCIES = Collections.unmodifiableMap(dependenciesBuilder);
 		
 		// Anti-dependant values:
-		Map<Stat, Set<Stat>> antiDependenciesBuilder = new HashMap<Stat, Set<Stat>>();
-		Util.putSetInMap(antiDependenciesBuilder, Stat.OFF, Stat.REB);
-		Util.putSetInMap(antiDependenciesBuilder, Stat.DEF, Stat.REB);
-		Util.putSetInMap(antiDependenciesBuilder, Stat.REB, Stat.OFF, Stat.DEF);
-		ANTI_DEPENDENCIES = Collections.unmodifiableMap(antiDependenciesBuilder);
+//		Map<Stat, Set<Stat>> antiDependenciesBuilder = new HashMap<Stat, Set<Stat>>();
+//		Util.putSetInMap(antiDependenciesBuilder, Stat.OFF, Stat.REB);
+//		Util.putSetInMap(antiDependenciesBuilder, Stat.DEF, Stat.REB);
+//		Util.putSetInMap(antiDependenciesBuilder, Stat.REB, Stat.OFF, Stat.DEF);
+//		ANTI_DEPENDENCIES = Collections.unmodifiableMap(antiDependenciesBuilder);
 	}	
+	
+	public static RecordingStats getDefault() {
+		return new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
+	}
 	
 	/////////////////////////////////////////////////
 	public final Set<Stat> values;
@@ -150,7 +154,7 @@ public class RecordingStats {
 		Set<Stat> forbidenStats = new HashSet<Stat>();
 		if (recordingStats.contains(Stat.OFF) || recordingStats.contains(Stat.DEF)) {
 			forbidenStats.add(Stat.REB);
-		}
+		}		
 		return forbidenStats;
 	}
 	

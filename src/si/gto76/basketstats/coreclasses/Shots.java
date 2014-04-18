@@ -55,11 +55,11 @@ public class Shots {
 	private int changeState(Stat stat, int delta) {
 		checkIfStatIsRecording(stat);
 		switch (stat) {
-			case IIPM: made2p += delta; return delta * game.shotPoints.get(Stat.IIPM);
+			case IIPM: made2p += delta; return delta * game.shotValues.values.get(Stat.IIPM);
 			case IIPF: missed2p += delta; return 0;
-			case TPM: made3p += delta; return delta * game.shotPoints.get(Stat.TPM);
+			case TPM: made3p += delta; return delta * game.shotValues.values.get(Stat.TPM);
 			case TPF: missed3p += delta; return 0;
-			case FTM: madeFt += delta; return delta * game.shotPoints.get(Stat.FTM);
+			case FTM: madeFt += delta; return delta * game.shotValues.values.get(Stat.FTM);
 			case FTF: missedFt += delta; return 0;
 			default : throw new IllegalArgumentException("Wrong stat argument.");
 		}
@@ -76,9 +76,9 @@ public class Shots {
 		switch (stat) {
 			case FGA: return made2p + missed2p + made3p + missed3p;
 			case FGM: return made2p + made3p;
-			case PTS: return made2p * game.shotPoints.get(Stat.IIPM) 
-							+ made3p * game.shotPoints.get(Stat.TPM) 
-							+ madeFt * game.shotPoints.get(Stat.FTM);
+			case PTS: return made2p * game.shotValues.values.get(Stat.IIPM) 
+							+ made3p * game.shotValues.values.get(Stat.TPM) 
+							+ madeFt * game.shotValues.values.get(Stat.FTM);
 			case TPA: return made3p + missed3p;
 			case TPM: return made3p;
 			case TPF: return missed3p;
