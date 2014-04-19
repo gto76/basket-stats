@@ -16,10 +16,12 @@ public class Menu {
 	JMenuItem menuFileOpen = new JMenuItem();
 	JMenuItem menuFileSaveas = new JMenuItem();
 	JMenuItem menuFileExit = new JMenuItem();
+	
 	JMenu menuEdit = new JMenu();
 	JMenuItem menuEditUndo = new JMenuItem();
 	JMenuItem menuEditAddPlayer1 = new JMenuItem();
 	JMenuItem menuEditAddPlayer2 = new JMenuItem();
+	
 	JMenu menuHelp = new JMenu();
 	JMenuItem menuHelpHelp = new JMenuItem();
 	JMenuItem menuHelpAbout = new JMenuItem();
@@ -34,6 +36,7 @@ public class Menu {
 		menuFileSaveas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
 		menuFileExit.setText("Exit");
 		menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+		
 		menuEdit.setText("Edit");
 		menuEditUndo.setText("Undo");
 		menuEditUndo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
@@ -41,12 +44,13 @@ public class Menu {
 		menuEditAddPlayer1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
 		menuEditAddPlayer2.setText("Add Player to TEAM B");
 		menuEditAddPlayer2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
+		
 		menuHelp.setText("Help");
 		menuHelpHelp.setText("Help");
 		menuHelpHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 		menuHelpAbout.setText("About");
 		menuHelpAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, ActionEvent.CTRL_MASK));
-
+		///////////////////////////
 		menuFile.add(menuFileNew);
 		menuFile.add(menuFileOpen);
 		menuFile.add(menuFileSaveas);

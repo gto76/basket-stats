@@ -58,10 +58,35 @@ public class Conf {
 	static public final int TAB_WIDTH = 8;
 	static public final int PLAYER_NAME_WIDTH = NUMBER_OF_TABS_FOR_PLAYER_NAME * TAB_WIDTH;
 	
+	// Stat Combinations Presets
+	public enum StatComb {
+		FULL_COURT_STATS(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
+		SIMPLIFIED_FULL_COURT_STATS(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.REB, Stat.AST}),
+		NBA_RECORDING_STATS_SIMPLIFIED_NO_FT_MISSES(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.PM, Stat.REB, Stat.AST}),
+		NBA_RECORDING_STATS_NO_MISES(new Stat[]{Stat.IIPM, Stat.TPM, Stat.FTM, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
+		NBA_RECORDING_STATS_NO_MISES_SIMPLIFIED(new Stat[]{Stat.IIPM, Stat.TPM,  Stat.FTM, Stat.PM, Stat.REB, Stat.AST}),
+		STREET_BALL_STATS(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
+		SIMPLIFIED_STREET_BALL_STATS(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST}),
+		STREET_BALL_RECORDING_STATS_NO_MISSES(new Stat[]{Stat.IIPM, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
+		STREET_BALL_RECORDING_STATS_NO_MISSES_SIMPLIFIED(new Stat[]{Stat.IIPM, Stat.PM, Stat.REB, Stat.AST}),
+		STREET_BALL_RECORDING_STATS_NO_MISSES_SIMPLIFIED_NO_P_M(new Stat[]{Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
+		NO_SCORRING(new Stat[]{Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
+		JUST_FOULS(new Stat[]{Stat.PF}),
+		;;;;;;;
+		public final Stat[] stats;
+		private StatComb(Stat[] stats) {
+			this.stats = stats;
+		}
+		@Override
+		public String toString() {
+			return Util.enumNameToLowerCase(name());
+		}
+	}
+	
 	// Default Game
 	public static Game getDefaultGame() {
 		//RecordingStats recordingStats = new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
-		return getDefaultGame(RecordingStats.getDefault(), ShotValues.getDefault());
+		return getDefaultGame(RecordingStats.DEFAULT, ShotValues.DEFAULT);
 	}
 	
 	public static Game getDefaultGame(RecordingStats recordingStats, ShotValues shotValues) {

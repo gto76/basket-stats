@@ -163,8 +163,8 @@ public enum Stat {
 		return Util.getOrderedSet(inputStats);
 	}
 	
-	public static Stat[] getOutputStatsFromInput(Set<Stat> inputStats) {
-		List<Stat> outputStats = new ArrayList<Stat>();
+	public static Set<Stat> getOutputStatsFromInput(Set<Stat> inputStats) {
+		Set<Stat> outputStats = new HashSet<Stat>();
 		// SCORING
 		// if TPF -> FGM, FGA, TPM, TPA
 		// else if TPM -> FGM, TPM
@@ -193,7 +193,7 @@ public enum Stat {
 		Stat[] nonScoringStats = getNonScoringOutputStatsFromInput(inputStats);
 		outputStats.addAll(Arrays.asList(nonScoringStats));
 		
-		return (Stat[]) outputStats.toArray(new Stat[outputStats.size()]);
+		return Util.getOrderedSet(outputStats);
 	}
 	
 	public static Stat[] getNonScoringOutputStatsFromInput(Set<Stat> inputStats) {

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.Conf.StatComb;
 import si.gto76.basketstats.Util;
 
 public class RecordingStats {
@@ -34,13 +35,23 @@ public class RecordingStats {
 //		ANTI_DEPENDENCIES = Collections.unmodifiableMap(antiDependenciesBuilder);
 	}	
 	
-	public static RecordingStats getDefault() {
-		return new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
-	}
+	public static final RecordingStats DEFAULT = new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
+	
+//	public static RecordingStats getDefault() {
+//		return new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
+//	}
 	
 	/////////////////////////////////////////////////
 	public final Set<Stat> values;
 	/////////////////////////////////////////////////	
+	
+	public RecordingStats(StatComb statsComb) {
+		this(statsComb.stats);
+	}
+	
+	public RecordingStats(Stat[] recordingStats) {
+		this(new HashSet<Stat>(Arrays.asList(recordingStats)));
+	}
 	
 	public RecordingStats(Set<Stat> recordingStats) {
 		if (isValidSet(recordingStats)) {

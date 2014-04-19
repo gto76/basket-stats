@@ -138,4 +138,18 @@ public class Util {
 		return orderedSet;
 	}
 	
+	public static String enumNameToLowerCase(String name) {
+		StringBuilder sb = new StringBuilder();
+		String[] tokens = name.split("_");
+		for (int i = 0; i < tokens.length; i++) {
+			String head = tokens[i].substring(0, 1); 
+			String tail = tokens[i].substring(1).toLowerCase();
+			if (i != 0) {
+				head = " " + head;
+			}
+			sb.append(head.concat(tail));
+		}
+		return sb.toString();
+	}
+	
 }

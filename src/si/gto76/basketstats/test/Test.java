@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.Conf.StatComb;
 import si.gto76.basketstats.GameLoader;
 import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Game;
@@ -26,34 +27,6 @@ public class Test {
 	public static final boolean DISPLAY_ORIGINAL_GAMES = false;
 	public static final boolean DISPLAY_LOADED_GAMES = false;
 	
-	//////////////////////////////////////////////
-	public static Stat[] nbaRecordingStats = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
-	public static Stat[] nbaRecordingStatsSimplified = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.REB, Stat.AST};
-	public static Stat[] nbaRecordingStatsSimplifiedNoFtMisses = {Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.PM, Stat.REB, Stat.AST};
-	public static Stat[] nbaRecordingStatsNoMises = {Stat.IIPM, Stat.TPM, Stat.FTM, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
-	public static Stat[] nbaRecordingStatsNoMisesSimplified = {Stat.IIPM, Stat.TPM,  Stat.FTM, Stat.PM, Stat.REB, Stat.AST};
-	public static Stat[] streetBallRecordingStats = {Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
-	public static Stat[] streetBallRecordingStatsSimplified = {Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST};
-	public static Stat[] streetBallRecordingStatsNoMisses = {Stat.IIPM, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
-	public static Stat[] streetBallRecordingStatsNoMissesSimplified = {Stat.IIPM, Stat.PM, Stat.REB, Stat.AST};
-	public static Stat[] streetBallRecordingStatsNoMissesSimplifiedNoPM = {Stat.IIPM, Stat.REB, Stat.AST};
-	public static Stat[] noScorring = {Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA};
-	public static Stat[] justFouls = {Stat.PF};
-	
-	public static Stat[][] differentRecordingArrays = {
-		nbaRecordingStats, 
-		nbaRecordingStatsSimplified,
-		nbaRecordingStatsSimplifiedNoFtMisses,
-		nbaRecordingStatsNoMises,
-		nbaRecordingStatsNoMisesSimplified,
-		streetBallRecordingStats,
-		streetBallRecordingStatsSimplified,
-		streetBallRecordingStatsNoMisses,
-		streetBallRecordingStatsNoMissesSimplified,
-		streetBallRecordingStatsNoMissesSimplifiedNoPM,
-		noScorring,
-		justFouls
-	};
 	//////////////////////////////////////////////
 	
 	public static void main(String[] args) {
@@ -150,9 +123,9 @@ public class Test {
 	public static int simpleSaveLoadTest() {
 		// For some combinations of recording stats
 		int i = 1;
-		for (Stat[] stats : differentRecordingArrays) {
-			if (DISPLAY_TEST_PROGRESS) System.out.println("### TEST NO " +i+ ": " +Arrays.toString(stats)+ " ###\n");
-			int retVal = testSaveLoadForGame(new RecordingStats(Util.arrayToSet(stats)), ShotValues.getDefault());
+		for (StatComb statsComb : Conf.StatComb.values()) {
+			if (DISPLAY_TEST_PROGRESS) System.out.println("### TEST NO " +i+ ": " +Arrays.toString(statsComb.stats)+ " ###\n");
+			int retVal = testSaveLoadForGame(new RecordingStats(statsComb), ShotValues.DEFAULT);
 			if (retVal != 0) {
 				return retVal;
 			}

@@ -150,7 +150,7 @@ public class Game {
 	
 	private String lb() {
 		StringBuffer sb = new StringBuffer();
-		Set<Stat> boxStats = Util.arrayToSet(Stat.getOutputStatsFromInput(recordingStats.values));
+		Set<Stat> boxStats = Stat.getOutputStatsFromInput(recordingStats.values);
 		boxStats.remove(Stat.FGA);
 		boxStats.remove(Stat.TPA);
 		boxStats.remove(Stat.FTA);

@@ -8,17 +8,13 @@ import java.util.Map;
 public class ShotValues {
 
 	private static final Map<Stat, Integer> DEFAULT_SHOT_VALUES;
+	private static final Map<Stat, Integer> STREETBALL_SHOT_VALUES;
 	static {
-		Map<Stat, Integer> defaultShotsBuilder = new HashMap<Stat, Integer>();
-		defaultShotsBuilder.put(Stat.FTM, 1);
-		defaultShotsBuilder.put(Stat.IIPM, 2);
-		defaultShotsBuilder.put(Stat.TPM, 3);
-		DEFAULT_SHOT_VALUES = Collections.unmodifiableMap(defaultShotsBuilder);
+		DEFAULT_SHOT_VALUES = Collections.unmodifiableMap(getVluesMap(new Integer[]{1,2,3}));
+		STREETBALL_SHOT_VALUES = Collections.unmodifiableMap(getVluesMap(new Integer[]{1,1,1}));
 	}
-	
-	public static ShotValues getDefault() {
-		return new ShotValues(DEFAULT_SHOT_VALUES);
-	}
+	public static final ShotValues DEFAULT = new ShotValues(DEFAULT_SHOT_VALUES);
+	public static final ShotValues STREETBALL = new ShotValues(STREETBALL_SHOT_VALUES);
 	
 	/////////////////////////////
 	public final Map<Stat, Integer> values;
@@ -45,8 +41,8 @@ public class ShotValues {
 		if (value < 1) {
 			throw new IllegalArgumentException("Shot value is less than 1: "+ value);
 		}
-		if (value > 10000) {
-			throw new IllegalArgumentException("Shot value is more than 10000: "+ value);
+		if (value > 10) {
+			throw new IllegalArgumentException("Shot value is more than 10: "+ value);
 		}
 	}
 	

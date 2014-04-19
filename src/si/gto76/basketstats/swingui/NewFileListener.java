@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.coreclasses.Game;
+import si.gto76.basketstats.coreclasses.RecordingStats;
+import si.gto76.basketstats.coreclasses.ShotValues;
 
 public class NewFileListener implements ActionListener {
 	SwinGui mainWindow;
@@ -21,8 +23,8 @@ public class NewFileListener implements ActionListener {
 					"Are you sure you want to open new game?");
 		}
 		if (exit) {
-			//new NewFileDialog();
-			Game derbi = Conf.getDefaultGame();
+			Tuple<RecordingStats,ShotValues> statsAndValues = StatsDialog.showDialog();
+			Game derbi = Conf.getDefaultGame(statsAndValues.x, statsAndValues.y);
 			new SwinGui(derbi);
 			System.out.println(derbi);
 			mainWindow.frame.hide();
