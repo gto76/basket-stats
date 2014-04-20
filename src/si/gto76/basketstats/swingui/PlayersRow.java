@@ -1,18 +1,22 @@
 package si.gto76.basketstats.swingui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.Util;
@@ -54,7 +58,7 @@ public class PlayersRow {
 	}	
 	
 	//////////////////////////////
-	
+
 	public void setEnabled(boolean enabled) {
 		if (enabled) {
 			enable();

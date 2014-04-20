@@ -1,12 +1,16 @@
 package si.gto76.basketstats.swingui;
 
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
 import si.gto76.basketstats.Conf;
@@ -20,17 +24,19 @@ public class NamePanel {
 	private static final int NAMEPANEL_HEIGHT = 25;
 	private static final int TEXTFIELD_HEIGHT = 19;
 	/////////////////////////////////
-	private SwinGui swinGui;
+	private SwinGui mainWindow;
 	private JLabel nameLabel;
-	/////////////////////////////////	
-	public NamePanel(SwinGui swingFiller, JPanel nameContainer, HasName pot) {
-		this.swinGui = swingFiller;
+	/////////////////////////////////	createPopupMenu
+	public NamePanel(SwinGui mainWindow, JPanel nameContainer, HasName pot) {
+		this.mainWindow = mainWindow;
 		addNamePanel(nameContainer, pot);
+		createPopupMenu(nameContainer);
 	}
 	/////////////////////////////////
 	public JLabel getLabel() {
 		return nameLabel;
 	}
+	
 	/*
 	 * ADD NAME PANEL
 	 */
@@ -41,7 +47,7 @@ public class NamePanel {
 		// Updates team1Label or team2Label global variable, so that updateScore()
 		// can update score located by teams name.
 		if (pot instanceof Team) {
-			swinGui.updateTeamLabelReference((Team) pot, nameLabel);
+			mainWindow.updateTeamLabelReference((Team) pot, nameLabel);
 		}
 		
 		nameContainer.addMouseListener(new MouseListener() {
@@ -66,6 +72,7 @@ public class NamePanel {
 		);
 		nameContainer.add(nameLabel);
 	}
+	
 	/*
 	 * SWITCH NAME LABEL WITH TEXT FIELD
 	 */
@@ -84,7 +91,7 @@ public class NamePanel {
 			    		pot.setName(name);
 			    	}
 			    	switchBackToLabel(nameContainer, pot);
-			    	System.out.println(swinGui.game);
+			    	System.out.println(mainWindow.game);
 			    }
 			    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			    	switchBackToLabel(nameContainer, pot);
@@ -98,6 +105,7 @@ public class NamePanel {
 		textField.requestFocus();
 		textField.selectAll();
 	}
+	
 	/*
 	 * SWITCH BACK TO LABEL
 	 */
@@ -107,14 +115,15 @@ public class NamePanel {
 		nameLabel = new JLabel(pot.getName());
 		nameContainer.add(nameLabel);
 		
-		swinGui.mainPanel.validate();
+		mainWindow.mainPanel.validate();
 		if (pot instanceof Team) {
     		updateTeamLabel(nameContainer, pot);
     	} else if (pot instanceof Player) {
     		// refresh whole gui, so that buttons get correct tool tip.
-    		swinGui.setUpNewContainer();
+    		mainWindow.setUpNewContainer();
     	}
 	}
+	
 	/*
 	 * UPDATE TEAM LABEL
 	 */
@@ -122,7 +131,56 @@ public class NamePanel {
 		// Extra work because of score by team name
 		JLabel teamLabel = (JLabel) nameContainer.getComponent(0);
 		Team team = (Team) pot;
-		swinGui.updateTeamLabelReference(team, teamLabel);
-		swinGui.updateScore();
+		mainWindow.updateTeamLabelReference(team, teamLabel);
+		mainWindow.updateScore();
 	}
+	
+	//////////////////////////////////
+	
+	/*
+	 * POPUP
+	 */
+	public void createPopupMenu(JPanel nameContainer) {
+	    JMenuItem menuItem;
+	    //Create the popup menu.
+	    JPopupMenu popup = new JPopupMenu();
+	    menuItem = new JMenuItem("Rename");
+	    //menuItem.addActionListener(this);
+	    popup.add(menuItem);
+	    menuItem = new JMenuItem("Move Up");
+	    //menuItem.addActionListener(this);
+	    popup.add(menuItem);
+	    menuItem = new JMenuItem("Move Down");
+	    //menuItem.addActionListener(this);
+	    popup.add(menuItem);
+	    menuItem = new JMenuItem("Remove / Delete");
+	    //menuItem.addActionListener(this);
+	    popup.add(menuItem);
+
+	    //Add listener to the text area so the popup menu can come up.
+	    MouseListener popupListener = new PopupListener(popup);
+	    nameContainer.addMouseListener(popupListener);
+	}
+	
+	class PopupListener extends MouseAdapter {
+	    JPopupMenu popup;
+
+	    PopupListener(JPopupMenu popupMenu) {
+	      popup = popupMenu;
+	    }
+
+	    public void mousePressed(MouseEvent e) {
+	      maybeShowPopup(e);
+	    }
+
+	    public void mouseReleased(MouseEvent e) {
+	      maybeShowPopup(e);
+	    }
+
+	    private void maybeShowPopup(MouseEvent e) {
+	      if (e.isPopupTrigger()) {
+	        popup.show(e.getComponent(), e.getX(), e.getY());
+	      }
+	    }
+	  }
 }

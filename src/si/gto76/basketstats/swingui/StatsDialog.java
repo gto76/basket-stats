@@ -43,6 +43,7 @@ public class StatsDialog extends JFrame {
 	protected JPanel mainPanel;
 	protected JDialog dialog;
 	protected JOptionPane optionPane;
+	private JComboBox comboBox;
 	private Map<Stat,JCheckBox> checkBoxMap = new HashMap<Stat,JCheckBox>();
 	private Map<Stat,JSpinner> spinnerMap = new HashMap<Stat,JSpinner>();
 	//////////////////////////////////////////
@@ -57,8 +58,6 @@ public class StatsDialog extends JFrame {
 		return new Tuple<RecordingStats,ShotValues>(RecordingStats.DEFAULT, ShotValues.DEFAULT);
 	}
 	
-	/////////////////////////////////
-	
     public StatsDialog() throws URISyntaxException {
     	mainPanel = new JPanel(new GridBagLayout());
     	
@@ -68,6 +67,9 @@ public class StatsDialog extends JFrame {
     	dialog = optionPane.createDialog(this, "Stat Selector");
     	
     	addStuff(mainPanel);
+    	
+    	// TODO enable first option
+    	comboBox.setSelectedItem(comboBox.getSelectedItem());
     	
     	dialog.setSize(WIDTH, HEIGHT);
     	dialog.pack();
@@ -148,6 +150,7 @@ public class StatsDialog extends JFrame {
 			}
 		};
 		combo.addActionListener(actionListener);
+		comboBox = combo;
 		
 		addComponent(combo, 0, 0, 3, GridBagConstraints.CENTER);
 	}
@@ -209,18 +212,27 @@ public class StatsDialog extends JFrame {
 		addCheckBox(Stat.BA, 2, 7, 1);
 	}
 	
-	private void addCheckBox(Stat stat, int x, int y, int width) {
+	private void addCheckBox(final Stat stat, int x, int y, int width) {
+		final JCheckBox checkBox = new JCheckBox(stat.getName());
+		
 	    ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				Set<Stat> enabledStats = getEnabledStats();
-				System.out.println("Enabled Stats: " + Arrays.toString(enabledStats.toArray()));
-				Set<Stat> validState =  RecordingStats.getValidSet(enabledStats);
-				System.out.println("Valid state: " + Arrays.toString(validState.toArray()));
-				setCheckBoxes(validState);
+				RecordingStats rsNew;
+				if (checkBox.isSelected()) {
+					enabledStats.remove(stat);
+					RecordingStats rsOld = new RecordingStats(enabledStats);
+					rsNew = rsOld.add(stat);
+				} else {
+					enabledStats.add(stat);
+					RecordingStats rsOld = new RecordingStats(enabledStats);
+					rsNew = rsOld.remove(stat);
+				}
+				
+				setCheckBoxes(rsNew.values);
 			}
 	    };
 		
-		JCheckBox checkBox = new JCheckBox(stat.getName());
 		checkBox.addActionListener(actionListener);
 		checkBoxMap.put(stat, checkBox);
 		addComponent(checkBox, x, y, width, GridBagConstraints.WEST);
