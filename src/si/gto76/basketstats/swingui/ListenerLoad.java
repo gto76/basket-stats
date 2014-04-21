@@ -10,20 +10,20 @@ import javax.swing.JFileChooser;
 import si.gto76.basketstats.GameLoader;
 import si.gto76.basketstats.coreclasses.Game;
 
-public class LoadListener implements ActionListener {
+public class ListenerLoad implements ActionListener {
 	SwinGui mainWindow;
 
-	public LoadListener(SwinGui mainWindow) {
+	public ListenerLoad(SwinGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		JFileChooser fc = new JFileChooser();
 		// adds file filters
-		for (ExtensionFileFilter filter : ExtensionFileFilter.all) {
+		for (FileFilterExtension filter : FileFilterExtension.all) {
 			fc.addChoosableFileFilter(filter);
 		}
-		fc.setFileFilter(ExtensionFileFilter.hsg);
+		fc.setFileFilter(FileFilterExtension.hsg);
 		int returnVal = fc.showOpenDialog(mainWindow.frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {

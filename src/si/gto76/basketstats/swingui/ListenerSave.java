@@ -10,10 +10,10 @@ import java.io.PrintStream;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-public class SaveListener implements ActionListener {
+public class ListenerSave implements ActionListener {
 	SwinGui mainWindow;
 
-	public SaveListener(SwinGui mainWindow) {
+	public ListenerSave(SwinGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
 	
@@ -38,10 +38,10 @@ public class SaveListener implements ActionListener {
 		fileChooser.setSelectedFile(new File(fileName));
 		fileChooser.setDialogTitle("Save As");
 		// Add file filters
-		for (ExtensionFileFilter filter : ExtensionFileFilter.all) {
+		for (FileFilterExtension filter : FileFilterExtension.all) {
 			fileChooser.addChoosableFileFilter(filter);
 		}
-		fileChooser.setFileFilter(ExtensionFileFilter.all[0]);
+		fileChooser.setFileFilter(FileFilterExtension.all[0]);
 		// Show dialog
 		fileChooser.showSaveDialog(mainWindow.frame);
 	}
@@ -58,7 +58,7 @@ public class SaveListener implements ActionListener {
 				// Filename Test:
 				// No filter chosen
 				if (this.getFileFilter().getDescription() == "All Files") {
-					ExtensionFileFilter fileFilter = ExtensionFileFilter
+					FileFilterExtension fileFilter = FileFilterExtension
 							.getFilter(givenName);
 					// No extension given - ERR
 					if (givenName.indexOf(".") == -1) {
@@ -75,7 +75,7 @@ public class SaveListener implements ActionListener {
 				}
 				// Filter selected
 				else {
-					ExtensionFileFilter selectedFilter = (ExtensionFileFilter) this
+					FileFilterExtension selectedFilter = (FileFilterExtension) this
 							.getFileFilter();
 					// Filter and extension match - OK
 					if (selectedFilter.accept(givenName)) {

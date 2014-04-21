@@ -35,7 +35,7 @@ import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.test.Test;
 
-public class StatsDialog extends JFrame {
+public class DialogStats extends JFrame {
 	public static final int WIDTH = 240, HEIGHT = 105;
 	private static final int COMBO_HEIGHT = 25;
 	private static final long serialVersionUID = 4236082473760097536L;
@@ -50,7 +50,10 @@ public class StatsDialog extends JFrame {
 
 	public static Tuple<RecordingStats,ShotValues> showDialog() {
 		try {
-			StatsDialog dlg = new StatsDialog();
+			DialogStats dlg = new DialogStats();
+			if (dlg.optionPane.getValue() == null || (Integer)dlg.optionPane.getValue() == 2) {
+				return null;
+			}
 			return dlg.getStatsAndValues();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -58,17 +61,16 @@ public class StatsDialog extends JFrame {
 		return new Tuple<RecordingStats,ShotValues>(RecordingStats.DEFAULT, ShotValues.DEFAULT);
 	}
 	
-    public StatsDialog() throws URISyntaxException {
+    public DialogStats() throws URISyntaxException {
     	mainPanel = new JPanel(new GridBagLayout());
     	
     	optionPane = new JOptionPane(mainPanel,
     		JOptionPane.PLAIN_MESSAGE,
-    		JOptionPane.CLOSED_OPTION);
+    		JOptionPane.OK_CANCEL_OPTION);
     	dialog = optionPane.createDialog(this, "Stat Selector");
     	
     	addStuff(mainPanel);
     	
-    	// TODO enable first option
     	comboBox.setSelectedItem(comboBox.getSelectedItem());
     	
     	dialog.setSize(WIDTH, HEIGHT);

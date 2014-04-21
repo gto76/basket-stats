@@ -8,18 +8,18 @@ import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Team;
 
-public class MenuActionListeners {
+public class ListenersMenu {
 	static void add(Menu meni, final SwinGui mainWindow) {
 		
 		/*
 		 * FILE
 		 */
 		// NEW
-		meni.menuFileNew.addActionListener(new NewFileListener(mainWindow));
+		meni.menuFileNew.addActionListener(new ListenerNewGame(mainWindow));
 		// OPEN
-		meni.menuFileOpen.addActionListener(new LoadListener(mainWindow));
+		meni.menuFileOpen.addActionListener(new ListenerLoad(mainWindow));
 		// SAVE AS
-		meni.menuFileSaveas.addActionListener(new SaveListener(mainWindow));
+		meni.menuFileSaveas.addActionListener(new ListenerSave(mainWindow));
 		// FILE EXIT
 		meni.menuFileExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -50,6 +50,8 @@ public class MenuActionListeners {
 				mainWindow.addNewPlayerToTeam(team);
 			}
 		});
+		// CHANGE STATS
+		//meni.menuEditChangeStats.addActionListener(new ChangeStatsListener(mainWindow));
 	
         /*
          * HELP
@@ -59,7 +61,7 @@ public class MenuActionListeners {
 			new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 	try {
-						new HelpDialog();
+						new DialogHelp();
 					} catch (URISyntaxException e1) {
 						e1.printStackTrace();
 					}
@@ -71,7 +73,7 @@ public class MenuActionListeners {
 			new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 	try {
-						new AboutDialog();
+						new DialogAbout();
 					} catch (URISyntaxException e1) {
 						e1.printStackTrace();
 					}

@@ -91,6 +91,14 @@ public class Shots {
 		}
 	}
 
+	public boolean isEmpty() {
+		if (made2p == 0 && missed2p == 0 && made3p == 0 
+				&& missed3p == 0 && madeFt == 0 && missedFt == 0) {
+			return true;
+		}
+		return false;
+	}
+
 	////////////////////////////////
 	
 	private void checkIfStatIsRecording(Stat stat) {

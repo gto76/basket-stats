@@ -2,9 +2,11 @@ package si.gto76.basketstats.coreclasses;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.Util;
@@ -109,6 +111,21 @@ public class PlayerStats implements HasStats {
 	private void addToValue(Stat stat, int add) {
 		int value = values.get(stat);
 		values.put(stat, value + add);
+	}
+	
+	public boolean isEmpty() {
+		if (!shootingValues.isEmpty()) {
+			return false;
+		}
+		for (Entry<Stat, Integer> entry : values.entrySet()) {
+			if (entry.getKey() == Stat.PM) {
+				continue;
+			}
+			if (entry.getValue() != 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	////////////////////////////////////////

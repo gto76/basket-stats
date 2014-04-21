@@ -77,11 +77,16 @@ public class Game {
 	}
 
 	public PlayerStats getPlayersStats(Player player) {
-		PlayerStats playersStats = team1.getPlayersStats(player);
-		if (playersStats == null) {
-			playersStats = team2.getPlayersStats(player);
+		Team team = getPlayersTeam(player);
+		return team.getPlayersStats(player);
+	}
+	
+	public Team getPlayersTeam(Player player) {
+		if (team1.hasPlayer(player)) {
+			return team1;
+		} else {
+			return team2;
 		}
-		return playersStats;
 	}
 
 	public Team getOtherTeam(Team team) {

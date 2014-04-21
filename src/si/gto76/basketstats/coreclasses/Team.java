@@ -65,7 +65,6 @@ public class Team implements HasName, HasStats {
 		playersOnTheFloor.add(player);
 	}
 
-
 	public void addAllPlayersOnTheFloor() {
 		playersOnTheFloor.addAll(allPlayersStats.keySet());
 	}
@@ -102,7 +101,10 @@ public class Team implements HasName, HasStats {
 	public void putPlayerOnTheFloor(Player player) {
 		// if there's no passed player among teams players
 		if (!allPlayersStats.keySet().contains(player)) {
-			throw new IllegalArgumentException();
+			return;
+			// throw new IllegalArgumentException(); // Not throwing exceotion,
+			// because a player may be deleted in meantime, and then
+			// undo calls this function.
 		}
 		playersOnTheFloor.add(player);
 	}
@@ -169,6 +171,25 @@ public class Team implements HasName, HasStats {
 		return false;
 	}
 	
+	public boolean isPlayerFirst(Player player) {
+		if (getPlayersIndex(player) == 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isPlayerLast(Player player) {
+		if (getPlayersIndex(player) == allPlayersStats.size()-1) {
+			return true;
+		}
+		return false;
+	}
+	
+	private int getPlayersIndex(Player player) {
+		List<Player> playerList = new ArrayList<Player>(allPlayersStats.keySet());
+		return playerList.indexOf(player);
+	}
+	
 	public void moveUpOneRow(Player player) {
 		move(player, true);
 	}
@@ -196,6 +217,21 @@ public class Team implements HasName, HasStats {
 			tempMap.put(entry.getKey(), entry.getValue());
 		}
 		allPlayersStats = tempMap;
+	}
+	
+	/*
+	 * Returns whether player was removed.
+	 */
+	public boolean removePlayer(Player player) {
+		if (!getPlayersStats(player).isEmpty()) {
+			return false;
+		}
+		if (allPlayersStats.size() <= 1) {
+			return false;
+		}
+		allPlayersStats.remove(player);
+		playersOnTheFloor.remove(player);
+		return true;
 	}
 	
 	/*
@@ -288,29 +324,10 @@ public class Team implements HasName, HasStats {
 	 * Also used by PlayerStat.toString()
 	 */
 	protected void appendStatsRow(StringBuilder sb, HasStats hs) {
-		//FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
+		// FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
 		// Scoring
-		// TODO split
 		if (game.recordingStats.values.contains(Stat.IIPM)) {
-			if (game.recordingStats.values.contains(Stat.IIPF) || game.recordingStats.values.contains(Stat.TPF)) {
-				sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
-			} else {
-				sb.append(padTab(hs.get(Stat.FGM) + ""));
-			}
-			if (game.recordingStats.values.contains(Stat.TPM)) {
-				if (game.recordingStats.values.contains(Stat.TPF)) {
-					sb.append(padTab(hs.get(Stat.TPM)+"-"+hs.get(Stat.TPA)));
-				} else {
-					sb.append(padTab(hs.get(Stat.TPM) + ""));
-				}
-			}
-			if (game.recordingStats.values.contains(Stat.FTM)) {
-				if (game.recordingStats.values.contains(Stat.FTF)) {
-					sb.append(padTab(hs.get(Stat.FTM)+"-"+hs.get(Stat.FTA)));
-				} else {
-					sb.append(padTab(hs.get(Stat.FTM) + ""));
-				}
-			}
+			appendScoringValues(sb, hs);
 		}
 		// Non-scoring
 		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats.values)) {
@@ -323,6 +340,29 @@ public class Team implements HasName, HasStats {
 		}
 	}
 	
+	private void appendScoringValues(StringBuilder sb, HasStats hs) {
+		// FGM-A 3PM-A FTM-A +/-
+		if (game.recordingStats.values.contains(Stat.IIPF) || game.recordingStats.values.contains(Stat.TPF)) {
+			sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
+		} else {
+			sb.append(padTab(hs.get(Stat.FGM) + ""));
+		}
+		if (game.recordingStats.values.contains(Stat.TPM)) {
+			if (game.recordingStats.values.contains(Stat.TPF)) {
+				sb.append(padTab(hs.get(Stat.TPM)+"-"+hs.get(Stat.TPA)));
+			} else {
+				sb.append(padTab(hs.get(Stat.TPM) + ""));
+			}
+		}
+		if (game.recordingStats.values.contains(Stat.FTM)) {
+			if (game.recordingStats.values.contains(Stat.FTF)) {
+				sb.append(padTab(hs.get(Stat.FTM)+"-"+hs.get(Stat.FTA)));
+			} else {
+				sb.append(padTab(hs.get(Stat.FTM) + ""));
+			}
+		}
+	}
+
 	/*
 	 * ##### ##### ##### ##### ##### ##### #####
 	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 

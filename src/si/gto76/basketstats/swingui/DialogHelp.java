@@ -11,14 +11,14 @@ import javax.swing.JPanel;
 
 import si.gto76.basketstats.Conf;
 
-public class HelpDialog extends JFrame {
+public class DialogHelp extends JFrame {
 
 	private static final long serialVersionUID = 4236082473760097536L;
 	protected JPanel p;
 	protected JDialog dlg;
 	protected JOptionPane op;
 
-    public HelpDialog() throws URISyntaxException {
+    public DialogHelp() throws URISyntaxException {
 		p = new JPanel();
     	p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
     	op = new JOptionPane(p,

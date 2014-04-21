@@ -29,21 +29,21 @@ import java.io.File;
  * 
  * @author Eric Lafortune
  */
-public final class ExtensionFileFilter extends FileFilter {
+public final class FileFilterExtension extends FileFilter {
 	private final String description;
 	private final String[] extensions;
 
 	static final String[] hsgExtensions = { ".hsg" };
-	public static final ExtensionFileFilter hsg = new ExtensionFileFilter(
+	public static final FileFilterExtension hsg = new FileFilterExtension(
 			"hsg", hsgExtensions);
 
-	public static final ExtensionFileFilter[] all = { hsg };
+	public static final FileFilterExtension[] all = { hsg };
 
 	/**
 	 * Returns matching filter for a filename, null if none match.
 	 */
-	public static ExtensionFileFilter getFilter(String fileName) {
-		for (ExtensionFileFilter filter : all) {
+	public static FileFilterExtension getFilter(String fileName) {
+		for (FileFilterExtension filter : all) {
 			if (filter.accept(fileName)) {
 				return filter;
 			}
@@ -59,7 +59,7 @@ public final class ExtensionFileFilter extends FileFilter {
 	 * @param extensions
 	 *            an array of acceptable extensions.
 	 */
-	public ExtensionFileFilter(String description, String[] extensions) {
+	public FileFilterExtension(String description, String[] extensions) {
 		this.description = description;
 		this.extensions = extensions;
 	}

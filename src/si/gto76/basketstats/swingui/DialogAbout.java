@@ -20,14 +20,14 @@ import javax.swing.UIManager;
 import si.gto76.basketstats.Conf;
 
 
-public class AboutDialog extends JFrame {
+public class DialogAbout extends JFrame {
 
 	private static final long serialVersionUID = 4236082473760097536L;
 	protected JPanel p;
 	protected JDialog dlg;
 	protected JOptionPane op;
 
-    public AboutDialog() throws URISyntaxException {
+    public DialogAbout() throws URISyntaxException {
 		p = new JPanel();
     	p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
     	op = new JOptionPane(p,

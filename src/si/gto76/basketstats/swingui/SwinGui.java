@@ -115,7 +115,7 @@ public class SwinGui {
 	private void addMenus() {
 		menu = new Menu();
 		frame.setJMenuBar(menu.getMenuBar());
-		MenuActionListeners.add(menu, this);
+		ListenersMenu.add(menu, this);
 		
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -174,6 +174,7 @@ public class SwinGui {
 		// Print
 		System.out.println(game);
 		System.out.println("UNDO!");
+		setUpNewContainer(); // because of remove player popup menu
 	}
 
 	private void setPlayersOnFloorAndUpdatePlayersRow(Event command) {
@@ -197,6 +198,7 @@ public class SwinGui {
 				new HashSet<Player>(game.getTeam2().getPlayersOnTheFloor()));
 		stackOfCommands.push(event);
 		updateUndoLabel();
+		setUpNewContainer(); // because of remove player popup menu
 	}
 
 	private Event popCommandFromStack() {
