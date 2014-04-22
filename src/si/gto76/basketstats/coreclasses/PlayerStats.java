@@ -20,6 +20,7 @@ public class PlayerStats implements HasStats {
 	////////////////////////////////////////	
 	private final Team team;
 	private Shots shootingValues;
+	//private Rebounds reboundValues;
 	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();
 	/*
 	 * Used for linking buttons with this classes specific setters, and also
@@ -31,6 +32,7 @@ public class PlayerStats implements HasStats {
 	public PlayerStats(Team team) {
 		this.team = team;
 		shootingValues = new Shots(team.game);
+		//reboundValues = new Rebounds(team.game);
 		initValuesAndActions(Stat.actionSet, Stat.playerStatsValues);
 	}
 		
@@ -137,12 +139,14 @@ public class PlayerStats implements HasStats {
 	public int get(Stat stat) {
 		if (stat.isScoringValueOrPoints()) {
 			return shootingValues.get(stat);
-		} else if (stat == Stat.REB) {
-			if (team.hasOnlyReb()) {
-				return values.get(Stat.REB);
-			} else {
-				return values.get(Stat.OFF) + values.get(Stat.DEF);
-			}
+		} else if (stat == Stat.TOT) {
+			return values.get(Stat.REB) + values.get(Stat.OFF) + values.get(Stat.DEF);
+// OLD	} else if (stat == Stat.REB) {
+//			if (team.hasOnlyReb()) {
+//				return values.get(Stat.REB);
+//			} else {
+//				return values.get(Stat.OFF) + values.get(Stat.DEF);
+//			}
 		} else {
 			return values.get(stat);
 		}

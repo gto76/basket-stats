@@ -68,8 +68,8 @@ public class Test {
 		for (Set<Stat> validComb : allValidCombinations) {
 			RecordingStats recordingStats = new RecordingStats(validComb);
 			//if (DISPLAY_TEST_PROGRESS) System.out.println("### COMPREHENSIVE SAVE LOAD TEST NO " +i+ ": " +recordingStats+ " ###\n");
-			int retVal = testWithAllShotValues(recordingStats, i);
-			//int retVal = testSaveLoadForGame(recordingStats, ShotValues.getDefault());
+			//int retVal = testWithAllShotValues(recordingStats, i);
+			int retVal = testSaveLoadForGame(recordingStats, ShotValues.DEFAULT);
 			if (retVal != 0) {
 				return retVal;
 			}

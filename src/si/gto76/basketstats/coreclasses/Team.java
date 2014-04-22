@@ -102,7 +102,7 @@ public class Team implements HasName, HasStats {
 		// if there's no passed player among teams players
 		if (!allPlayersStats.keySet().contains(player)) {
 			return;
-			// throw new IllegalArgumentException(); // Not throwing exceotion,
+			// throw new IllegalArgumentException(); // Not throwing exception,
 			// because a player may be deleted in meantime, and then
 			// undo calls this function.
 		}
@@ -141,15 +141,15 @@ public class Team implements HasName, HasStats {
 	}
 
 	public double getFgPercent() {
-		return getPercent(Stat.FGM,Stat.FGA);
+		return getPercent(Stat.FGM, Stat.FGA);
 	}
 
 	public double getTpPercent() {
-		return getPercent(Stat.TPM,Stat.TPA);
+		return getPercent(Stat.TPM, Stat.TPA);
 	}
 	
 	public double getFtPercent() {
-		return getPercent(Stat.FTM,Stat.FTA);
+		return getPercent(Stat.FTM, Stat.FTA);
 	}
 	
 	private double getPercent(Stat madeStat, Stat attemptsStat) {

@@ -29,7 +29,8 @@ public enum Stat {
 	/////
 	OFF("Off", "Offensive rebound", true, true, false),
 	DEF("Def", "Deffensive rebound", true, true, false),
-	REB("Tot", "Rebound", true, true, false),
+	REB("Reb", "Rebound", true, true, false), // NEW!!
+	TOT("Tot", "Total rebounds", false, true, false), // NEW!!
 	/////
 	AST("Ast", "Assist", true, true, false),
 	PF("Pf", "Personal foul", true, true, false),
@@ -151,6 +152,7 @@ public enum Stat {
 		// OFF -> OFF
 		// DEF -> DEF
 		// REB -> REB
+		outputStats.remove(Stat.TOT);
 		if (outputStats.contains(Stat.REB) 
 				&& (outputStats.contains(Stat.OFF) || outputStats.contains(Stat.DEF))) {
 			outputStats.remove(Stat.REB);
@@ -170,7 +172,6 @@ public enum Stat {
 		// else if TPM -> FGM, TPM
 		// else if IIPF -> FGM, FGA
 		// else -> FGM
-		//OLD: outputStats.add(Stat.FGM);
 		if (Util.containsAny(inputStats, Stat.IIPM, Stat.TPM)) {
 			outputStats.add(Stat.FGM);
 		}
@@ -205,7 +206,7 @@ public enum Stat {
 		boolean offFlag = false, defFlag = false;
 		for (Stat stat : Stat.values()) {
 			if (offFlag == true && defFlag == true) {
-				outputStats.add(Stat.REB);
+				outputStats.add(Stat.TOT);
 				offFlag = false;
 				defFlag = false;
 			}

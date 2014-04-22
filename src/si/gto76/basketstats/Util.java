@@ -21,9 +21,9 @@ public class Util {
 	public static void setButtonText(JButton button, Action action) {
 		if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
 			String name = action.getStatName();
-			if (action.getStat() == Stat.REB) {
-				name = "Reb";
-			}
+			//if (action.getStat() == Stat.REB) { //OLD
+			//	name = "Reb";
+			//}
 			button.setText(formatButtonText(name, action.getStatValue()));
 		} else {
 			button.setText(action.getStatName());
