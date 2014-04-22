@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import si.gto76.basketstats.coreclasses.Game;
-import si.gto76.basketstats.coreclasses.Location;
+import si.gto76.basketstats.coreclasses.Venue;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.RecordingStats;
 import si.gto76.basketstats.coreclasses.ShotValues;
@@ -96,7 +96,7 @@ public class Conf {
 			ppp1.add( new Player("Player " + Integer.toString(i+1)) ); 
 			ppp2.add( new Player("Player " + Integer.toString(i+1)) ); 
 		}
-		return new Game("TEAM A", ppp1, "TEAM B", ppp2, new Date(), new Location("Venue"), 
+		return new Game("TEAM A", ppp1, "TEAM B", ppp2, new Date(), new Venue("Venue"), 
 				recordingStats, shotValues);
 	}
 	

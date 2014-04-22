@@ -54,6 +54,10 @@ public class RecordingStats {
 	public final Set<Stat> values;
 	/////////////////////////////////////////////////	
 	
+	public RecordingStats(RecordingStats recordingStats) {
+		this(recordingStats.values);
+	}
+	
 	public RecordingStats(StatComb statsComb) {
 		this(statsComb.stats);
 	}
@@ -101,6 +105,9 @@ public class RecordingStats {
 			valuesOut.removeAll(REMOVE_SHOOTING_DEPENDENCIES.get(stat));
 		}
 		valuesOut.remove(stat);
+		if (valuesOut.isEmpty()) {
+			return null;
+		}
 		return new RecordingStats(valuesOut);
 	}
 	
@@ -215,7 +222,7 @@ public class RecordingStats {
 	
 	@Override
 	public String toString() {
-		return Arrays.toString(values.toArray());
+		return Arrays.toString(Util.getOrderedSet(values).toArray());
 	}
 	
 }

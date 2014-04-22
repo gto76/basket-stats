@@ -162,13 +162,22 @@ public class Team implements HasName, HasStats {
 		return allPlayersStats.keySet().contains(player);
 	}
 	
-	public boolean hasOnlyReb() {
-		if (game.recordingStats.values.contains(Stat.REB) &&
-				!game.recordingStats.values.contains(Stat.OFF) &&
-				!game.recordingStats.values.contains(Stat.DEF) ) {
-			return true;
+//	public boolean hasOnlyReb() {
+//		if (game.recordingStats.values.contains(Stat.REB) &&
+//				!game.recordingStats.values.contains(Stat.OFF) &&
+//				!game.recordingStats.values.contains(Stat.DEF) ) {
+//			return true;
+//		}
+//		return false;
+//	}
+	
+	public boolean hasUsedRebounds() {
+		for (PlayerStats ps : allPlayersStats.values()) {
+			if (ps.hasUsedRebounds()) {
+				return true;
+			}
 		}
-		return false;
+		return false; 
 	}
 	
 	public boolean isPlayerFirst(Player player) {

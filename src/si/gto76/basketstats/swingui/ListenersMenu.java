@@ -51,7 +51,7 @@ public class ListenersMenu {
 			}
 		});
 		// CHANGE STATS
-		//meni.menuEditChangeStats.addActionListener(new ChangeStatsListener(mainWindow));
+		meni.menuEditChangeStats.addActionListener(new ListenerChangeStats(mainWindow));
 	
         /*
          * HELP

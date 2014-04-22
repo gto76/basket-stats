@@ -71,6 +71,8 @@ public class PlayerStats implements HasStats {
 	 * Return value is for plus minus handling which is executed in SwinGui class.
 	 */
 	public void made(Stat stat) {
+		checkArgument(stat); // Now checked only when made, so we can undo
+		// stats that are no longer tracked.
 		changeState(stat, true, 1);
 	}
 	
@@ -79,7 +81,6 @@ public class PlayerStats implements HasStats {
 	}
 	
 	private void changeState(Stat stat, boolean made, int delta) {
-		checkArgument(stat);
 		if (stat.isScoringValueOrPoints()) {
 			int scoreDelta;
 			if (made) {
@@ -139,7 +140,7 @@ public class PlayerStats implements HasStats {
 	public int get(Stat stat) {
 		if (stat.isScoringValueOrPoints()) {
 			return shootingValues.get(stat);
-		} else if (stat == Stat.TOT) {
+		} else if (stat == Stat.TOT || stat == Stat.REB) {
 			return values.get(Stat.REB) + values.get(Stat.OFF) + values.get(Stat.DEF);
 // OLD	} else if (stat == Stat.REB) {
 //			if (team.hasOnlyReb()) {
@@ -149,6 +150,14 @@ public class PlayerStats implements HasStats {
 //			}
 		} else {
 			return values.get(stat);
+		}
+	}
+	
+	public boolean hasUsedRebounds() {
+		if (values.get(Stat.REB) == 0) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 

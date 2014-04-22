@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import si.gto76.basketstats.coreclasses.Game;
-import si.gto76.basketstats.coreclasses.Location;
+import si.gto76.basketstats.coreclasses.Venue;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.RecordingStats;
@@ -46,7 +46,7 @@ public class GameLoader {
 		Map<Stat, Integer> valuesMap = ShotValues.getVluesMap(shotPoints);
 		Map<Player, PlayerStats> team1Stats = new LinkedHashMap<Player, PlayerStats>();
 		Map<Player, PlayerStats> team2Stats = new LinkedHashMap<Player, PlayerStats>();
-		Game game = new Game(team1Name, team1Stats, team2Name, team2Stats, date, new Location(venue), 
+		Game game = new Game(team1Name, team1Stats, team2Name, team2Stats, date, new Venue(venue), 
 				inputStats, new ShotValues(valuesMap));
 		Team team1 = game.getTeam1();
 		Team team2 = game.getTeam2();

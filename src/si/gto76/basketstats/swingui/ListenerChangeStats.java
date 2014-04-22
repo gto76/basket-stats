@@ -17,17 +17,19 @@ public class ListenerChangeStats implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO: send current stats, make shure you can still undo stats that are not in recordingStats
+		// send current stats, make shure you can still undo stats that are not in recordingStats
 		// anymore. -> But what about shot values??? -> you cant change them: we need new dialog.
 		// need to change gui after that too!, Now undo throws exception... -> se pravi za unmake
 		// ne rabimo testirat ali je stat v recording stats
 		// stats that already gave points can not be removed...
 		// reb can only go from off to off, def...
-		Tuple<RecordingStats,ShotValues> statsAndValues = DialogStats.showDialog();
-		if (statsAndValues == null) {
+		RecordingStats newRecordingStats = 
+				DialogChangeStats.showDialog(mainWindow.game);
+		if (newRecordingStats == null) {
 			return;
 		}
-		mainWindow.game.recordingStats = statsAndValues.x;
+		mainWindow.game.recordingStats = newRecordingStats;
+		mainWindow.setUpNewContainer();
 		System.out.println(mainWindow.game);
 	}
 }

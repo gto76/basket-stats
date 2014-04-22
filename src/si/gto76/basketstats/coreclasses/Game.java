@@ -13,17 +13,16 @@ import si.gto76.basketstats.Util;
 
 public class Game {
 	////////////////////////////////////////
-	private Location location;
+	private Venue venue;
 	private Date date;
 	private Team team1, team2;
 	public RecordingStats recordingStats;
-	//protected Map<Stat, Integer> shotPoints = new HashMap<Stat, Integer>();
 	protected ShotValues shotValues;
 	////////////////////////////////////////
 	
 	public Game(String team1Name, List<Player> team1Players, 
 				String team2Name, List<Player> team2Players,
-				Date date, Location location, RecordingStats recordingStats, ShotValues shotValues) {
+				Date date, Venue location, RecordingStats recordingStats, ShotValues shotValues) {
 		this.team1 = new Team(team1Name, team1Players, this);
 		this.team2 = new Team(team2Name, team2Players, this);
 		init(date, location, recordingStats, shotValues);
@@ -31,15 +30,15 @@ public class Game {
 	
 	public Game(String team1Name, Map<Player, PlayerStats> team1PlayersStats, 
 				String team2Name, Map<Player, PlayerStats> team2PlayersStats,
-				Date date, Location location, RecordingStats recordingStats, ShotValues shotValues) {
+				Date date, Venue location, RecordingStats recordingStats, ShotValues shotValues) {
 		this.team1 = new Team(team1Name, team1PlayersStats, this);
 		this.team2 = new Team(team2Name, team2PlayersStats, this);
 		init(date, location, recordingStats, shotValues);
 	}
 	
-	private void init(Date date, Location location, RecordingStats recordingStats, ShotValues shotValues) {
+	private void init(Date date, Venue location, RecordingStats recordingStats, ShotValues shotValues) {
 		this.date = date;
-		this.location = location;
+		this.venue = location;
 		this.recordingStats = recordingStats;//new LinkedHashSet<Stat>(recordingStats);
 		this.shotValues = shotValues;
 //		shotPoints.put(Stat.FTM, asertPositive(shotPointsArray[0]));
@@ -68,8 +67,8 @@ public class Game {
 		return team2;
 	}
 
-	public Location getLocation() {
-		return location;
+	public Venue getLocation() {
+		return venue;
 	}
 
 	public int getNumberOfPlayers() {
@@ -102,6 +101,33 @@ public class Game {
 		playersOnFloor.addAll(team2.getPlayersOnTheFloor());
 		return playersOnFloor;
 	}
+
+	private boolean wasAnyUsed(Stat... stats) {
+		for (Stat stat : stats) {
+			if (wasUsed(stat)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean wasUsed(Stat stat) {
+		if (stat == Stat.REB) {
+			return hasUsedRebounds();
+		}
+		if (get(stat) == 0) {
+			return false;
+		}
+		return true;
+	}
+	
+	private int get(Stat stat) {
+		return team1.get(stat) + team2.get(stat);
+	}
+	
+	private boolean hasUsedRebounds() {
+		return team1.hasUsedRebounds() || team2.hasUsedRebounds();
+	}
 	
 	/*
 	 * SETERS:
@@ -121,6 +147,31 @@ public class Game {
 		team2.addAllPlayersOnTheFloor();
 	}
 	
+	public boolean areValid(RecordingStats newRecordingStats) {
+		Set<Stat> newValues = newRecordingStats.values;
+		if (newValues.isEmpty()) {
+			return false;
+		}
+		if (wasUsed(Stat.REB) && (newValues.contains(Stat.OFF) || newValues.contains(Stat.DEF))) {
+			//System.out.println("FIRST");
+			return false;
+		}
+		if (wasUsed(Stat.TPM) && !newValues.contains(Stat.TPM)) {
+			//System.out.println("SECOND");
+			return false;
+		}
+		if (wasUsed(Stat.FTM) && !newValues.contains(Stat.FTM)) {
+			//System.out.println("SECOND AND A HALF");
+			return false;
+		}
+		if (wasAnyUsed(Stat.IIPM, Stat.FTM, Stat.TPM) && !newValues.contains(Stat.IIPM)) {
+			//System.out.println("THIRD");
+			return false;
+		}
+		//System.out.println("FORTH");
+		return true;
+	}
+	
 	////////////////////////////////////////
 	
 	/*
@@ -131,7 +182,7 @@ public class Game {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n").append(lb())
 		.append(date).append("\n")
-		.append(location).append("\n").append(lb())
+		.append(venue).append("\n").append(lb())
 		.append(spaces(shotValues.values.get(Stat.FTM))).append("\n")
 		.append(team1.getName()).append(": ").append(team1.get(Stat.PTS)).append("\n")
 		.append(spaces(shotValues.values.get(Stat.IIPM))).append("\n")

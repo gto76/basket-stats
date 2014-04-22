@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import si.gto76.basketstats.coreclasses.Game;
-import si.gto76.basketstats.coreclasses.Location;
+import si.gto76.basketstats.coreclasses.Venue;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.Team;
@@ -42,7 +42,7 @@ public class MainContainer {
 	
 	////////////////////////////////////////
 
-	private void addPlace(Location location) {
+	private void addPlace(Venue location) {
 		JPanel placeContainer = new JPanel();
 		new NamePanel(mainWindow, placeContainer, location);
 		

@@ -45,6 +45,8 @@ public class Shots {
 	 */
 
 	public int made(Stat stat) {
+		checkIfStatIsRecording(stat); // Now checked only when made, so we can undo
+		// stats that are no longer tracked.
 		return changeState(stat, 1);
 	}
 	
@@ -53,7 +55,6 @@ public class Shots {
 	}
 	
 	private int changeState(Stat stat, int delta) {
-		checkIfStatIsRecording(stat);
 		switch (stat) {
 			case IIPM: made2p += delta; return delta * game.shotValues.values.get(Stat.IIPM);
 			case IIPF: missed2p += delta; return 0;
@@ -76,9 +77,7 @@ public class Shots {
 		switch (stat) {
 			case FGA: return made2p + missed2p + made3p + missed3p;
 			case FGM: return made2p + made3p;
-			case PTS: return made2p * game.shotValues.values.get(Stat.IIPM) 
-							+ made3p * game.shotValues.values.get(Stat.TPM) 
-							+ madeFt * game.shotValues.values.get(Stat.FTM);
+			case PTS: return getScore();
 			case TPA: return made3p + missed3p;
 			case TPM: return made3p;
 			case TPF: return missed3p;
@@ -89,6 +88,20 @@ public class Shots {
 			case FTA: return madeFt + missedFt;
 			default : throw new IllegalArgumentException("The wanted scoring stat geter is not implemented.");
 		}
+	}
+
+	private int getScore() {
+		int pts = 0;
+		if (game.recordingStats.values.contains(Stat.IIPM)) {
+			pts += made2p * game.shotValues.values.get(Stat.IIPM);
+		}
+		if (game.recordingStats.values.contains(Stat.TPM)) {
+			pts += made3p * game.shotValues.values.get(Stat.TPM);
+		}
+		if (game.recordingStats.values.contains(Stat.FTM)) {
+			pts += madeFt * game.shotValues.values.get(Stat.FTM);
+		}
+		return pts;
 	}
 
 	public boolean isEmpty() {

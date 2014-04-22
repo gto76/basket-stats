@@ -1,9 +1,9 @@
 package si.gto76.basketstats.coreclasses;
 
-public class Location implements HasName {
+public class Venue implements HasName {
 	private String name;
 
-	public Location(String name) {
+	public Venue(String name) {
 		setName(name);
 	}
 
