@@ -33,8 +33,8 @@ public class Action {
 		return playersStats.getPlayer();
 	}
 
-	public void trigger() {
-		playersStats.made(stat);
+	public boolean trigger() {
+		return playersStats.made(stat);
 	}
 
 	public void undo() {

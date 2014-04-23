@@ -19,7 +19,7 @@ public class Team implements HasName, HasStats {
 	private String name;
 	private Map<Player, PlayerStats> allPlayersStats = new LinkedHashMap<Player, PlayerStats>();
 	Set<Player> playersOnTheFloor = new HashSet<Player>();
-	protected final Game game;
+	public final Game game;
 	////////////////////////////////////////
 	
 	public Team(String name, List<Player> players, Game game) {
@@ -317,13 +317,20 @@ public class Team implements HasName, HasStats {
 	
 	private void appendPercents(StringBuilder sb) {
 		sb.append(emptyPlayersName());
-		if (game.recordingStats.values.contains(Stat.IIPF)) {				
+		Set<Stat> stats = game.recordingStats.values;
+		if (stats.contains(Stat.IIPF)) {				
 			sb.append( padTab(oneDigit.format(getFgPercent())+"%") );
+		} else {
+			sb.append(padTab(""));
 		}
-		if (game.recordingStats.values.contains(Stat.TPF)) {				
+		if (stats.contains(Stat.TPF)) {				
 			sb.append( padTab(oneDigit.format(getTpPercent())+"%") );
+		} else {
+			if (stats.contains(Stat.TPM)) {
+				sb.append(padTab(""));
+			}
 		}
-		if (game.recordingStats.values.contains(Stat.FTF)) {				
+		if (stats.contains(Stat.FTF)) {				
 			sb.append( padTab(oneDigit.format(getFtPercent())+"%") );
 		}
 		sb.append("\n");

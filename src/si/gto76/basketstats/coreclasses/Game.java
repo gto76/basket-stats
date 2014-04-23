@@ -147,6 +147,8 @@ public class Game {
 		team2.addAllPlayersOnTheFloor();
 	}
 	
+	//////////////
+	
 	public boolean areValid(RecordingStats newRecordingStats) {
 		Set<Stat> newValues = newRecordingStats.values;
 		if (newValues.isEmpty()) {
@@ -170,6 +172,13 @@ public class Game {
 		}
 		//System.out.println("FORTH");
 		return true;
+	}
+	
+	public boolean doBothTeamsHaveSameNumberOfPlayerOnFloor() {
+		if (team1.getPlayersOnTheFloor().size() == team2.getPlayersOnTheFloor().size()) {
+			return true;
+		}
+		return false;
 	}
 	
 	////////////////////////////////////////
@@ -224,5 +233,13 @@ public class Game {
 			throw new IllegalArgumentException("Shot value is negative.");
 		}
 		return i;
+	}
+
+	public boolean isAtLeastOnePlayerOnFloorForBothTeams() {
+		if (team1.getPlayersOnTheFloor().size() == 0
+				|| team2.getPlayersOnTheFloor().size() == 0) {
+			return false;
+		}
+		return true;
 	}
 }

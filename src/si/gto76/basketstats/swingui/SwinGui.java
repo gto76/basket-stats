@@ -35,9 +35,9 @@ import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class SwinGui {
-    private static ArrayList<Image> iconsActive;
+    //private static ArrayList<Image> iconsActive;
     private static ArrayList<Image> iconsNotActive;
-    private static String os = System.getProperty("os.name");
+    //private static String os = System.getProperty("os.name");
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     
     //////////////////////////////////////////////////////////////
@@ -56,6 +56,7 @@ public class SwinGui {
 	
 	final Map<Action, JButton> buttonMap = new HashMap<Action, JButton>();
 	final Map<Player, PlayersRow> playersRowMap = new HashMap<Player, PlayersRow>();
+	protected boolean checkEqualPlayers = true;
 	//////////////////////////////////////////////////////////////
 	
     /*
@@ -85,28 +86,28 @@ public class SwinGui {
     	final ImageIcon iconImgL = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_L));
     	final ImageIcon iconImgXL = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_XL));
     	
-    	iconsActive = new ArrayList<Image>() {
-			private static final long serialVersionUID = 4560955969369357297L;
-			{add(iconImgSBlue.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
-    	};
+//    	iconsActive = new ArrayList<Image>() {
+//			private static final long serialVersionUID = 4560955969369357297L;
+//			{add(iconImgSBlue.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
+//    	};
     	iconsNotActive = new ArrayList<Image>() {
 			private static final long serialVersionUID = -337325274310404675L;
 			{add(iconImgS.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
     	};
     	
-   /* 	if (os.startsWith("linux")) {
-    		frame.setIconImages(iconsActive);
-			frame.addWindowFocusListener(new WindowAdapter() {
-	            public void windowGainedFocus(WindowEvent e) {
-	              frame.setIconImages(SwinGui.iconsActive);
-	            }
-	            public void windowLostFocus(WindowEvent e) {
-	              frame.setIconImages(SwinGui.iconsNotActive);
-	            }
-	        });
-    	} else {*/
+//    	if (os.startsWith("linux")) {
+//    		frame.setIconImages(iconsActive);
+//			frame.addWindowFocusListener(new WindowAdapter() {
+//	            public void windowGainedFocus(WindowEvent e) {
+//	              frame.setIconImages(SwinGui.iconsActive);
+//	            }
+//	            public void windowLostFocus(WindowEvent e) {
+//	              frame.setIconImages(SwinGui.iconsNotActive);
+//	            }
+//	        });
+//    	} else {
     		frame.setIconImages(iconsNotActive);
-    	//}
+//		}
 	}
 	
 	/*

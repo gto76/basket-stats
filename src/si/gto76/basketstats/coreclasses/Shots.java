@@ -77,7 +77,6 @@ public class Shots {
 		switch (stat) {
 			case FGA: return made2p + missed2p + made3p + missed3p;
 			case FGM: return made2p + made3p;
-			case PTS: return getScore();
 			case TPA: return made3p + missed3p;
 			case TPM: return made3p;
 			case TPF: return missed3p;
@@ -86,6 +85,7 @@ public class Shots {
 			case FTM: return madeFt; 
 			case FTF: return missedFt; 
 			case FTA: return madeFt + missedFt;
+			case PTS: return getScore();
 			default : throw new IllegalArgumentException("The wanted scoring stat geter is not implemented.");
 		}
 	}

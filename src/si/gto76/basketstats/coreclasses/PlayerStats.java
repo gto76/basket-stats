@@ -68,12 +68,17 @@ public class PlayerStats implements HasStats {
 	 */
 	//IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS
 	/*
-	 * Return value is for plus minus handling which is executed in SwinGui class.
+	 * Return value tells if it was secesful.
 	 */
-	public void made(Stat stat) {
-		checkArgument(stat); // Now checked only when made, so we can undo
+	public boolean made(Stat stat) {
+		isStatInRecordingStats(stat); // Now checked only when made, so we can undo
 		// stats that are no longer tracked.
+		// Need to check if it is leagal to make a stat change.
+		if (!team.game.isAtLeastOnePlayerOnFloorForBothTeams()) {
+			return false;
+		}
 		changeState(stat, true, 1);
+		return true;
 	}
 	
 	public void unMade(Stat stat) {
@@ -96,7 +101,7 @@ public class PlayerStats implements HasStats {
 		}
 	}
 	
-	private void checkArgument(Stat stat) {
+	private void isStatInRecordingStats(Stat stat) {
 		if (!team.getRecordingStats().values.contains(stat)) {
 			throw new IllegalArgumentException("Tried to input non input stat.");
 		}

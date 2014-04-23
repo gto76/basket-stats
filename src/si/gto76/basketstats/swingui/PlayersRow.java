@@ -15,12 +15,14 @@ import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Action;
+import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStats;
 import si.gto76.basketstats.coreclasses.Stat;
@@ -217,8 +219,28 @@ public class PlayersRow {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//Integer scoreDelta = action.trigger();
-				action.trigger();
+				Game game = action.getTeam().game;
+				if (mainWindow.checkEqualPlayers && !game.doBothTeamsHaveSameNumberOfPlayerOnFloor()) {
+				    JCheckBox checkbox = new JCheckBox("Do not show this message again.");  
+				    String message = "Teams don't have equal number of players on the floor.\n" +
+							"Do you want to continue?";
+				    Object[] params = {message, checkbox};  
+					int returnValue = JOptionPane.showOptionDialog(null, params, 
+							"", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, 
+							null, null);
+					if (returnValue == JOptionPane.NO_OPTION || returnValue == JOptionPane.CANCEL_OPTION) {
+						return;
+					}
+					if (checkbox.isSelected()) {
+						mainWindow.checkEqualPlayers = false;
+					}
+				}
+				boolean suceeded = action.trigger();
+				if (!suceeded) {
+					JOptionPane.showMessageDialog(null,"One of the teams has no players on the floor.", "",
+					        JOptionPane.WARNING_MESSAGE);
+					return;
+				}
 				mainWindow.updateScore();
 				mainWindow.pushCommandOnStack(action);
 				System.out.println(mainWindow.game);
