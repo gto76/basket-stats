@@ -10,7 +10,7 @@ input:
 
 ![Alt text](/src/resources/Screenshot of Gui.png?raw=true "Optional Title")
 
-output:
+output/save format:
 ```
 --------------------------------------------------------------------------------------------------------------------------------
 Sun Jun 14 23:30:00 CEST 1998
