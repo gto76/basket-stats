@@ -3,14 +3,18 @@ Basket Stats
 
 Basketball statistics gui tool. 
 * Written in Java.
-* Uses Swing for gui. 
-* Games are saved in text format.
+* Uses Swing for data input.
+* Value of different shots can be adjusted at the start of a new game.
+* Individual stats can be selected/deselected at any time in game.
+* Players can be pulled out/put in the game, so plus/minus stat can be tracked.
+* Prints complete stats on console after every input.
+* Games are saved in text file that is the same as the last output on console.
 
-input:
+Gui:
 
 ![Alt text](/src/resources/Screenshot of Gui.png?raw=true "Optional Title")
 
-output/save format:
+Output / Game File:
 ```
 --------------------------------------------------------------------------------------------------------------------------------
 Sun Jun 14 23:30:00 CEST 1998
