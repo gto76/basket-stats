@@ -1,7 +1,10 @@
 Basket Stats
 ============
 
-Basketball statistics gui tool.
+Basketball statistics gui tool. 
+* Written in Java.
+* Uses Swing for gui. 
+* Games are saved in text format.
 
 input:
 
