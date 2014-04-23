@@ -10,11 +10,14 @@ Basketball statistics gui tool.
 * Prints complete stats on console after every input.
 * Games are saved in text file that is the same as the last output on console.
 
-Gui:
 
+#### Gui:
 ![Alt text](/src/resources/Screenshot of Gui.png?raw=true "Optional Title")
 
-Output / Game File:
+
+
+
+#### Output / Game File:
 ```
 --------------------------------------------------------------------------------------------------------------------------------
 Sun Jun 14 23:30:00 CEST 1998
@@ -45,3 +48,4 @@ Totals                  21-41   2-7     14-17           6       14      20      
                         51.2%   28.6%   82.4%   
 --------------------------------------------------------------------------------------------------------------------------------
 ```
+
