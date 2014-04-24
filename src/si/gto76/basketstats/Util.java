@@ -18,12 +18,10 @@ import si.gto76.basketstats.coreclasses.Action;
 import si.gto76.basketstats.coreclasses.Stat;
 
 public class Util {
+	
 	public static void setButtonText(JButton button, Action action) {
 		if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
 			String name = action.getStatName();
-			//if (action.getStat() == Stat.REB) { //OLD
-			//	name = "Reb";
-			//}
 			button.setText(formatButtonText(name, action.getStatValue()));
 		} else {
 			button.setText(action.getStatName());
@@ -48,7 +46,7 @@ public class Util {
 	}
 	
 	public static Set<Stat> arraysIntersection(Stat[] array1, Stat[] array2) {
-		Set<Stat> intersection = new HashSet<Stat>(Arrays.asList(array1)); // use the copy constructor
+		Set<Stat> intersection = new HashSet<Stat>(Arrays.asList(array1));
 		intersection.retainAll(Arrays.asList(array2));
 		return intersection;
 	}
@@ -68,7 +66,7 @@ public class Util {
 	}
 
 	public static String[] removeFirstElement(String[] arrayIn) {
-		List<String> list = new ArrayList(Arrays.asList(arrayIn));
+		List<String> list = new ArrayList<String>(Arrays.asList(arrayIn));
 		list.remove(0);
 		return list.toArray(new String[0]); 
 	}
@@ -150,6 +148,19 @@ public class Util {
 			sb.append(head.concat(tail));
 		}
 		return sb.toString();
+	}
+
+	public static String padEnd(String string, int minLength, char padChar) {
+	    Util.checkNotNull(string);
+	    if (string.length() >= minLength) {
+	    	return string;
+	    }
+	    StringBuilder sb = new StringBuilder(minLength);
+	    sb.append(string);
+	    for (int i = string.length(); i < minLength; i++) {
+	    	sb.append(padChar);
+	    }
+	    return sb.toString();
 	}
 	
 }

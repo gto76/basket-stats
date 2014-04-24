@@ -22,17 +22,20 @@ public class NamePanel {
 	/////////////////////////////////
 	protected final SwinGui mainWindow;
 	protected final JPanel nameContainer;
-	protected final HasName pot;
+	protected final HasName hasName;
 	protected JLabel nameLabel;
-	/////////////////////////////////	createPopupMenu
-	public NamePanel(SwinGui mainWindow, JPanel nameContainer, HasName pot) {
+	/////////////////////////////////	
+	
+	public NamePanel(SwinGui mainWindow, JPanel nameContainer, HasName hasName) {
 		this.mainWindow = mainWindow;
-		this.pot = pot;
+		this.hasName = hasName;
 		this.nameContainer = nameContainer;
 		addNamePanel();
 		new PopUpMenu(this);
 	}
+	
 	/////////////////////////////////
+	
 	public JLabel getLabel() {
 		return nameLabel;
 	}
@@ -42,12 +45,12 @@ public class NamePanel {
 	 */
 	private void addNamePanel() {
 		Util.setAllSizes(nameContainer, NAMEPANEL_WIDTH, NAMEPANEL_HEIGHT);
-		nameLabel = new JLabel(pot.getName());
+		nameLabel = new JLabel(hasName.getName());
 		
 		// Updates team1Label or team2Label global variable, so that updateScore()
 		// can update score located by teams name.
-		if (pot instanceof Team) {
-			mainWindow.updateTeamLabelReference((Team) pot, nameLabel);
+		if (hasName instanceof Team) {
+			mainWindow.updateTeamLabelReference((Team) hasName, nameLabel);
 		}
 		
 		nameContainer.addMouseListener(new MouseListener() {
@@ -78,7 +81,7 @@ public class NamePanel {
 	 */
 	protected void switchNameLabelWithTextField() {
 		nameContainer.removeAll();
-		final JTextField textField = new JTextField (pot.getName());
+		final JTextField textField = new JTextField (hasName.getName());
 		textField.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent e) {}
 			public void keyReleased(KeyEvent e) {}
@@ -87,7 +90,7 @@ public class NamePanel {
 			    	e.consume();
 			    	String name = textField.getText();
 			    	if (name.trim().length() != 0) {
-			    		pot.setName(name);
+			    		hasName.setName(name);
 			    	}
 			    	switchBackToLabel();
 			    	System.out.println(mainWindow.game);
@@ -111,13 +114,13 @@ public class NamePanel {
 	private void switchBackToLabel() {
 		nameContainer.removeAll();
 		nameContainer.updateUI();
-		nameLabel = new JLabel(pot.getName());
+		nameLabel = new JLabel(hasName.getName());
 		nameContainer.add(nameLabel);
 		
 		mainWindow.mainPanel.validate();
-		if (pot instanceof Team) {
+		if (hasName instanceof Team) {
     		updateTeamLabel();
-    	} else if (pot instanceof Player) {
+    	} else if (hasName instanceof Player) {
     		// refresh whole gui, so that buttons get correct tool tip.
     		mainWindow.setUpNewContainer();
     	}
@@ -129,7 +132,7 @@ public class NamePanel {
 	private void updateTeamLabel() {
 		// Extra work because of score by team name
 		JLabel teamLabel = (JLabel) nameContainer.getComponent(0);
-		Team team = (Team) pot;
+		Team team = (Team) hasName;
 		mainWindow.updateTeamLabelReference(team, teamLabel);
 		mainWindow.updateScore();
 	}

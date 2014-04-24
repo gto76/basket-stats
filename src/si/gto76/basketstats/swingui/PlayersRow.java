@@ -1,24 +1,19 @@
 package si.gto76.basketstats.swingui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Action;
@@ -30,16 +25,16 @@ import si.gto76.basketstats.coreclasses.Team;
 
 public class PlayersRow {
 	////////////////////////////
-	Player player;
-	PlayerStats playerStats;
+	private final Player player;
+	private final PlayerStats playerStats;
 	
-	SwinGui mainWindow;
-	JPanel mainPanel; 
-	int row;
+	private final SwinGui mainWindow;
+	private final JPanel mainPanel; 
+	private int row;
 
-	NamePanel namePanel;
-	JCheckBox checkBox;
-	List<JButton> buttons;
+	private NamePanel namePanel;
+	private JCheckBox checkBox;
+	private List<JButton> buttons;
 	////////////////////////////
 
 	public static PlayersRow fill(SwinGui mainWindow, Player player, PlayerStats playerStats, 
@@ -70,7 +65,7 @@ public class PlayersRow {
 	}
 
 	/*
-	 * Set label color to black, tick on checkbox, enable buttons.
+	 * Set label color to black, tick on checkbox, enable buttons, put player on the floor.
 	 */
 	public void enable() {
 		changeState(Color.BLACK, true);
@@ -78,7 +73,7 @@ public class PlayersRow {
 	}
 	
 	/*
-	 * Grey out label, tick off checkbox, disable buttons.
+	 * Grey out label, tick off checkbox, disable buttons, put player off the floor.
 	 */
 	public void disable() {
 		changeState(Color.GRAY, false);
@@ -97,11 +92,10 @@ public class PlayersRow {
 	
 	private void buildPlayersRow() {
 		// NAME:
-		namePanel = createPlayersLabel(player);
+		namePanel = createAndAddPlayersLabel(player);
 		// CHECKBOX:
 		buttons = createPlayersButtons(playerStats);
 		checkBox = createPlayersCheckBox(player, playerStats.getTeam(), buttons);
-		//mainWindow.checkBoxMap.put(player, checkBox);
 		addPlayersCheckBox(checkBox);
 		// BUTTONS:
 		addPlayersButtons(buttons);
@@ -110,7 +104,7 @@ public class PlayersRow {
 	/*
 	 * NAME
 	 */
-	private NamePanel createPlayersLabel(Player player) {
+	private NamePanel createAndAddPlayersLabel(Player player) {
 		JPanel playersNameContainer = new JPanel();
 		NamePanel namePanel = new NamePanel(mainWindow, playersNameContainer, player);
 		
@@ -131,20 +125,21 @@ public class PlayersRow {
 	private JCheckBox createPlayersCheckBox(final Player player, Team team, List<JButton> buttons) {
 		JCheckBox onFloorSelector = new JCheckBox();
 		onFloorSelector.setSelected(true);
-		onFloorSelector.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				AbstractButton abstractButton = (AbstractButton) actionEvent
-	            	.getSource();
-				boolean selected = abstractButton.getModel().isSelected();
-				if (selected) {
-					enable();
-				} else {
-					disable();
-				}
-			}
-		});
+		onFloorSelector.addActionListener(new CheckBoxListener());
 		return onFloorSelector;
+	}
+	
+	class CheckBoxListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent actionEvent) {
+			AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+			boolean selected = abstractButton.getModel().isSelected();
+			if (selected) {
+				enable();
+			} else {
+				disable();
+			}
+		}
 	}
 	
 	private void addPlayersCheckBox(JCheckBox checkBox) {
@@ -161,9 +156,10 @@ public class PlayersRow {
 	private List<JButton> createPlayersButtons(PlayerStats stats) {
 		List<JButton> buttons = new ArrayList<JButton>();
 		for (Action action : stats.getActions()) {
-			// If we are recording this action, acording to recording stats:
-			if (playerStats.getTeam().getRecordingStats().values.contains(action.getStat())) {
-				JButton button = createActionButton(action);
+			boolean we_are_recording_this_action =
+					playerStats.getTeam().getRecordingStats().values.contains(action.getStat());
+			if (we_are_recording_this_action) {
+				JButton button = createPlayersButton(action);
 				Util.setAllSizes(button, 100, 10);
 				buttons.add(button);
 				mainWindow.buttonMap.put(action, button);
@@ -193,63 +189,82 @@ public class PlayersRow {
 	/*
 	 * BUTTON
 	 */
-	private JButton createActionButton(final Action action) {
+	private JButton createPlayersButton(final Action action) {
 		Stat stat = action.getStat();
 		final JButton button = new JButton(stat.getName());
+		// Margin
 		button.setMargin(new Insets(0, 0, 0, 0));
 		// Colors
-		if (stat == Stat.OFF || stat == Stat.DEF || stat == Stat.REB) {
-			button.setBackground(Conf.REBOUND_BUTTON_COLOR);
-		}
-		if (Conf.COLORED_MADE_BUTTONS && (stat == Stat.IIPM || stat == Stat.TPM || stat == Stat.FTM)) {
-			button.setBackground(Conf.MADE_SHOT_BUTTON_COLOR);
-		}
-		if (Conf.COLORED_MISSED_BUTTONS && (stat == Stat.IIPF || stat == Stat.TPF || stat == Stat.FTM)) {
-			button.setBackground(Conf.MISSED_SHOT_BUTTON_COLOR);
-		}
-		if (Conf.COLORED_TURNOVER_BUTTONS && stat == Stat.TO) {
-			button.setBackground(Conf.TURNOVER_BUTTON_COLOR);
+		Color color = Conf.BUTTON_COLORS.get(stat);
+		if (color != null) {
+			button.setBackground(color);
 		}
 		// Tool Tip
 		if (Conf.BUTTONS_TOOLTIP) {
 			button.setToolTipText(action.getPlayer() + " - " + stat.getExplanation());
 		}
+		// Text
 		Util.setButtonText(button, action);
-			
-		button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Game game = action.getTeam().game;
-				if (mainWindow.checkEqualPlayers && !game.doBothTeamsHaveSameNumberOfPlayerOnFloor()) {
-				    JCheckBox checkbox = new JCheckBox("Do not show this message again.");  
-				    String message = "Teams don't have equal number of players on the floor.\n" +
-							"Do you want to continue?";
-				    Object[] params = {message, checkbox};  
-					int returnValue = JOptionPane.showOptionDialog(null, params, 
-							"", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, 
-							null, null);
-					if (returnValue == JOptionPane.NO_OPTION || returnValue == JOptionPane.CANCEL_OPTION) {
-						return;
-					}
-					if (checkbox.isSelected()) {
-						mainWindow.checkEqualPlayers = false;
-					}
-				}
-				boolean suceeded = action.trigger();
-				if (!suceeded) {
-					JOptionPane.showMessageDialog(null,"One of the teams has no players on the floor.", "",
-					        JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				mainWindow.updateScore();
-				mainWindow.pushCommandOnStack(action);
-				System.out.println(mainWindow.game);
-				if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
-					Util.setButtonText(button, action);
-				}
-			}
-		});
+		// Action Listener
+		button.addActionListener(new PlayersButtonListaner(action, button));
 		return button;
+	}
+	
+	public class PlayersButtonListaner implements ActionListener {
+		private Action action;
+		private JButton button;
+		private Game game;
+		
+		public PlayersButtonListaner(Action action, JButton button) {
+			this.action = action;
+			this.button = button;
+			this.game = action.getTeam().game;
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			boolean shouldReturn = checkForUnevenSquads();
+			if (shouldReturn) {
+				return;
+			}
+			boolean suceeded = action.trigger();
+			if (!suceeded) {
+				JOptionPane.showMessageDialog(null,"One of the teams has no players on the floor.", "",
+				        JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			mainWindow.updateScore();
+			mainWindow.pushCommandOnStack(action);
+			System.out.println(mainWindow.game);
+			if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
+				Util.setButtonText(button, action);
+			}
+		}
+		
+		/*
+		 * Returns weather action listener should terminate;
+		 */
+		private boolean checkForUnevenSquads() {
+			if (!mainWindow.warnAboutUnevenSquads) {
+				return false;
+			}
+			if (game.doBothTeamsHaveSameNumberOfPlayersOnFloor()) {
+				return false;
+			}
+		    JCheckBox checkbox = new JCheckBox("Do not show this message again.");  
+		    String message = "Teams don't have equal number of players on the floor.\n" +
+					"Do you want to continue?";
+		    Object[] params = {message, checkbox};  
+			int returnValue = JOptionPane.showOptionDialog(null, params, 
+					"", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, 
+					null, null);
+			if (returnValue == JOptionPane.NO_OPTION || returnValue == JOptionPane.CANCEL_OPTION) {
+				return true;
+			}
+			if (checkbox.isSelected()) {
+				mainWindow.warnAboutUnevenSquads = false;
+			}
+			return false;
+		}
 	}
 	
 }

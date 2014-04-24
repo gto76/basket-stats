@@ -32,6 +32,8 @@ public class MainContainer {
 		this.mainPanel = mainWindow.mainPanel;
 		this.game = mainWindow.game;
 	}
+
+	////////////////////////////////////////
 	
 	private void fillInstance(JLabel team1Label, JLabel team2Label) {
 		addPlace(game.getLocation());
@@ -39,8 +41,6 @@ public class MainContainer {
 		addTeam(game.getTeam1(), team1Label);
 		addTeam(game.getTeam2(), team2Label);
 	}
-	
-	////////////////////////////////////////
 
 	private void addPlace(Venue location) {
 		JPanel placeContainer = new JPanel();

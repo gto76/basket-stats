@@ -40,7 +40,8 @@ public class ListenerLoad implements ActionListener {
 					Game derbi = GameLoader.createGameFromString(gameString);
 					new SwinGui(derbi);
 					System.out.println(derbi);
-					mainWindow.frame.hide();
+					//mainWindow.frame.hide(); // OLD
+					mainWindow.frame.setVisible(false);
 				}
 			} catch (IOException f) {
 			}

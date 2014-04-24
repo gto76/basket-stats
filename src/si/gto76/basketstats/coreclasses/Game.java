@@ -1,15 +1,12 @@
 package si.gto76.basketstats.coreclasses;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.Util;
 
 public class Game {
 	////////////////////////////////////////
@@ -39,11 +36,8 @@ public class Game {
 	private void init(Date date, Venue location, RecordingStats recordingStats, ShotValues shotValues) {
 		this.date = date;
 		this.venue = location;
-		this.recordingStats = recordingStats;//new LinkedHashSet<Stat>(recordingStats);
+		this.recordingStats = recordingStats;
 		this.shotValues = shotValues;
-//		shotPoints.put(Stat.FTM, asertPositive(shotPointsArray[0]));
-//		shotPoints.put(Stat.IIPM, asertPositive(shotPointsArray[1]));
-//		shotPoints.put(Stat.TPM, asertPositive(shotPointsArray[2]));
 	}
 
 	////////////////////////////////////////
@@ -149,32 +143,27 @@ public class Game {
 	
 	//////////////
 	
-	public boolean areValid(RecordingStats newRecordingStats) {
+	public boolean areValidDependingOnWhatHappenedInTheGame(RecordingStats newRecordingStats) {
 		Set<Stat> newValues = newRecordingStats.values;
 		if (newValues.isEmpty()) {
 			return false;
 		}
 		if (wasUsed(Stat.REB) && (newValues.contains(Stat.OFF) || newValues.contains(Stat.DEF))) {
-			//System.out.println("FIRST");
 			return false;
 		}
 		if (wasUsed(Stat.TPM) && !newValues.contains(Stat.TPM)) {
-			//System.out.println("SECOND");
 			return false;
 		}
 		if (wasUsed(Stat.FTM) && !newValues.contains(Stat.FTM)) {
-			//System.out.println("SECOND AND A HALF");
 			return false;
 		}
 		if (wasAnyUsed(Stat.IIPM, Stat.FTM, Stat.TPM) && !newValues.contains(Stat.IIPM)) {
-			//System.out.println("THIRD");
 			return false;
 		}
-		//System.out.println("FORTH");
 		return true;
 	}
 	
-	public boolean doBothTeamsHaveSameNumberOfPlayerOnFloor() {
+	public boolean doBothTeamsHaveSameNumberOfPlayersOnFloor() {
 		if (team1.getPlayersOnTheFloor().size() == team2.getPlayersOnTheFloor().size()) {
 			return true;
 		}
@@ -227,13 +216,6 @@ public class Game {
 	}
 
 	////////////////////////////////////
-	
-	private int asertPositive(int i) {
-		if (i < 0) {
-			throw new IllegalArgumentException("Shot value is negative.");
-		}
-		return i;
-	}
 
 	public boolean isAtLeastOnePlayerOnFloorForBothTeams() {
 		if (team1.getPlayersOnTheFloor().size() == 0

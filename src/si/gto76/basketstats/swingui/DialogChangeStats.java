@@ -1,41 +1,31 @@
 package si.gto76.basketstats.swingui;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.Conf.StatComb;
-import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.RecordingStats;
-import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
-import si.gto76.basketstats.test.Test;
 
+/**
+ * Stats that already gave points can not be removed.
+ * Rebounds can not be changed from REB to OFF/DEF/OFF,DEF if one REB was already recorded.
+ */
 public class DialogChangeStats extends JFrame {
 	public static final int WIDTH = 240, HEIGHT = 105;
 	private static final long serialVersionUID = 4236082473760097536L;
@@ -50,10 +40,9 @@ public class DialogChangeStats extends JFrame {
 	//////////////////////////////////////////
 
 	/*
-	 * recordedStats signify wether stat was fired at least one. Stat that can be included are:
-	 * REB, IIPM, TPM, FTM
+	 * Returns null if dialog was canceled.
 	 */
-	public static RecordingStats showDialog(Game game) {
+	public static RecordingStats showDialogNullable(Game game) {
 		try {
 			DialogChangeStats dlg = new DialogChangeStats(game);
 			if (dlg.optionPane.getValue() == null || (Integer)dlg.optionPane.getValue() == 2) {
@@ -143,36 +132,45 @@ public class DialogChangeStats extends JFrame {
 	
 	private void addCheckBox(final Stat stat, int x, int y, int width) {
 		final JCheckBox checkBox = new JCheckBox(stat.getName());
-	    ActionListener actionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				Set<Stat> enabledStats = getEnabledStats();
-				RecordingStats rsNew;
-				
-				if (checkBox.isSelected()) { // was checked
-					enabledStats.remove(stat);
-					RecordingStats rsOld = new RecordingStats(enabledStats);
-					if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
-					rsNew = rsOld.add(stat);
-					if (!game.areValid(rsNew)) {
-						rsNew = rsOld;
-					}
-				} else { // was unchecked
-					enabledStats.add(stat);
-					RecordingStats rsOld = new RecordingStats(enabledStats);
-					if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
-					rsNew = rsOld.remove(stat);
-					if (rsNew == null || !game.areValid(rsNew)) {
-						rsNew = rsOld;
-					}
-				}
-				if (Conf.DEBUG) System.out.println("New recording stats: " + rsNew);
-				setCheckBoxes(rsNew.values);
-			}
-	    };
-		
+	    ActionListener actionListener = new CheckBoxListener(checkBox, stat);
 		checkBox.addActionListener(actionListener);
 		checkBoxMap.put(stat, checkBox);
 		addComponent(checkBox, x, y, width, GridBagConstraints.WEST);
+	}
+	
+	class CheckBoxListener implements ActionListener {
+		JCheckBox checkBox;
+		Stat stat;
+		public CheckBoxListener(JCheckBox checkBox, Stat stat) {
+			this.checkBox = checkBox;
+			this.stat = stat;
+		}
+		@Override
+		public void actionPerformed(ActionEvent actionEvent) {
+			Set<Stat> enabledStats = getEnabledStats();
+			RecordingStats newRecordingStats;
+
+			if (checkBox.isSelected()) { // was checked
+				enabledStats.remove(stat);
+				RecordingStats rsOld = new RecordingStats(enabledStats);
+				if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
+				newRecordingStats = rsOld.add(stat);
+				if (!game.areValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
+					newRecordingStats = rsOld;
+				}
+			} else { // was unchecked
+				enabledStats.add(stat);
+				RecordingStats rsOld = new RecordingStats(enabledStats);
+				if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
+				newRecordingStats = rsOld.removeNullable(stat);
+				if (newRecordingStats == null || !game.areValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
+					newRecordingStats = rsOld;
+				}
+			}
+			
+			if (Conf.DEBUG) System.out.println("New recording stats: " + newRecordingStats);
+			setCheckBoxes(newRecordingStats.values);
+		}
 	}
 
 	/////////////////////////////////

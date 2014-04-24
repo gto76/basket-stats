@@ -23,14 +23,14 @@ public class ListenerNewGame implements ActionListener {
 					"Are you sure you want to open new game?");
 		}
 		if (exit) {
-			Tuple<RecordingStats,ShotValues> statsAndValues = DialogNewGame.showDialog();
+			Tuple<RecordingStats,ShotValues> statsAndValues = DialogNewGame.showDialogNullable();
 			if (statsAndValues == null) {
 				return;
 			}
 			Game derbi = Conf.getDefaultGame(statsAndValues.x, statsAndValues.y);
 			new SwinGui(derbi);
 			System.out.println(derbi);
-			mainWindow.frame.hide();
+			mainWindow.frame.setVisible(false);
 		}
 	}
 

@@ -10,7 +10,6 @@ public class Event {
 
 	public Event(Action action, Set<Player> team1PlayersOnTheFloor,
 			Set<Player> team2PlayersOnTheFloor) {
-		super();
 		this.action = action;
 		this.team1PlayersOnTheFloor = Collections.unmodifiableSet(team1PlayersOnTheFloor);
 		this.team2PlayersOnTheFloor = Collections.unmodifiableSet(team2PlayersOnTheFloor);

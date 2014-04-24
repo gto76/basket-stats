@@ -56,7 +56,7 @@ public class SwinGui {
 	
 	final Map<Action, JButton> buttonMap = new HashMap<Action, JButton>();
 	final Map<Player, PlayersRow> playersRowMap = new HashMap<Player, PlayersRow>();
-	protected boolean checkEqualPlayers = true;
+	protected boolean warnAboutUnevenSquads = true;
 	//////////////////////////////////////////////////////////////
 	
     /*
@@ -81,7 +81,7 @@ public class SwinGui {
 	 */
 	private void setIcons() {
     	final ImageIcon iconImgS = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S));
-    	final ImageIcon iconImgSBlue = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S_BLUE));
+//    	final ImageIcon iconImgSBlue = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S_BLUE));
     	final ImageIcon iconImgM = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_M));
     	final ImageIcon iconImgL = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_L));
     	final ImageIcon iconImgXL = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_XL));

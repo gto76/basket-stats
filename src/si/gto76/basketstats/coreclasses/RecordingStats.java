@@ -8,8 +8,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.Conf.StatComb;
 import si.gto76.basketstats.Util;
 
 public class RecordingStats {
@@ -46,10 +44,6 @@ public class RecordingStats {
 	
 	public static final RecordingStats DEFAULT = new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
 	
-//	public static RecordingStats getDefault() {
-//		return new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
-//	}
-	
 	/////////////////////////////////////////////////
 	public final Set<Stat> values;
 	/////////////////////////////////////////////////	
@@ -58,11 +52,7 @@ public class RecordingStats {
 		this(recordingStats.values);
 	}
 	
-	public RecordingStats(StatComb statsComb) {
-		this(statsComb.stats);
-	}
-	
-	public RecordingStats(Stat[] recordingStats) {
+	public RecordingStats(Stat... recordingStats) {
 		this(new HashSet<Stat>(Arrays.asList(recordingStats)));
 	}
 	
@@ -81,6 +71,9 @@ public class RecordingStats {
 	 * GETTERS:
 	 */
 
+	/**
+	 * Returns new RecordingStats object. Old one stays unchanged.
+	 */
 	public RecordingStats add(Stat stat) {
 		Set<Stat> valuesOut = new HashSet<Stat>(values);
 		if (ANTI_DEPENDENCIES.containsKey(stat)) {
@@ -99,7 +92,10 @@ public class RecordingStats {
 		return new RecordingStats(valuesOut);
 	}
 	
-	public RecordingStats remove(Stat stat) {
+	/**
+	 * Returns new RecordingStats object. Old one stays unchanged.
+	 */
+	public RecordingStats removeNullable(Stat stat) {
 		Set<Stat> valuesOut = new HashSet<Stat>(values);
 		if (REMOVE_SHOOTING_DEPENDENCIES.containsKey(stat)) {
 			valuesOut.removeAll(REMOVE_SHOOTING_DEPENDENCIES.get(stat));
@@ -116,7 +112,7 @@ public class RecordingStats {
 	/*
 	 * GET VALID SET:
 	 */
-
+	
 	public static Set<Stat> getValidSet(Set<Stat> recordingStatsIn) {
 		// Null/empty check, init
 		if (recordingStatsIn == null) {
@@ -143,8 +139,6 @@ public class RecordingStats {
 		orderedSet.add(Stat.IIPM);
 		return orderedSet;
 	}
-	
-	/////////////////////////////////////////////////
 	
 	/*
 	 * IS VALID SET:

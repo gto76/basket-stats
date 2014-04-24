@@ -29,8 +29,8 @@ public enum Stat {
 	/////
 	OFF("Off", "Offensive rebound", true, true, false),
 	DEF("Def", "Deffensive rebound", true, true, false),
-	REB("Reb", "Rebound", true, true, false), // NEW!!
-	TOT("Tot", "Total rebounds", false, true, false), // NEW!!
+	REB("Reb", "Rebound", true, true, false),
+	TOT("Tot", "Total rebounds", false, true, false),
 	/////
 	AST("Ast", "Assist", true, true, false),
 	PF("Pf", "Personal foul", true, true, false),
@@ -109,7 +109,7 @@ public enum Stat {
 		return scoringValue || (this.equals(PTS));
 	}
 	
-	public static Stat getByName(String name) {
+	public static Stat getByNameNullable(String name) {
 		Stat[] stats = Stat.values();
 	    for (Stat stat : stats) {
 	    	if (stat.name.toUpperCase().equals(name.toUpperCase())) {
@@ -129,7 +129,6 @@ public enum Stat {
 		// TPM -> IIPM, TPM,
 		// FGA -> IIPM, IIPF
 		// else -> IIPM
-		// OLD: inputStats.add(Stat.IIPM);
 		if (outputStats.contains(Stat.FGM)) {
 			inputStats.add(Stat.IIPM);
 		}

@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 
-import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class ListenersMenu {

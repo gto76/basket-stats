@@ -7,16 +7,12 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -27,13 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.Conf.StatComb;
-import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.RecordingStats;
 import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
-import si.gto76.basketstats.test.Test;
 
 public class DialogNewGame extends JFrame {
 	public static final int WIDTH = 240, HEIGHT = 105;
@@ -43,12 +36,12 @@ public class DialogNewGame extends JFrame {
 	protected JPanel mainPanel;
 	protected JDialog dialog;
 	protected JOptionPane optionPane;
-	private JComboBox comboBox;
+	private JComboBox<StatsAndShotValues> comboBox;
 	private Map<Stat,JCheckBox> checkBoxMap = new HashMap<Stat,JCheckBox>();
 	private Map<Stat,JSpinner> spinnerMap = new HashMap<Stat,JSpinner>();
 	//////////////////////////////////////////
 
-	public static Tuple<RecordingStats,ShotValues> showDialog() {
+	public static Tuple<RecordingStats,ShotValues> showDialogNullable() {
 		try {
 			DialogNewGame dlg = new DialogNewGame();
 			if (dlg.optionPane.getValue() == null || (Integer)dlg.optionPane.getValue() == 2) {
@@ -58,7 +51,7 @@ public class DialogNewGame extends JFrame {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		return new Tuple<RecordingStats,ShotValues>(RecordingStats.DEFAULT, ShotValues.DEFAULT);
+		return new Tuple<RecordingStats,ShotValues>(RecordingStats.DEFAULT, ShotValues.FULL_COURT);
 	}
 	
     public DialogNewGame() throws URISyntaxException {
@@ -111,9 +104,9 @@ public class DialogNewGame extends JFrame {
     private void setCheckBoxes(Set<Stat> enabledStats) {
     	for (Entry<Stat,JCheckBox> entry : checkBoxMap.entrySet()) {
     		if (enabledStats.contains(entry.getKey())) {
-    			entry.getValue().setSelected(true); //setEnabled(true);
+    			entry.getValue().setSelected(true);
     		} else {
-    			entry.getValue().setSelected(false); //setEnabled(false);
+    			entry.getValue().setSelected(false);
     		}
     	}
     }
@@ -132,29 +125,34 @@ public class DialogNewGame extends JFrame {
      * COMBO:
      */
 	private void addDropDown() {
-		final JComboBox<StatSelectorTuple> combo = new JComboBox<StatSelectorTuple>();
-		combo.addItem(new StatSelectorTuple(StatComb.FULL_COURT_STATS, ShotValues.DEFAULT));
-		combo.addItem(new StatSelectorTuple(StatComb.SIMPLIFIED_FULL_COURT_STATS, ShotValues.DEFAULT));
-		combo.addItem(new StatSelectorTuple(StatComb.STREET_BALL_STATS, ShotValues.STREETBALL));
-		combo.addItem(new StatSelectorTuple(StatComb.SIMPLIFIED_STREET_BALL_STATS, ShotValues.STREETBALL));
+		final JComboBox<StatsAndShotValues> combo = new JComboBox<StatsAndShotValues>();
+		combo.addItem(new StatsAndShotValues(StatComb.FULL_COURT_STATS, ShotValues.FULL_COURT));
+		combo.addItem(new StatsAndShotValues(StatComb.SIMPLIFIED_FULL_COURT_STATS, ShotValues.FULL_COURT));
+		combo.addItem(new StatsAndShotValues(StatComb.HALF_COURT_STATS, ShotValues.HALF_COURT));
+		combo.addItem(new StatsAndShotValues(StatComb.SIMPLIFIED_HALF_COURT_STATS, ShotValues.HALF_COURT));
 		combo.setPreferredSize(new Dimension(WIDTH, COMBO_HEIGHT));
 
-		ActionListener actionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				StatSelectorTuple selectedTuple = (StatSelectorTuple) ((JComboBox) e.getSource()).getSelectedItem();
-				Stat[] stats = selectedTuple.statComb.stats;
-				setCheckBoxes(new HashSet<Stat>(Arrays.asList(stats)));
-
-				for (Entry entry : selectedTuple.shotValues.values.entrySet()) {
-					JSpinner spinner = spinnerMap.get(entry.getKey());
-					spinner.setValue(entry.getValue());
-				}
-			}
-		};
+		ActionListener actionListener = new ComboBoxActionListener();
 		combo.addActionListener(actionListener);
 		comboBox = combo;
 		
 		addComponent(combo, 0, 0, 3, GridBagConstraints.CENTER);
+	}
+	
+	class ComboBoxActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			@SuppressWarnings("unchecked")
+			StatsAndShotValues selectedTuple = (StatsAndShotValues) 
+					((JComboBox<StatsAndShotValues>) e.getSource()).getSelectedItem();
+			RecordingStats stats = selectedTuple.statComb.stats;
+			setCheckBoxes(stats.values);
+
+			for (Entry<Stat, Integer> entry : selectedTuple.shotValues.values.entrySet()) {
+				JSpinner spinner = spinnerMap.get(entry.getKey());
+				spinner.setValue(entry.getValue());
+			}
+		}
 	}
 	
     /////////////////////////////////
@@ -171,7 +169,7 @@ public class DialogNewGame extends JFrame {
 	private void initSpinner(String text, Stat stat, int x) {
 		JPanel panel = new JPanel();
 		panel.add(new JLabel(text+":"));
-		JSpinner spinner = createSpinner(ShotValues.DEFAULT.values.get(stat));
+		JSpinner spinner = createSpinner(ShotValues.FULL_COURT.values.get(stat));
 		spinnerMap.put(stat, spinner);
 		panel.add(spinner);
 		addComponent(panel, x, 1, 1, GridBagConstraints.CENTER);
@@ -228,7 +226,7 @@ public class DialogNewGame extends JFrame {
 				} else {
 					enabledStats.add(stat);
 					RecordingStats rsOld = new RecordingStats(enabledStats);
-					rsNew = rsOld.remove(stat);
+					rsNew = rsOld.removeNullable(stat);
 				}
 				
 				setCheckBoxes(rsNew.values);
@@ -258,10 +256,10 @@ public class DialogNewGame extends JFrame {
 		return constraints;
 	}
 	
-	public class StatSelectorTuple { 
+	public class StatsAndShotValues { 
 		public final StatComb statComb;
 		public final ShotValues shotValues; 
-		public StatSelectorTuple(StatComb statComb, ShotValues shotValues) { 
+		public StatsAndShotValues(StatComb statComb, ShotValues shotValues) { 
 			this.statComb = statComb; 
 			this.shotValues = shotValues; 
 		} 

@@ -18,9 +18,10 @@ import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
 
 public class Test {
-	
-	public static final boolean COMPREHENSIVE_SAVE_LOAD_TEST = true;
-	public static final boolean SIMPLE_SAVE_LOAD_TEST = false;
+
+	public static final boolean SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS_AND_MOST_SHOT_VALUE_COMBINATIONS = true;
+	public static final boolean SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS = false;
+	public static final boolean SAVE_LOAD_TEST_WITH_COMMON_STAT_COMBINATIONS = false;
 	public static final boolean RECORDING_STATS_TEST = false;
 	
 	public static final boolean DISPLAY_TEST_PROGRESS = true;
@@ -30,11 +31,14 @@ public class Test {
 	//////////////////////////////////////////////
 	
 	public static void main(String[] args) {
-		if (SIMPLE_SAVE_LOAD_TEST) {
+		if (SAVE_LOAD_TEST_WITH_COMMON_STAT_COMBINATIONS) {
 			printTestResult("Simple Save/Load test", simpleSaveLoadTest());
 		}
-		if (COMPREHENSIVE_SAVE_LOAD_TEST) {
-			printTestResult("Comprehensive Save/Load test", comprehensiveSaveLoadTest());
+		if (SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS) {
+			printTestResult("Intermediate Save/Load test", intermediateSaveLoadTest());
+		}
+		if (SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS_AND_MOST_SHOT_VALUE_COMBINATIONS) {
+			printTestResult("Full Save/Load test", fullSaveLoadTest());
 		}
 		if (RECORDING_STATS_TEST) {
 			printTestResult("Recording Stats Test", recordingStatsTest());
@@ -50,11 +54,22 @@ public class Test {
 	}
 	
 	//////////////////////////////////////////////
-
+	
+	/*
+	 * FULL SAVE/LOAD TEST
+	 */
+	private static int fullSaveLoadTest() {
+		return saveLoadTest(true);
+	}
+	
 	/*
 	 * COMPREHENSIVE SAVE/LOAD TEST
 	 */
-	public static int comprehensiveSaveLoadTest() {
+	public static int intermediateSaveLoadTest() {
+		return saveLoadTest(false);
+	}
+	
+	public static int saveLoadTest(boolean full) {
 		// for all combinations of input stats
 		Set<Set<Stat>> allCombinations = powerSet(new HashSet<Stat>(Arrays.asList(Stat.inputValues)));
 		// get valid recording stats
@@ -67,9 +82,14 @@ public class Test {
 		int i = 1;
 		for (Set<Stat> validComb : allValidCombinations) {
 			RecordingStats recordingStats = new RecordingStats(validComb);
-			//if (DISPLAY_TEST_PROGRESS) System.out.println("### COMPREHENSIVE SAVE LOAD TEST NO " +i+ ": " +recordingStats+ " ###\n");
-			//int retVal = testWithAllShotValues(recordingStats, i);
-			int retVal = testSaveLoadForGame(recordingStats, ShotValues.DEFAULT);
+			if (DISPLAY_TEST_PROGRESS) System.out.println("### COMPREHENSIVE SAVE LOAD TEST NO " +i+ ": " 
+					+recordingStats+ " ###\n");
+			int retVal; 
+			if (full) {
+				retVal = testWithAllShotValues(recordingStats, i);
+			} else {
+				retVal = testSaveLoadForGame(recordingStats, ShotValues.FULL_COURT);
+			}
 			if (retVal != 0) {
 				return retVal;
 			}
@@ -86,7 +106,7 @@ public class Test {
 			if (DISPLAY_TEST_PROGRESS) System.out.println("### COMPREHENSIVE SAVE LOAD TEST NO " 
 					+i+ "-" +j+ ": " +recordingStats+ " " +combination+ " ###\n");
 			int retVal = testSaveLoadForGame(recordingStats, 
-					new ShotValues(ShotValues.getVluesMap(combination.toArray(new Integer[0]))));
+					new ShotValues(ShotValues.getValuesMap(combination.toArray(new Integer[0]))));
 			if (retVal != 0) {
 				return retVal;
 			}
@@ -99,7 +119,8 @@ public class Test {
 		return getCobination(new ArrayList<Integer>(), minValue, maxValue, noOfElements);
 	}
 	
-	private static Set<List<Integer>> getCobination(List<Integer> unfinishedCombination, int min, int max, int length) {
+	private static Set<List<Integer>> getCobination(List<Integer> unfinishedCombination, 
+			int min, int max, int length) {
 		Set<List<Integer>> resultSet = new HashSet<List<Integer>>();
 		for (int i = min; i <=max ; i++) {
 			if (length == unfinishedCombination.size()+1) {
@@ -124,8 +145,8 @@ public class Test {
 		// For some combinations of recording stats
 		int i = 1;
 		for (StatComb statsComb : Conf.StatComb.values()) {
-			if (DISPLAY_TEST_PROGRESS) System.out.println("### TEST NO " +i+ ": " +Arrays.toString(statsComb.stats)+ " ###\n");
-			int retVal = testSaveLoadForGame(new RecordingStats(statsComb), ShotValues.DEFAULT);
+			if (DISPLAY_TEST_PROGRESS) System.out.println("### TEST NO " +i+ ": " +statsComb.stats+ " ###\n");
+			int retVal = testSaveLoadForGame(new RecordingStats(statsComb.stats), ShotValues.FULL_COURT);
 			if (retVal != 0) {
 				return retVal;
 			}
@@ -181,8 +202,10 @@ public class Test {
 		for (Set<Stat> combination : allCombinations) {
 			Set<Stat> orderedStats = Util.getOrderedSet(combination);
 			Set<Stat> validSet = RecordingStats.getValidSet(combination);
-			if (DISPLAY_LOADED_GAMES) System.out.println("# ORIGINAL SET: # " + Arrays.toString(orderedStats.toArray()));
-			if (DISPLAY_LOADED_GAMES) System.out.println("# CORECTED SET: # " + Arrays.toString(validSet.toArray()) + "\n");
+			if (DISPLAY_LOADED_GAMES) System.out.println("# ORIGINAL SET: # " 
+					+ Arrays.toString(orderedStats.toArray()));
+			if (DISPLAY_LOADED_GAMES) System.out.println("# CORECTED SET: # " 
+					+ Arrays.toString(validSet.toArray()) + "\n");
 			if (!RecordingStats.isValidSet(validSet)) {
 				return 1;
 			}

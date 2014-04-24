@@ -3,18 +3,26 @@ package si.gto76.basketstats.coreclasses;
 public class Action {
 	////////////////////////////////////////
 	private final Stat stat;
-	private final PlayerStats playersStats;
+	private final PlayerStats playerStats;
 	////////////////////////////////////////
 	
 	public Action(Stat stat, PlayerStats playersStats) {
 		this.stat = stat;
-		this.playersStats = playersStats;
+		this.playerStats = playersStats;
 	}
 	
 	////////////////////////////////////////
+
+	public boolean trigger() {
+		return playerStats.made(stat);
+	}
+
+	public void undo() {
+		playerStats.unMade(stat);
+	}
 	
 	public int getStatValue() {
-		return playersStats.get(stat);
+		return playerStats.get(stat);
 	}
 
 	public String getStatName() {
@@ -26,19 +34,12 @@ public class Action {
 	}
 
 	public Team getTeam() {
-		return playersStats.getTeam();
+		return playerStats.getTeam();
 	}
 
 	public Player getPlayer() {
-		return playersStats.getPlayer();
+		return playerStats.getPlayer();
 	}
 
-	public boolean trigger() {
-		return playersStats.made(stat);
-	}
-
-	public void undo() {
-		playersStats.unMade(stat);
-	}
 
 }

@@ -3,8 +3,9 @@ package si.gto76.basketstats;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Venue;
@@ -23,6 +24,7 @@ public class Conf {
 	public static final String AUTHOR = "Jure Sorn";
 	public static final String EMAIL = "sornjure@gmail.com";
 	public static final String YEARS = "2013-2014";
+	public static final String FILE_EXTENSION = "hsg";
 	
 	// Window
 	static public final int WINDOW_WIDTH = 1365;
@@ -38,14 +40,18 @@ public class Conf {
 	public static String BUTTON_TEXT_SEPARATOR = "  -  ";
 	public static final boolean BUTTONS_TOOLTIP = true;
 	public static final int TOOLTIP_DELAY = 1000;
-	public static Color REBOUND_BUTTON_COLOR = Color.GRAY;
-	public static boolean COLORED_MADE_BUTTONS = true;
-	public static Color MADE_SHOT_BUTTON_COLOR = Color.getHSBColor((float)0.25,(float)0.35,(float)0.95);
-	public static boolean COLORED_MISSED_BUTTONS = false;
-	public static Color MISSED_SHOT_BUTTON_COLOR = Color.getHSBColor((float)1,(float)0.25,(float)0.95);
-	public static boolean COLORED_TURNOVER_BUTTONS = false;
-	public static Color TURNOVER_BUTTON_COLOR = Color.getHSBColor((float)1,(float)0.25,(float)0.95);
+
+	private static boolean COLORED_REBOUND_BUTTONS = true;
+	private static Color REBOUND_BUTTON_COLOR = Color.GRAY;
+	private static boolean COLORED_MADE_BUTTONS = true;
+	private static Color MADE_SHOT_BUTTON_COLOR = Color.getHSBColor((float)0.25,(float)0.35,(float)0.95);
+	private static boolean COLORED_MISSED_BUTTONS = false;
+	private static Color MISSED_SHOT_BUTTON_COLOR = Color.getHSBColor((float)1,(float)0.25,(float)0.95);
+	private static boolean COLORED_TURNOVER_BUTTONS = false;
+	private static Color TURNOVER_BUTTON_COLOR = Color.getHSBColor((float)1,(float)0.25,(float)0.95);
 	
+	public static Map<Stat,Color> BUTTON_COLORS = new HashMap<Stat,Color>();
+
 	// Icons
 	public static final String ICON_FILENAME_S = "/resources/ba16.png"; 
 	public static final String ICON_FILENAME_S_BLUE = "/resources/ba16blue.png"; // b8cfe5 is color of background
@@ -60,21 +66,31 @@ public class Conf {
 	
 	// Stat Combinations Presets
 	public enum StatComb {
-		FULL_COURT_STATS(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
-		SIMPLIFIED_FULL_COURT_STATS(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM, Stat.REB, Stat.AST}),
-		NBA_RECORDING_STATS_SIMPLIFIED_NO_FT_MISSES(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.PM, Stat.REB, Stat.AST}),
-		NBA_RECORDING_STATS_NO_MISES(new Stat[]{Stat.IIPM, Stat.TPM, Stat.FTM, Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
-		NBA_RECORDING_STATS_NO_MISES_SIMPLIFIED(new Stat[]{Stat.IIPM, Stat.TPM,  Stat.FTM, Stat.PM, Stat.REB, Stat.AST}),
-		STREET_BALL_STATS(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
-		SIMPLIFIED_STREET_BALL_STATS(new Stat[]{Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST}),
-		STREET_BALL_RECORDING_STATS_NO_MISSES(new Stat[]{Stat.IIPM, Stat.PM, Stat.REB, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
-		STREET_BALL_RECORDING_STATS_NO_MISSES_SIMPLIFIED(new Stat[]{Stat.IIPM, Stat.PM, Stat.REB, Stat.AST}),
-		STREET_BALL_RECORDING_STATS_NO_MISSES_SIMPLIFIED_NO_P_M(new Stat[]{Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
-		NO_SCORRING(new Stat[]{Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA}),
-		JUST_FOULS(new Stat[]{Stat.PF}),
+		FULL_COURT_STATS(new RecordingStats(Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, 
+				Stat.PM, Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA)),
+		SIMPLIFIED_FULL_COURT_STATS(new RecordingStats(Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, 
+				Stat.FTF, Stat.PM, Stat.REB, Stat.AST)),
+		NBA_RECORDING_STATS_SIMPLIFIED_NO_FT_MISSES(new RecordingStats(Stat.IIPM, Stat.IIPF, Stat.TPM, 
+				Stat.TPF, Stat.FTM, Stat.PM, Stat.REB, Stat.AST)),
+		NBA_RECORDING_STATS_NO_MISES(new RecordingStats(Stat.IIPM, Stat.TPM, Stat.FTM, Stat.PM, Stat.OFF, 
+				Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA)),
+		NBA_RECORDING_STATS_NO_MISES_SIMPLIFIED(new RecordingStats(Stat.IIPM, Stat.TPM,  Stat.FTM, Stat.PM, 
+				Stat.REB, Stat.AST)),
+		HALF_COURT_STATS(new RecordingStats(Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST, Stat.PF, 
+				Stat.ST, Stat.TO, Stat.BS, Stat.BA)),
+		SIMPLIFIED_HALF_COURT_STATS(new RecordingStats(Stat.IIPM, Stat.IIPF, Stat.PM, Stat.REB, Stat.AST)),
+		HALF_COURT_RECORDING_STATS_NO_MISSES(new RecordingStats(Stat.IIPM, Stat.PM, Stat.REB, Stat.AST, 
+				Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA)),
+		HALF_COURT_RECORDING_STATS_NO_MISSES_SIMPLIFIED(new RecordingStats(Stat.IIPM, Stat.PM, Stat.REB, 
+				Stat.AST)),
+		HALF_COURT_RECORDING_STATS_NO_MISSES_SIMPLIFIED_NO_P_M(new RecordingStats(Stat.OFF, Stat.DEF, 
+				Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, Stat.BA)),
+		NO_SCORRING(new RecordingStats(Stat.OFF, Stat.DEF, Stat.AST, Stat.PF, Stat.ST, Stat.TO, Stat.BS, 
+				Stat.BA)),
+		JUST_FOULS(new RecordingStats(Stat.PF)),
 		;;;;;;;
-		public final Stat[] stats;
-		private StatComb(Stat[] stats) {
+		public final RecordingStats stats;//Stat[] stats;
+		private StatComb(RecordingStats stats) {
 			this.stats = stats;
 		}
 		@Override
@@ -85,8 +101,7 @@ public class Conf {
 	
 	// Default Game
 	public static Game getDefaultGame() {
-		//RecordingStats recordingStats = new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
-		return getDefaultGame(RecordingStats.DEFAULT, ShotValues.DEFAULT);
+		return getDefaultGame(RecordingStats.DEFAULT, ShotValues.FULL_COURT);
 	}
 	
 	public static Game getDefaultGame(RecordingStats recordingStats, ShotValues shotValues) {
@@ -115,5 +130,30 @@ public class Conf {
 		"All other stats like players score, total rebounds\n" +
 		"and all team stats will be ignored and calculated\n" +
 		"anew next time you load the game in HoopStats.\n";
+
+	/*
+	 * UTIL
+	 */
+	
+	static {
+		if (COLORED_REBOUND_BUTTONS) {
+			fillButtonColorMap(REBOUND_BUTTON_COLOR, Stat.OFF, Stat.DEF, Stat.REB);
+		}
+		if (COLORED_MADE_BUTTONS) {
+			fillButtonColorMap(MADE_SHOT_BUTTON_COLOR, Stat.IIPM, Stat.TPM, Stat.FTM);
+		}
+		if (COLORED_MISSED_BUTTONS) {
+			fillButtonColorMap(MISSED_SHOT_BUTTON_COLOR, Stat.IIPF, Stat.TPF, Stat.FTF);
+		}
+		if (COLORED_TURNOVER_BUTTONS) {
+			fillButtonColorMap(TURNOVER_BUTTON_COLOR, Stat.TO);
+		}
+	}
+	
+	private static void fillButtonColorMap(Color color, Stat... stats) {
+		for (Stat stat : stats) {
+			BUTTON_COLORS.put(stat, color);
+		}
+	}
 	
 }

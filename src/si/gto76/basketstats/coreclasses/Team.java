@@ -14,7 +14,7 @@ import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.Util;
 
 public class Team implements HasName, HasStats {
-	private static final DecimalFormat oneDigit = new DecimalFormat("#,##0.0");
+	private static final DecimalFormat ONE_DIGIT = new DecimalFormat("#,##0.0");
 	////////////////////////////////////////
 	private String name;
 	private Map<Player, PlayerStats> allPlayersStats = new LinkedHashMap<Player, PlayerStats>();
@@ -162,15 +162,6 @@ public class Team implements HasName, HasStats {
 		return allPlayersStats.keySet().contains(player);
 	}
 	
-//	public boolean hasOnlyReb() {
-//		if (game.recordingStats.values.contains(Stat.REB) &&
-//				!game.recordingStats.values.contains(Stat.OFF) &&
-//				!game.recordingStats.values.contains(Stat.DEF) ) {
-//			return true;
-//		}
-//		return false;
-//	}
-	
 	public boolean hasUsedRebounds() {
 		for (PlayerStats ps : allPlayersStats.values()) {
 			if (ps.hasUsedRebounds()) {
@@ -268,25 +259,26 @@ public class Team implements HasName, HasStats {
 	}
 	
 	private void appendScoringHeader(StringBuilder sb) {
-		if (!game.recordingStats.values.contains(Stat.IIPM)) {
+		Set<Stat> stats = game.recordingStats.values;
+		if (!stats.contains(Stat.IIPM)) {
 			return;
 		}
 		////
-		if (game.recordingStats.values.contains(Stat.IIPF) || 
-				game.recordingStats.values.contains(Stat.TPF)) {
+		if (stats.contains(Stat.IIPF) || 
+				stats.contains(Stat.TPF)) {
 			sb.append(padTab("FGM-A"));
 		} else {
 			sb.append(padTab("FGM"));
 		}
-		if (game.recordingStats.values.contains(Stat.TPM)) {
-			if (game.recordingStats.values.contains(Stat.TPF)) {
+		if (stats.contains(Stat.TPM)) {
+			if (stats.contains(Stat.TPF)) {
 				sb.append(padTab("3PM-A"));
 			} else {
 				sb.append(padTab("3PM"));
 			}
 		}
-		if (game.recordingStats.values.contains(Stat.FTM)) {
-			if (game.recordingStats.values.contains(Stat.FTF)) {
+		if (stats.contains(Stat.FTM)) {
+			if (stats.contains(Stat.FTF)) {
 				sb.append(padTab("FTM-A"));
 			} else {
 				sb.append(padTab("FTM"));
@@ -304,34 +296,34 @@ public class Team implements HasName, HasStats {
 	private void appendPlayerStats(StringBuilder sb) {
 		for (Player player : allPlayersStats.keySet()) {
 			String playersName = player.getName();
-			sb.append(padEnd(playersName, Conf.PLAYER_NAME_WIDTH, ' ')).
+			sb.append(Util.padEnd(playersName, Conf.PLAYER_NAME_WIDTH, ' ')).
 			append(allPlayersStats.get(player)).append("\n");
 		}
 	}
 	
 	private void appendTotals(StringBuilder sb) {
-		sb.append(padEnd("Totals", Conf.PLAYER_NAME_WIDTH, ' '));		
+		sb.append(Util.padEnd("Totals", Conf.PLAYER_NAME_WIDTH, ' '));		
 		appendStatsRow(sb, this);
 		sb.append("\n");
 	}
 	
 	private void appendPercents(StringBuilder sb) {
-		sb.append(emptyPlayersName());
 		Set<Stat> stats = game.recordingStats.values;
+		sb.append(emptyPlayersName());
 		if (stats.contains(Stat.IIPF)) {				
-			sb.append( padTab(oneDigit.format(getFgPercent())+"%") );
+			sb.append(padTab(ONE_DIGIT.format(getFgPercent())+"%") );
 		} else {
 			sb.append(padTab(""));
 		}
 		if (stats.contains(Stat.TPF)) {				
-			sb.append( padTab(oneDigit.format(getTpPercent())+"%") );
+			sb.append(padTab(ONE_DIGIT.format(getTpPercent())+"%") );
 		} else {
 			if (stats.contains(Stat.TPM)) {
 				sb.append(padTab(""));
 			}
 		}
 		if (stats.contains(Stat.FTF)) {				
-			sb.append( padTab(oneDigit.format(getFtPercent())+"%") );
+			sb.append(padTab(ONE_DIGIT.format(getFtPercent())+"%") );
 		}
 		sb.append("\n");
 	}
@@ -341,12 +333,13 @@ public class Team implements HasName, HasStats {
 	 */
 	protected void appendStatsRow(StringBuilder sb, HasStats hs) {
 		// FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
+		Set<Stat> stats = game.recordingStats.values;
 		// Scoring
-		if (game.recordingStats.values.contains(Stat.IIPM)) {
+		if (stats.contains(Stat.IIPM)) {
 			appendScoringValues(sb, hs);
 		}
 		// Non-scoring
-		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats.values)) {
+		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(stats)) {
 			// For team totals we don't need plus minus
 			if (hs instanceof Team && sc == Stat.PM) {
 				sb.append(padTab(""));
@@ -358,20 +351,21 @@ public class Team implements HasName, HasStats {
 	
 	private void appendScoringValues(StringBuilder sb, HasStats hs) {
 		// FGM-A 3PM-A FTM-A +/-
-		if (game.recordingStats.values.contains(Stat.IIPF) || game.recordingStats.values.contains(Stat.TPF)) {
+		Set<Stat> stats = game.recordingStats.values;
+		if (stats.contains(Stat.IIPF) || stats.contains(Stat.TPF)) {
 			sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
 		} else {
 			sb.append(padTab(hs.get(Stat.FGM) + ""));
 		}
-		if (game.recordingStats.values.contains(Stat.TPM)) {
-			if (game.recordingStats.values.contains(Stat.TPF)) {
+		if (stats.contains(Stat.TPM)) {
+			if (stats.contains(Stat.TPF)) {
 				sb.append(padTab(hs.get(Stat.TPM)+"-"+hs.get(Stat.TPA)));
 			} else {
 				sb.append(padTab(hs.get(Stat.TPM) + ""));
 			}
 		}
-		if (game.recordingStats.values.contains(Stat.FTM)) {
-			if (game.recordingStats.values.contains(Stat.FTF)) {
+		if (stats.contains(Stat.FTM)) {
+			if (stats.contains(Stat.FTF)) {
 				sb.append(padTab(hs.get(Stat.FTM)+"-"+hs.get(Stat.FTA)));
 			} else {
 				sb.append(padTab(hs.get(Stat.FTM) + ""));
@@ -386,24 +380,11 @@ public class Team implements HasName, HasStats {
 	 */
 	
 	public static String emptyPlayersName() {
-		return padEnd("", Conf.PLAYER_NAME_WIDTH, ' ');
+		return Util.padEnd("", Conf.PLAYER_NAME_WIDTH, ' ');
 	}
 	
 	public static String padTab(String string) {
-		return padEnd(string, Conf.TAB_WIDTH, ' ');
-	}
-
-	public static String padEnd(String string, int minLength, char padChar) {
-	    Util.checkNotNull(string);  // eager for GWT.
-	    if (string.length() >= minLength) {
-	      return string;
-	    }
-	    StringBuilder sb = new StringBuilder(minLength);
-	    sb.append(string);
-	    for (int i = string.length(); i < minLength; i++) {
-	      sb.append(padChar);
-	    }
-	    return sb.toString();
+		return Util.padEnd(string, Conf.TAB_WIDTH, ' ');
 	}
 	
 }

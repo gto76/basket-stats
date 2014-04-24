@@ -120,7 +120,7 @@ public class Shots {
 		}
 	}
 	
-	private static int getStat(Map<Stat, Integer> stats, Stat stat) {
+	public static int getStat(Map<Stat, Integer> stats, Stat stat) {
 		Integer statValue = stats.get(stat);
 		if (statValue == null) {
 			return 0;

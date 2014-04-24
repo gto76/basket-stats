@@ -2,7 +2,6 @@ package si.gto76.basketstats.coreclasses;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ public class PlayerStats implements HasStats {
 	////////////////////////////////////////	
 	private final Team team;
 	private Shots shootingValues;
-	//private Rebounds reboundValues;
 	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();
 	/*
 	 * Used for linking buttons with this classes specific setters, and also
@@ -32,7 +30,6 @@ public class PlayerStats implements HasStats {
 	public PlayerStats(Team team) {
 		this.team = team;
 		shootingValues = new Shots(team.game);
-		//reboundValues = new Rebounds(team.game);
 		initValuesAndActions(Stat.actionSet, Stat.playerStatsValues);
 	}
 		
@@ -111,9 +108,8 @@ public class PlayerStats implements HasStats {
 		}
 	}
 	
-	protected Integer changePlusMinus(int points) {
+	protected void changePlusMinus(int points) {
 		addToValue(Stat.PM, points);
-		return null;
 	}
 	
 	private void addToValue(Stat stat, int add) {
@@ -147,12 +143,6 @@ public class PlayerStats implements HasStats {
 			return shootingValues.get(stat);
 		} else if (stat == Stat.TOT || stat == Stat.REB) {
 			return values.get(Stat.REB) + values.get(Stat.OFF) + values.get(Stat.DEF);
-// OLD	} else if (stat == Stat.REB) {
-//			if (team.hasOnlyReb()) {
-//				return values.get(Stat.REB);
-//			} else {
-//				return values.get(Stat.OFF) + values.get(Stat.DEF);
-//			}
 		} else {
 			return values.get(stat);
 		}

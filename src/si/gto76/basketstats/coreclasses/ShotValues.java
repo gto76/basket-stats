@@ -6,26 +6,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ShotValues {
-
-	private static final Map<Stat, Integer> DEFAULT_SHOT_VALUES;
-	private static final Map<Stat, Integer> STREETBALL_SHOT_VALUES;
-	static {
-		DEFAULT_SHOT_VALUES = Collections.unmodifiableMap(getVluesMap(new Integer[]{1,2,3}));
-		STREETBALL_SHOT_VALUES = Collections.unmodifiableMap(getVluesMap(new Integer[]{1,1,1}));
-	}
-	public static final ShotValues DEFAULT = new ShotValues(DEFAULT_SHOT_VALUES);
-	public static final ShotValues STREETBALL = new ShotValues(STREETBALL_SHOT_VALUES);
-	
-	/////////////////////////////
+	private static final Integer[] FULL_COURT_ARRAY = {1,2,3};
+	private static final Integer[] HALF_COURT_ARRAY = {1,1,1};
+	public static final ShotValues FULL_COURT = new ShotValues(getValuesMap(FULL_COURT_ARRAY));
+	public static final ShotValues HALF_COURT = new ShotValues(getValuesMap(HALF_COURT_ARRAY));
+	//////////////////////////////////
 	public final Map<Stat, Integer> values;
-	/////////////////////////////
-	
-	public ShotValues() {
-		this.values = Collections.unmodifiableMap(DEFAULT_SHOT_VALUES);
-	}
+	//////////////////////////////////
 	
 	public ShotValues(Map<Stat, Integer> shotPoints) {
-		Map<Stat, Integer> mapBuilder = new HashMap<Stat, Integer>(DEFAULT_SHOT_VALUES);
+		Map<Stat, Integer> mapBuilder = new HashMap<Stat,Integer>(getValuesMap(FULL_COURT_ARRAY));
 		for (Stat stat : Stat.scoreChangingValues) {
 			Integer value = shotPoints.get(stat);
 			if (value == null) {
@@ -36,6 +26,8 @@ public class ShotValues {
 		}
 		this.values = Collections.unmodifiableMap(shotPoints);
 	}
+	
+	//////////////////////////////////
 
 	private static void asertValidValue(int value) {
 		if (value < 1) {
@@ -46,9 +38,7 @@ public class ShotValues {
 		}
 	}
 	
-	//////////////////////////////////
-
-	public static Map<Stat, Integer> getVluesMap(Integer[] shotValues) {
+	public static Map<Stat,Integer> getValuesMap(Integer[] shotValues) {
 		if (shotValues.length != 3) {
 			throw new IllegalArgumentException("There are not 3 elements in array: "+ Arrays.toString(shotValues));
 		}

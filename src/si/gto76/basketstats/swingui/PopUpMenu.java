@@ -13,117 +13,116 @@ import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.Team;
 
-//import si.gto76.basketstats.swingui.NamePanel.PopupListener;
-
 public class PopUpMenu {
+	///////////////////////
+	private final NamePanel namePanel;
+	private final Game game;
+	private Player player;
+	private Team team;
+	///////////////////////
+	
 	public PopUpMenu(final NamePanel namePanel) {
-	    JMenuItem menuItem;
-	    //Create the popup menu.
-	    JPopupMenu popup = new JPopupMenu();
+	    this.namePanel = namePanel;
+	    this.game = namePanel.mainWindow.game;
+		
+	    JPopupMenu popupMenu = new JPopupMenu();
 	    
-	    menuItem = new JMenuItem("Rename");
-	    menuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				namePanel.switchNameLabelWithTextField();
-			}
-		});
-	    popup.add(menuItem);
-
-	    if (namePanel.pot instanceof Player) {
-	    	addPlayersItems(popup, namePanel);
+	    addNewItemToMenu(popupMenu, "Rename", new RenameActionListener());
+	    if (namePanel.hasName instanceof Player) {
+	    	addPlayersItems(popupMenu);
 	    }
-	    
-	    if (namePanel.pot instanceof Team) {
-	    	menuItem = new JMenuItem("Add New Player");
-	 	    menuItem.addActionListener(new ActionListener() {
-	 			@Override
-	 			public void actionPerformed(ActionEvent e) {
-	 				namePanel.mainWindow.addNewPlayerToTeam((Team) namePanel.pot);
-	 			}
-	 		});
-	 	    popup.add(menuItem);
-	    	
+	    if (namePanel.hasName instanceof Team) {
+	    	addNewItemToMenu(popupMenu, "Add New Player", new NewPlayerTeamActionListener());
 	    }
-	    
 	    //Add listener to the text area so the popup menu can come up.
-	    MouseListener popupListener = new PopupListener(popup);
+	    MouseListener popupListener = new PopupListener(popupMenu);
 	    namePanel.nameContainer.addMouseListener(popupListener);
 	}
-	
-	private void addPlayersItems(JPopupMenu popup, final NamePanel namePanel) {
-		final Player player = (Player) namePanel.pot;
-		final Game game = namePanel.mainWindow.game;
-		final Team team = game.getPlayersTeam(player);
 
-		JMenuItem menuItem;
+	class RenameActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			namePanel.switchNameLabelWithTextField();
+		}
+	}
+	
+	class NewPlayerTeamActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			namePanel.mainWindow.addNewPlayerToTeam((Team) namePanel.hasName);
+		}
+	}
+
+	///////////////////////
+	
+	private void addPlayersItems(JPopupMenu popupMenu) {
+	    this.player = (Player) namePanel.hasName;
+	    this.team = game.getPlayersTeam(player);
 		
 		if (team.getNumberOfPlayers() > 1) {
-			popup.addSeparator();
+			popupMenu.addSeparator();
 		}
-		
 		if (!team.isPlayerFirst(player)) {
-			menuItem = new JMenuItem("Move Up");
-		    menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					team.moveUpOneRow(player);
-					System.out.println(game);
-					namePanel.mainWindow.setUpNewContainer();
-				}
-			});
-		    popup.add(menuItem);
+			addNewItemToMenu(popupMenu, "Move Up", new MoveUpActionListener());
 		}
-		    
 		if (!team.isPlayerLast(player)) {
-		    menuItem = new JMenuItem("Move Down");
-		    menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					team.moveDownOneRow(player);
-					System.out.println(game);
-					namePanel.mainWindow.setUpNewContainer();
-				}
-			});
-		    popup.add(menuItem);
+			addNewItemToMenu(popupMenu, "Move Down", new MoveDownActionListener());
 		}
+	    popupMenu.addSeparator();
+	    addNewItemToMenu(popupMenu, "Add New Player", new AddNewPlayerActionListener());
 	    
-	    popup.addSeparator();
-	    
-	    menuItem = new JMenuItem("Add New Player");
-	    menuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				namePanel.mainWindow.addNewPlayerToTeam(team);
-			}
-		});
-	    popup.add(menuItem);
-	    
-	    if (game.getPlayersStats(player).isEmpty() && team.getNumberOfPlayers() > 1) {
-		    menuItem = new JMenuItem("Remove Player");
-		    menuItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					team.removePlayer(player);
-					System.out.println(game);
-					namePanel.mainWindow.setUpNewContainer();
-				}
-			});
-		    popup.add(menuItem);
+	    boolean player_has_not_yet_booked_any_stats = game.getPlayersStats(player).isEmpty();
+	    boolean player_is_not_alone_on_the_team = team.getNumberOfPlayers() > 1;
+	    if (player_has_not_yet_booked_any_stats 
+	    		&& player_is_not_alone_on_the_team) {
+	    	addNewItemToMenu(popupMenu, "Remove Player", new RemovePlayerActionListener());
 	    }
 	}
+	
+	class MoveUpActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			team.moveUpOneRow(player);
+			System.out.println(game);
+			namePanel.mainWindow.setUpNewContainer();
+		}
+	}
+	
+	class MoveDownActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			team.moveDownOneRow(player);
+			System.out.println(game);
+			namePanel.mainWindow.setUpNewContainer();
+		}
+	}
+	
+	class AddNewPlayerActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			namePanel.mainWindow.addNewPlayerToTeam(team);
+		}
+	}
+	
+	class RemovePlayerActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			team.removePlayer(player);
+			System.out.println(game);
+			namePanel.mainWindow.setUpNewContainer();
+		}
+	}
+	
+	///////////////////////
 
 	class PopupListener extends MouseAdapter {
 		JPopupMenu popup;
-
 		PopupListener(JPopupMenu popupMenu) {
 			popup = popupMenu;
 		}
-
 		public void mousePressed(MouseEvent e) {
 			maybeShowPopup(e);
 		}
-
 		public void mouseReleased(MouseEvent e) {
 			maybeShowPopup(e);
 		}
@@ -133,6 +132,16 @@ public class PopUpMenu {
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		}
+	}
+	
+	/*
+	 * UTIL:
+	 */
+	
+	private static void addNewItemToMenu(JPopupMenu popupMenu, String name, ActionListener actionListener) {
+		JMenuItem menuItem = new JMenuItem(name);
+	    menuItem.addActionListener(actionListener);
+	    popupMenu.add(menuItem);
 	}
 	
 }
