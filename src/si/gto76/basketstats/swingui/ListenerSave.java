@@ -59,7 +59,7 @@ public class ListenerSave implements ActionListener {
 				// No filter chosen
 				if (this.getFileFilter().getDescription() == "All Files") {
 					FileFilterExtension fileFilter = FileFilterExtension
-							.getFilterNullable(givenName);
+							.getFilterOrNull(givenName);
 					// No extension given - ERR
 					if (givenName.indexOf(".") == -1) {
 						errMessage = "No filename extension or file filter selected. Image was not saved.";

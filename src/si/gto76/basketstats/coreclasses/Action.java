@@ -3,10 +3,10 @@ package si.gto76.basketstats.coreclasses;
 public class Action {
 	////////////////////////////////////////
 	private final Stat stat;
-	private final PlayerStats playerStats;
+	private final PlayerStatRecorder playerStats;
 	////////////////////////////////////////
 	
-	public Action(Stat stat, PlayerStats playersStats) {
+	public Action(Stat stat, PlayerStatRecorder playersStats) {
 		this.stat = stat;
 		this.playerStats = playersStats;
 	}

@@ -25,8 +25,8 @@ public class Game {
 		init(date, location, recordingStats, shotValues);
 	}
 	
-	public Game(String team1Name, Map<Player, PlayerStats> team1PlayersStats, 
-				String team2Name, Map<Player, PlayerStats> team2PlayersStats,
+	public Game(String team1Name, Map<Player, PlayerStatRecorder> team1PlayersStats, 
+				String team2Name, Map<Player, PlayerStatRecorder> team2PlayersStats,
 				Date date, Venue location, RecordingStats recordingStats, ShotValues shotValues) {
 		this.team1 = new Team(team1Name, team1PlayersStats, this);
 		this.team2 = new Team(team2Name, team2PlayersStats, this);
@@ -69,7 +69,7 @@ public class Game {
 		return team1.getNumberOfPlayers() + team2.getNumberOfPlayers();
 	}
 
-	public PlayerStats getPlayersStats(Player player) {
+	public PlayerStatRecorder getPlayersStats(Player player) {
 		Team team = getPlayersTeam(player);
 		return team.getPlayersStats(player);
 	}
@@ -204,7 +204,7 @@ public class Game {
 	
 	private String lb() {
 		StringBuffer sb = new StringBuffer();
-		Set<Stat> boxStats = Stat.getOutputStatsFromInput(recordingStats.values);
+		Set<Stat> boxStats = Stat.getDisplayableStatsFromRecordables(recordingStats.values);
 		boxStats.remove(Stat.FGA);
 		boxStats.remove(Stat.TPA);
 		boxStats.remove(Stat.FTA);
@@ -217,11 +217,11 @@ public class Game {
 
 	////////////////////////////////////
 
-	public boolean isAtLeastOnePlayerOnFloorForBothTeams() {
+	public boolean oneTeamHasNoPlayersOnTheFloor() {
 		if (team1.getPlayersOnTheFloor().size() == 0
 				|| team2.getPlayersOnTheFloor().size() == 0) {
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 }

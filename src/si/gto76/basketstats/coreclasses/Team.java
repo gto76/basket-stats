@@ -17,7 +17,7 @@ public class Team implements HasName, HasStats {
 	private static final DecimalFormat ONE_DIGIT = new DecimalFormat("#,##0.0");
 	////////////////////////////////////////
 	private String name;
-	private Map<Player, PlayerStats> allPlayersStats = new LinkedHashMap<Player, PlayerStats>();
+	private Map<Player, PlayerStatRecorder> allPlayersStats = new LinkedHashMap<Player, PlayerStatRecorder>();
 	Set<Player> playersOnTheFloor = new HashSet<Player>();
 	public final Game game;
 	////////////////////////////////////////
@@ -30,7 +30,7 @@ public class Team implements HasName, HasStats {
 		}
 	}	
 	
-	public Team(String name, Map<Player, PlayerStats> allPlayersStats, Game game) {
+	public Team(String name, Map<Player, PlayerStatRecorder> allPlayersStats, Game game) {
 		this.game = game;
 		setName(name);
 		this.allPlayersStats = allPlayersStats;
@@ -60,7 +60,7 @@ public class Team implements HasName, HasStats {
 	}
 	
 	public void addPlayer(Player player) {
-		PlayerStats ps = new PlayerStats(this);
+		PlayerStatRecorder ps = new PlayerStatRecorder(this);
 		allPlayersStats.put(player, ps);
 		playersOnTheFloor.add(player);
 	}
@@ -69,16 +69,16 @@ public class Team implements HasName, HasStats {
 		playersOnTheFloor.addAll(allPlayersStats.keySet());
 	}
 
-	public PlayerStats getPlayersStats(Player player) {
+	public PlayerStatRecorder getPlayersStats(Player player) {
 		return allPlayersStats.get(player);
 	}
 
-	public Map<Player, PlayerStats> getAllPlayersStats() {
+	public Map<Player, PlayerStatRecorder> getAllPlayersStats() {
 		return Collections.unmodifiableMap(allPlayersStats);
 	}
 
-	public Player getPlayer(PlayerStats ps) {
-		for (Map.Entry<Player, PlayerStats> pair : allPlayersStats.entrySet()) {
+	public Player getPlayer(PlayerStatRecorder ps) {
+		for (Map.Entry<Player, PlayerStatRecorder> pair : allPlayersStats.entrySet()) {
 			if (pair.getValue().equals(ps)) {
 				return pair.getKey();
 			}
@@ -102,9 +102,8 @@ public class Team implements HasName, HasStats {
 		// if there's no passed player among teams players
 		if (!allPlayersStats.keySet().contains(player)) {
 			return;
-			// throw new IllegalArgumentException(); // Not throwing exception,
-			// because a player may be deleted in meantime, and then
-			// undo calls this function.
+			// Is not throwing exception because a player may be deleted in meantime, 
+			// and then undo calls this function.
 		}
 		playersOnTheFloor.add(player);
 	}
@@ -123,7 +122,7 @@ public class Team implements HasName, HasStats {
 
 	protected void changePlusMinus(int points) {
 		for (Player player : playersOnTheFloor) {
-			PlayerStats playersStats = allPlayersStats.get(player);
+			PlayerStatRecorder playersStats = allPlayersStats.get(player);
 			playersStats.changePlusMinus(points);
 		}
 	}
@@ -134,7 +133,7 @@ public class Team implements HasName, HasStats {
 			throw new IllegalArgumentException("Can not return plus minus of a team");
 		}
 		int sum = 0;
-		for (PlayerStats ps : allPlayersStats.values()) {
+		for (PlayerStatRecorder ps : allPlayersStats.values()) {
 			sum += ps.get(stat);
 		}
 		return sum;
@@ -163,7 +162,7 @@ public class Team implements HasName, HasStats {
 	}
 	
 	public boolean hasUsedRebounds() {
-		for (PlayerStats ps : allPlayersStats.values()) {
+		for (PlayerStatRecorder ps : allPlayersStats.values()) {
 			if (ps.hasUsedRebounds()) {
 				return true;
 			}
@@ -203,8 +202,8 @@ public class Team implements HasName, HasStats {
 	 */
 	private void move(Player player, boolean up) {
 		List<Player> playerList = new ArrayList<Player>(allPlayersStats.keySet());
-		List<Entry<Player, PlayerStats>> entryList = 
-				new ArrayList<Entry<Player, PlayerStats>>(allPlayersStats.entrySet());
+		List<Entry<Player, PlayerStatRecorder>> entryList = 
+				new ArrayList<Entry<Player, PlayerStatRecorder>>(allPlayersStats.entrySet());
 		int index = playerList.indexOf(player);
 		if (index == -1	|| (up && index == 0)
 			|| (!up && index == playerList.size()-1) ) {
@@ -212,8 +211,8 @@ public class Team implements HasName, HasStats {
 		}
 		int delta = up ? -1 : 1;
 		Collections.swap(entryList, index, index + delta);
-		Map<Player, PlayerStats> tempMap = new LinkedHashMap<Player, PlayerStats>();
-		for (Entry<Player, PlayerStats> entry : entryList) {
+		Map<Player, PlayerStatRecorder> tempMap = new LinkedHashMap<Player, PlayerStatRecorder>();
+		for (Entry<Player, PlayerStatRecorder> entry : entryList) {
 			tempMap.put(entry.getKey(), entry.getValue());
 		}
 		allPlayersStats = tempMap;
@@ -223,7 +222,7 @@ public class Team implements HasName, HasStats {
 	 * Returns whether player was removed.
 	 */
 	public boolean removePlayer(Player player) {
-		if (!getPlayersStats(player).isEmpty()) {
+		if (!getPlayersStats(player).areAllValuesZero()) {
 			return false;
 		}
 		if (allPlayersStats.size() <= 1) {
@@ -287,7 +286,7 @@ public class Team implements HasName, HasStats {
 	}
 	
 	private void appendNonScoringHeader(StringBuilder sb) {
-		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(game.recordingStats.values)) {
+		for (Stat sc : Stat.getNonScoringDisplayableStatsFromRecordables(game.recordingStats.values)) {
 			sb.append(padTab(sc.getName().toUpperCase()));
 		}
 		sb.append("\n");
@@ -339,7 +338,7 @@ public class Team implements HasName, HasStats {
 			appendScoringValues(sb, hs);
 		}
 		// Non-scoring
-		for (Stat sc : Stat.getNonScoringOutputStatsFromInput(stats)) {
+		for (Stat sc : Stat.getNonScoringDisplayableStatsFromRecordables(stats)) {
 			// For team totals we don't need plus minus
 			if (hs instanceof Team && sc == Stat.PM) {
 				sb.append(padTab(""));

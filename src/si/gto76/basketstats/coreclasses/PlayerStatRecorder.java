@@ -13,38 +13,34 @@ import si.gto76.basketstats.Util;
 /**
  * Class for storing players stat values.
  * What is actualy tracked is defined in Team.recordingStats set, so some values may be redundand;
- * for instance three point shoots are always initialized, even if they are not tracked.
+ * for instance three point shots are always initialized, even if they are not tracked.
  */
-public class PlayerStats implements HasStats {
+public class PlayerStatRecorder implements HasStats {
 	////////////////////////////////////////	
 	private final Team team;
-	private Shots shootingValues;
+	private Shots shootingStatRecorder;
 	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();
-	/*
+	/**
 	 * Used for linking buttons with this classes specific setters, and also
 	 * kept on stack after execution for possible later undo.
 	 */
 	private final List<Action> actions = new ArrayList<Action>(); 
 	////////////////////////////////////////
 	
-	public PlayerStats(Team team) {
+	public PlayerStatRecorder(Team team) {
 		this.team = team;
-		shootingValues = new Shots(team.game);
-		initValuesAndActions(Stat.actionSet, Stat.playerStatsValues);
+		shootingStatRecorder = new Shots(team.game);
+		initValuesAndActions(Stat.actionStats, Stat.playersStatRecorderStats);
 	}
 		
-	public PlayerStats(Team team, Map<Stat,Integer> outputStatsWithValues) {
+	public PlayerStatRecorder(Team team, Map<Stat,Integer> displayableStatsWithValues) {
 		this(team);
-		Map<Stat,Integer> shotStats = Util.subMap(outputStatsWithValues, Stat.scoringValues);
+		Map<Stat,Integer> shotStats = Util.subMap(displayableStatsWithValues, Stat.scoringStats);
 		if (Conf.DEBUG) System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
-		this.shootingValues = new Shots(shotStats, team.game);
-		// OFF, DEF -> OFF, DEF
-		// OFF -> OFF
-		// DEF -> DEF
-		// REB -> REB
-		for (Stat outputStat : outputStatsWithValues.keySet()) {
-			if (!outputStat.isScoringValue() && outputStat.isInputValue()) {
-				values.put(outputStat, outputStatsWithValues.get(outputStat));
+		this.shootingStatRecorder = new Shots(shotStats, team.game);
+		for (Stat displayableStat : displayableStatsWithValues.keySet()) {
+			if (!displayableStat.isScoring() && displayableStat.isRecordable()) {
+				values.put(displayableStat, displayableStatsWithValues.get(displayableStat));
 			}
 		}
 	}
@@ -61,17 +57,20 @@ public class PlayerStats implements HasStats {
 	////////////////////////////////////////
 
 	/*
-	 * SETTERS
+	 * ####### ####### ####### ####### ####### #######
+	 * SETTERS SETTERS SETTERS SETTERS SETTERS SETTERS
+	 * ####### ####### ####### ####### ####### #######
 	 */
-	//IIPM, IIPF, TPM, TPF, PM, OFF, DEF, AST, PF, ST, TO, BS
-	/*
-	 * Return value tells if it was secesful.
+	
+	/**
+	 * Accepts: IIPM, IIPF, TPM, TPF, FTM, FTF, PM, OFF, DEF, AST, PF, ST, TO, BS
+	 * Returns false if stat could not be changed, due to one of the teams
+	 * not having any players on the floor.
 	 */
 	public boolean made(Stat stat) {
-		isStatInRecordingStats(stat); // Now checked only when made, so we can undo
-		// stats that are no longer tracked.
-		// Need to check if it is leagal to make a stat change.
-		if (!team.game.isAtLeastOnePlayerOnFloorForBothTeams()) {
+		 // Checked only when made, so we can still undo stats that are no longer tracked.
+		isStatInRecordingStats(stat);
+		if (team.game.oneTeamHasNoPlayersOnTheFloor()) {
 			return false;
 		}
 		changeState(stat, true, 1);
@@ -83,12 +82,12 @@ public class PlayerStats implements HasStats {
 	}
 	
 	private void changeState(Stat stat, boolean made, int delta) {
-		if (stat.isScoringValueOrPoints()) {
+		if (stat.isScoringOrPoints()) {
 			int scoreDelta;
 			if (made) {
-				scoreDelta = shootingValues.made(stat);
+				scoreDelta = shootingStatRecorder.made(stat);
 			} else {
-				scoreDelta = shootingValues.unMade(stat);
+				scoreDelta = shootingStatRecorder.unMade(stat);
 			}
 			if (scoreDelta != 0) {
 				team.game.setPlusMinus(scoreDelta, team);
@@ -117,30 +116,20 @@ public class PlayerStats implements HasStats {
 		values.put(stat, value + add);
 	}
 	
-	public boolean isEmpty() {
-		if (!shootingValues.isEmpty()) {
-			return false;
-		}
-		for (Entry<Stat, Integer> entry : values.entrySet()) {
-			if (entry.getKey() == Stat.PM) {
-				continue;
-			}
-			if (entry.getValue() != 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	////////////////////////////////////////
 
 	/*
-	 * GETTERS
+	 * ####### ####### ####### ####### ####### #######
+	 * GETTERS GETTERS GETTERS GETTERS GETTERS GETTERS
+	 * ####### ####### ####### ####### ####### #######
 	 */
-	//FGM-A	3PM-A PM OFF DEF TOT AST PF ST TO BS PTS 3PF IIPM IIPF
+	
+	/**
+	 * Accepts: FGM-A 3PM-A PM OFF DEF TOT AST PF ST TO BS PTS 3PF IIPM IIPF
+	 */
 	public int get(Stat stat) {
-		if (stat.isScoringValueOrPoints()) {
-			return shootingValues.get(stat);
+		if (stat.isScoringOrPoints()) {
+			return shootingStatRecorder.get(stat);
 		} else if (stat == Stat.TOT || stat == Stat.REB) {
 			return values.get(Stat.REB) + values.get(Stat.OFF) + values.get(Stat.DEF);
 		} else {
@@ -148,6 +137,10 @@ public class PlayerStats implements HasStats {
 		}
 	}
 	
+	/**
+	 * Checks only for REB, and not for OFF or DEF.
+	 * Needed, because get(REB) returns sum of them all.
+	 */
 	public boolean hasUsedRebounds() {
 		if (values.get(Stat.REB) == 0) {
 			return false;
@@ -166,6 +159,21 @@ public class PlayerStats implements HasStats {
 	
 	public Player getPlayer() {
 		return team.getPlayer(this);
+	}
+	
+	public boolean areAllValuesZero() {
+		if (!shootingStatRecorder.isEmpty()) {
+			return false;
+		}
+		for (Entry<Stat, Integer> entry : values.entrySet()) {
+			if (entry.getKey() == Stat.PM) {
+				continue;
+			}
+			if (entry.getValue() != 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	////////////////////////////////////////

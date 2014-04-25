@@ -21,7 +21,7 @@ public final class FileFilterExtension extends FileFilter {
 	/**
 	 * Returns matching filter for a filename, null if none match.
 	 */
-	public static FileFilterExtension getFilterNullable(String fileName) {
+	public static FileFilterExtension getFilterOrNull(String fileName) {
 		for (FileFilterExtension filter : all) {
 			if (filter.accept(fileName)) {
 				return filter;

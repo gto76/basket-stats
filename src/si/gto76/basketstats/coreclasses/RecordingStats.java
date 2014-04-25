@@ -10,13 +10,19 @@ import java.util.Set;
 
 import si.gto76.basketstats.Util;
 
+/**
+ * Class that contains unmodifiable set of input Stats that is guarantied to be in legal state.
+ * Legality is decided by rules that demand or forbid some Stats in presence of anothers.
+ * (For example you can not track three point shots if you don't also track two pointers.)
+ * Set that is sent to constructor should be checked for legality with static function isValidSet(Set<Stat>),
+ * or sent to static function getValidSet(Set<Stat>), that will modify it into legal state.
+ */
 public class RecordingStats {
-	private static final Map<Stat,  Set<Stat>> ADD_SHOOTING_DEPENDENCIES;
-	private static final Map<Stat,  Set<Stat>> REMOVE_SHOOTING_DEPENDENCIES;
-	private static final Map<Stat, Set<Stat>> ANTI_DEPENDENCIES;
+	private static final Map<Stat, Set<Stat>> STATS_THAT_NEED_TO_BE_ADDED_WHEN_ADDING;
+	private static final Map<Stat, Set<Stat>> STATS_THAT_NEED_TO_BE_REMOVED_WHEN_ADDING;
+	private static final Map<Stat, Set<Stat>> STATS_THAT_NEED_TO_BE_REMOVED_WHEN_REMOVING;
 	// Fill the maps:
 	static {
-		// Dependent values:
 		Map<Stat,  Set<Stat>> dependenciesBuilder = new HashMap<Stat, Set<Stat>>();
 		Util.putSetInMap(dependenciesBuilder, Stat.IIPF, Stat.IIPM);
 		Util.putSetInMap(dependenciesBuilder, Stat.TPM, Stat.IIPM);
@@ -24,7 +30,13 @@ public class RecordingStats {
 		Util.putSetInMap(dependenciesBuilder, Stat.FTM, Stat.IIPM);
 		Util.putSetInMap(dependenciesBuilder, Stat.FTF, Stat.IIPM, Stat.FTM);
 		Util.putSetInMap(dependenciesBuilder, Stat.PM, Stat.IIPM);
-		ADD_SHOOTING_DEPENDENCIES = Collections.unmodifiableMap(dependenciesBuilder);
+		STATS_THAT_NEED_TO_BE_ADDED_WHEN_ADDING = Collections.unmodifiableMap(dependenciesBuilder);
+		
+		dependenciesBuilder = new HashMap<Stat, Set<Stat>>();
+		Util.putSetInMap(dependenciesBuilder, Stat.OFF, Stat.REB);
+		Util.putSetInMap(dependenciesBuilder, Stat.DEF, Stat.REB);
+		Util.putSetInMap(dependenciesBuilder, Stat.REB, Stat.OFF, Stat.DEF);
+		STATS_THAT_NEED_TO_BE_REMOVED_WHEN_ADDING = Collections.unmodifiableMap(dependenciesBuilder);
 		
 		dependenciesBuilder = new HashMap<Stat, Set<Stat>>();
 		Util.putSetInMap(dependenciesBuilder, Stat.IIPM, Stat.IIPF, Stat.TPM, Stat.TPF, Stat.FTM, Stat.FTF, Stat.PM);
@@ -32,30 +44,28 @@ public class RecordingStats {
 		Util.putSetInMap(dependenciesBuilder, Stat.TPM, Stat.TPF);
 		Util.putSetInMap(dependenciesBuilder, Stat.TPF, Stat.IIPF);
 		Util.putSetInMap(dependenciesBuilder, Stat.FTM, Stat.FTF);
-		REMOVE_SHOOTING_DEPENDENCIES = Collections.unmodifiableMap(dependenciesBuilder);
-		
-		// Anti-dependant values:
-		Map<Stat, Set<Stat>> antiDependenciesBuilder = new HashMap<Stat, Set<Stat>>();
-		Util.putSetInMap(antiDependenciesBuilder, Stat.OFF, Stat.REB);
-		Util.putSetInMap(antiDependenciesBuilder, Stat.DEF, Stat.REB);
-		Util.putSetInMap(antiDependenciesBuilder, Stat.REB, Stat.OFF, Stat.DEF);
-		ANTI_DEPENDENCIES = Collections.unmodifiableMap(antiDependenciesBuilder);
-	}	
-	
+		STATS_THAT_NEED_TO_BE_REMOVED_WHEN_REMOVING = Collections.unmodifiableMap(dependenciesBuilder);
+	}
 	public static final RecordingStats DEFAULT = new RecordingStats(Util.arrayToSet(Stat.nbaRecordingStats));
 	
 	/////////////////////////////////////////////////
 	public final Set<Stat> values;
 	/////////////////////////////////////////////////	
-	
+
 	public RecordingStats(RecordingStats recordingStats) {
 		this(recordingStats.values);
 	}
 	
+	/**
+	 * Throws IllegalArgumentException if passed array does not contain valid combination of Stats.
+	 */
 	public RecordingStats(Stat... recordingStats) {
 		this(new HashSet<Stat>(Arrays.asList(recordingStats)));
 	}
 	
+	/**
+	 * Throws IllegalArgumentException if passed set does not contain valid combination of Stats.
+	 */
 	public RecordingStats(Set<Stat> recordingStats) {
 		if (isValidSet(recordingStats)) {
 			this.values = Collections.unmodifiableSet(recordingStats);
@@ -65,23 +75,28 @@ public class RecordingStats {
 		}
 	}
 
-	/////////////////////////////////////////////////	
+	/////////////////////////////////////////////////
 	
 	/*
-	 * GETTERS:
+	 * ####### ####### ####### ####### ####### #######
+	 * GETTERS GETTERS GETTERS GETTERS GETTERS GETTERS
+	 * ####### ####### ####### ####### ####### #######
 	 */
 
 	/**
 	 * Returns new RecordingStats object. Old one stays unchanged.
+	 * New object has additional stat that was passed, plus all the
+	 * stats that had to be added to mantain legal state.
 	 */
 	public RecordingStats add(Stat stat) {
 		Set<Stat> valuesOut = new HashSet<Stat>(values);
-		if (ANTI_DEPENDENCIES.containsKey(stat)) {
-			valuesOut.removeAll(ANTI_DEPENDENCIES.get(stat));
+		if (STATS_THAT_NEED_TO_BE_REMOVED_WHEN_ADDING.containsKey(stat)) {
+			valuesOut.removeAll(STATS_THAT_NEED_TO_BE_REMOVED_WHEN_ADDING.get(stat));
 		}
-		if (ADD_SHOOTING_DEPENDENCIES.containsKey(stat)) {
-			valuesOut.addAll(ADD_SHOOTING_DEPENDENCIES.get(stat));
+		if (STATS_THAT_NEED_TO_BE_ADDED_WHEN_ADDING.containsKey(stat)) {
+			valuesOut.addAll(STATS_THAT_NEED_TO_BE_ADDED_WHEN_ADDING.get(stat));
 		}
+		// Special cases that could not be expressed with map:
 		if (stat == Stat.IIPF && values.contains(Stat.TPM)) {
 			valuesOut.add(Stat.TPF);
 		}
@@ -94,11 +109,13 @@ public class RecordingStats {
 	
 	/**
 	 * Returns new RecordingStats object. Old one stays unchanged.
+	 * New object is withouth passed stat and also any stat that
+	 * had to be removed with it to mantain legal state.
 	 */
-	public RecordingStats removeNullable(Stat stat) {
+	public RecordingStats remove_Nullable(Stat stat) {
 		Set<Stat> valuesOut = new HashSet<Stat>(values);
-		if (REMOVE_SHOOTING_DEPENDENCIES.containsKey(stat)) {
-			valuesOut.removeAll(REMOVE_SHOOTING_DEPENDENCIES.get(stat));
+		if (STATS_THAT_NEED_TO_BE_REMOVED_WHEN_REMOVING.containsKey(stat)) {
+			valuesOut.removeAll(STATS_THAT_NEED_TO_BE_REMOVED_WHEN_REMOVING.get(stat));
 		}
 		valuesOut.remove(stat);
 		if (valuesOut.isEmpty()) {
@@ -107,12 +124,21 @@ public class RecordingStats {
 		return new RecordingStats(valuesOut);
 	}
 	
-	/////////////////////////////////////////////////	
+	/*
+	 * ################ ################ ################
+	 * STATIC FUNCTIONS STATIC FUNCTIONS STATIC FUNCTIONS
+	 * ################ ################ ################
+	 */
 	
 	/*
 	 * GET VALID SET:
 	 */
 	
+	/**
+	 * If passed set is in legal state, then returns a copy.
+	 * It it's not, than returns a new one based on passed set, that is legal.
+	 * Passed set is not changed.
+	 */
 	public static Set<Stat> getValidSet(Set<Stat> recordingStatsIn) {
 		// Null/empty check, init
 		if (recordingStatsIn == null) {
@@ -133,7 +159,6 @@ public class RecordingStats {
 		return Util.getOrderedSet(recordingStats);
 	}
 
-
 	private static Set<Stat> getOrderedSetWithIIPM() {
 		Set<Stat> orderedSet = new LinkedHashSet<Stat>();
 		orderedSet.add(Stat.IIPM);
@@ -145,15 +170,12 @@ public class RecordingStats {
 	 */
 
 	public static boolean isValidSet(Set<Stat> recordingStats) {
-		// Null/empty check
 		if (recordingStats == null || recordingStats.isEmpty()) {
 			return false;
 		}
-		// Check if any stat is not input stat
 		if (containsAnyNonInputStats(recordingStats)) {
 			return false;
 		}
-		// Check if all dependencies hold
 		if (violatesAnyDependency(recordingStats)) {
 			return false;
 		}
@@ -162,7 +184,7 @@ public class RecordingStats {
 
 	private static boolean containsAnyNonInputStats(Set<Stat> recordingStats) {
 		for (Stat stat : recordingStats) {
-			if (!stat.isInputValue()) {
+			if (!stat.isRecordable()) {
 				return true;
 			}
 		}
@@ -195,7 +217,7 @@ public class RecordingStats {
 		}
 		// One to many dependencies
 		for (Stat stat : recordingStats) {
-			Set<Stat> dependencies = ADD_SHOOTING_DEPENDENCIES.get(stat);
+			Set<Stat> dependencies = STATS_THAT_NEED_TO_BE_ADDED_WHEN_ADDING.get(stat);
 			if (dependencies == null) {
 				continue;
 			}

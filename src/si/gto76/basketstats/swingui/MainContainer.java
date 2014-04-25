@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Venue;
 import si.gto76.basketstats.coreclasses.Player;
-import si.gto76.basketstats.coreclasses.PlayerStats;
+import si.gto76.basketstats.coreclasses.PlayerStatRecorder;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class MainContainer {
@@ -89,10 +89,10 @@ public class MainContainer {
 		lastFilledRow++;
 	}
 	
-	private void addPlayers(Map<Player, PlayerStats> allPlayerStats) {
-		for (Entry<Player, PlayerStats> playerAndStats : allPlayerStats.entrySet()) {
+	private void addPlayers(Map<Player, PlayerStatRecorder> allPlayerStats) {
+		for (Entry<Player, PlayerStatRecorder> playerAndStats : allPlayerStats.entrySet()) {
 			Player player = playerAndStats.getKey();
-			PlayerStats playerStats = playerAndStats.getValue();
+			PlayerStatRecorder playerStats = playerAndStats.getValue();
 			boolean enabled = game.getPlayersOnTheFloor().contains(player);
 			PlayersRow playersRow = PlayersRow.fill(mainWindow, player, playerStats, mainPanel, 
 					lastFilledRow, enabled);

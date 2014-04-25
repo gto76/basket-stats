@@ -42,7 +42,7 @@ public class DialogChangeStats extends JFrame {
 	/*
 	 * Returns null if dialog was canceled.
 	 */
-	public static RecordingStats showDialogNullable(Game game) {
+	public static RecordingStats showDialogReturnNullIfCanceled(Game game) {
 		try {
 			DialogChangeStats dlg = new DialogChangeStats(game);
 			if (dlg.optionPane.getValue() == null || (Integer)dlg.optionPane.getValue() == 2) {
@@ -162,7 +162,7 @@ public class DialogChangeStats extends JFrame {
 				enabledStats.add(stat);
 				RecordingStats rsOld = new RecordingStats(enabledStats);
 				if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
-				newRecordingStats = rsOld.removeNullable(stat);
+				newRecordingStats = rsOld.remove_Nullable(stat);
 				if (newRecordingStats == null || !game.areValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
 					newRecordingStats = rsOld;
 				}

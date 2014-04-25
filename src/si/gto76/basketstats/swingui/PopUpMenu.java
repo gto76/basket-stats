@@ -71,7 +71,7 @@ public class PopUpMenu {
 	    popupMenu.addSeparator();
 	    addNewItemToMenu(popupMenu, "Add New Player", new AddNewPlayerActionListener());
 	    
-	    boolean player_has_not_yet_booked_any_stats = game.getPlayersStats(player).isEmpty();
+	    boolean player_has_not_yet_booked_any_stats = game.getPlayersStats(player).areAllValuesZero();
 	    boolean player_is_not_alone_on_the_team = team.getNumberOfPlayers() > 1;
 	    if (player_has_not_yet_booked_any_stats 
 	    		&& player_is_not_alone_on_the_team) {

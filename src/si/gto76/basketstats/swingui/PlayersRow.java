@@ -19,14 +19,14 @@ import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Action;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
-import si.gto76.basketstats.coreclasses.PlayerStats;
+import si.gto76.basketstats.coreclasses.PlayerStatRecorder;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class PlayersRow {
 	////////////////////////////
 	private final Player player;
-	private final PlayerStats playerStats;
+	private final PlayerStatRecorder playerStats;
 	
 	private final SwinGui mainWindow;
 	private final JPanel mainPanel; 
@@ -37,7 +37,7 @@ public class PlayersRow {
 	private List<JButton> buttons;
 	////////////////////////////
 
-	public static PlayersRow fill(SwinGui mainWindow, Player player, PlayerStats playerStats, 
+	public static PlayersRow fill(SwinGui mainWindow, Player player, PlayerStatRecorder playerStats, 
 			JPanel mainPanel, int row, boolean enabled) {
 		PlayersRow playersRow = new PlayersRow(mainWindow, player, playerStats, mainPanel, row);
 		playersRow.buildPlayersRow();
@@ -46,7 +46,7 @@ public class PlayersRow {
 	}
 	
 	private PlayersRow(SwinGui mainWindow, Player player,
-			PlayerStats playerStats, JPanel mainPanel, int row) {
+			PlayerStatRecorder playerStats, JPanel mainPanel, int row) {
 		this.mainWindow = mainWindow;
 		this.player = player;
 		this.playerStats = playerStats;
@@ -153,7 +153,7 @@ public class PlayersRow {
 	/*
 	 * BUTTONS
 	 */
-	private List<JButton> createPlayersButtons(PlayerStats stats) {
+	private List<JButton> createPlayersButtons(PlayerStatRecorder stats) {
 		List<JButton> buttons = new ArrayList<JButton>();
 		for (Action action : stats.getActions()) {
 			boolean we_are_recording_this_action =

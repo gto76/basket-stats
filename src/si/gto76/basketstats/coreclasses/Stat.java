@@ -9,6 +9,9 @@ import java.util.Set;
 
 import si.gto76.basketstats.Util;
 
+/**
+ * Enum with all statistical categories.
+ */
 public enum Stat {
 	/////
 	FGM("FGM", "Field goal made", false, true, true),
@@ -45,46 +48,17 @@ public enum Stat {
 	/////////////////////////////////////
 	private final String name;
 	private final String explanation;
-	private final boolean inputValue;
-	private final boolean outputValue;
-	private final boolean scoringValue;
+	private final boolean isRecordable;
+	private final boolean isDisplayable;
+	private final boolean isScoring;
 	/////////////////////////////////////
 	
-	Stat(String name, String explanation, boolean inputValue, boolean outputValue, boolean scoringValue) {
+	Stat(String name, String explanation, boolean isRecordable, boolean isDisplayable, boolean isScoring) {
 		this.name = name;
 		this.explanation = explanation;
-		this.inputValue = inputValue;
-		this.outputValue = outputValue;
-		this.scoringValue = scoringValue;
-	}
-	
-	/////////////////////////////////////
-
-	public static final Stat[] actionSet = {IIPM, IIPF, TPM, TPF, FTM, FTF, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
-	public static final Stat[] playerStatsValues = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
-	public static final Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, FTM, FTF, PM, OFF, DEF, AST, PF, ST, TO, BS, BA};
-	public static final Stat[] scoreChangingValues = {IIPM, TPM, FTM};
-	
-	public static Stat[] inputValues;
-	static {
-		List<Stat> inputValuesList = new ArrayList<Stat>();
-		for (Stat value : values()) {
-			if (value.isInputValue()) {
-				inputValuesList.add(value);
-			}
-		}
-		inputValues = inputValuesList.toArray(new Stat[0]);
-	}
-
-	public static final Stat[] scoringValues; // = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, FTM, FTA, FTF};
-	static {
-		List<Stat> scoringValuesList = new ArrayList<Stat>();
-		for (Stat value : values()) {
-			if (value.isScoringValue()) {
-				scoringValuesList.add(value);
-			}
-		}
-		scoringValues = scoringValuesList.toArray(new Stat[0]);
+		this.isRecordable = isRecordable;
+		this.isDisplayable = isDisplayable;
+		this.isScoring = isScoring;
 	}
 	
 	/////////////////////////////////////
@@ -96,20 +70,55 @@ public enum Stat {
 		return explanation;
 	}
 	
-	public boolean isInputValue() {
-		return inputValue;
+	public boolean isRecordable() {
+		return isRecordable;
 	}
-	public boolean isOutputValue() {
-		return outputValue;
+	public boolean isDisplayable() {
+		return isDisplayable;
 	}
-	public boolean isScoringValue() {
-		return scoringValue;
+	public boolean isScoring() {
+		return isScoring;
 	}
-	public boolean isScoringValueOrPoints() {
-		return scoringValue || (this.equals(PTS));
+	public boolean isScoringOrPoints() {
+		return isScoring || (this.equals(PTS));
 	}
+
+	/////////////////////////////////////
+
+	public static final Stat[] actionStats = {IIPM, IIPF, TPM, TPF, FTM, FTF, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
+	public static final Stat[] playersStatRecorderStats = {PM, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
+	public static final Stat[] nbaRecordingStats = {IIPM, IIPF, TPM, TPF, FTM, FTF, PM, OFF, DEF, AST, PF, ST, TO, BS, BA};
+	public static final Stat[] scoreChangingStats = {IIPM, TPM, FTM};
 	
-	public static Stat getByNameNullable(String name) {
+	public static Stat[] recordableStats; // = {IIPM, IIPF, TPM, TPF, FTM, FTF, PM, OFF, DEF, REB, AST, PF, ST, TO, BS, BA};
+	static {
+		List<Stat> recordableStatsList = new ArrayList<Stat>();
+		for (Stat value : values()) {
+			if (value.isRecordable()) {
+				recordableStatsList.add(value);
+			}
+		}
+		recordableStats = recordableStatsList.toArray(new Stat[0]);
+	}
+
+	public static final Stat[] scoringStats; // = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, FTM, FTA, FTF};
+	static {
+		List<Stat> scoringStatsList = new ArrayList<Stat>();
+		for (Stat value : values()) {
+			if (value.isScoring()) {
+				scoringStatsList.add(value);
+			}
+		}
+		scoringStats = scoringStatsList.toArray(new Stat[0]);
+	}
+
+	/*
+	 * ################ ################ ################
+	 * STATIC FUNCTIONS STATIC FUNCTIONS STATIC FUNCTIONS
+	 * ################ ################ ################
+	 */
+	
+	public static Stat getByNameOrNull(String name) {
 		Stat[] stats = Stat.values();
 	    for (Stat stat : stats) {
 	    	if (stat.name.toUpperCase().equals(name.toUpperCase())) {
@@ -119,85 +128,85 @@ public enum Stat {
 	    return null;
 	}
 	
-	/////////////////////////////////////
-	
-	public static Set<Stat> getInputStatsFromOutput(Set<Stat> outputStatsIn) {
-		Set<Stat> outputStats = new HashSet<Stat>(outputStatsIn);
-		Set<Stat> inputStats = new HashSet<Stat>();
-		// SCORING
+	public static Set<Stat> getRecordableStatsFromDisplayables(Set<Stat> displayableStatsIn) {
+		Set<Stat> displayableStats = new HashSet<Stat>(displayableStatsIn);
+		Set<Stat> recordableStats = new HashSet<Stat>();
+		// SCORING transformations:
 		// TPA -> IIPM, TPM, IIPF, TPF
 		// TPM -> IIPM, TPM,
 		// FGA -> IIPM, IIPF
 		// else -> IIPM
-		if (outputStats.contains(Stat.FGM)) {
-			inputStats.add(Stat.IIPM);
+		if (displayableStats.contains(Stat.FGM)) {
+			recordableStats.add(Stat.IIPM);
 		}
-		if (outputStats.contains(Stat.TPM)) {
-			inputStats.add(Stat.TPM);
+		if (displayableStats.contains(Stat.TPM)) {
+			recordableStats.add(Stat.TPM);
 		}
-		if (outputStats.contains(Stat.FGA)) {
-			inputStats.add(Stat.IIPF);
+		if (displayableStats.contains(Stat.FGA)) {
+			recordableStats.add(Stat.IIPF);
 		}
-		if (outputStats.contains(Stat.TPA)) {
-			inputStats.add(Stat.TPF);
+		if (displayableStats.contains(Stat.TPA)) {
+			recordableStats.add(Stat.TPF);
 		}
-		if (outputStats.contains(Stat.FTM)) {
-			inputStats.add(Stat.FTM);
+		if (displayableStats.contains(Stat.FTM)) {
+			recordableStats.add(Stat.FTM);
 		}
-		if (outputStats.contains(Stat.FTA)) {
-			inputStats.add(Stat.FTF);
+		if (displayableStats.contains(Stat.FTA)) {
+			recordableStats.add(Stat.FTF);
 		}
+		// REBOUND transformations:
 		// OFF, DEF, REB -> OFF, DEF
 		// OFF -> OFF
 		// DEF -> DEF
 		// REB -> REB
-		outputStats.remove(Stat.TOT);
-		if (outputStats.contains(Stat.REB) 
-				&& (outputStats.contains(Stat.OFF) || outputStats.contains(Stat.DEF))) {
-			outputStats.remove(Stat.REB);
+		displayableStats.remove(Stat.TOT);
+		if (displayableStats.contains(Stat.REB) 
+				&& (displayableStats.contains(Stat.OFF) || displayableStats.contains(Stat.DEF))) {
+			displayableStats.remove(Stat.REB);
 		}
-		for (Stat outputStat : outputStats) {
-			if (!outputStat.isScoringValue() && outputStat.isInputValue()) {
-				inputStats.add(outputStat);
+		for (Stat outputStat : displayableStats) {
+			if (!outputStat.isScoring() && outputStat.isRecordable()) {
+				recordableStats.add(outputStat);
 			}
 		}
-		return Util.getOrderedSet(inputStats);
+		return Util.getOrderedSet(recordableStats);
 	}
 	
-	public static Set<Stat> getOutputStatsFromInput(Set<Stat> inputStats) {
-		Set<Stat> outputStats = new HashSet<Stat>();
-		// SCORING
+	public static Set<Stat> getDisplayableStatsFromRecordables(Set<Stat> recordableStats) {
+		Set<Stat> displayableStats = new HashSet<Stat>();
+		// SCORING transformations:
 		// if TPF -> FGM, FGA, TPM, TPA
 		// else if TPM -> FGM, TPM
 		// else if IIPF -> FGM, FGA
 		// else -> FGM
-		if (Util.containsAny(inputStats, Stat.IIPM, Stat.TPM)) {
-			outputStats.add(Stat.FGM);
+		if (Util.containsAny(recordableStats, Stat.IIPM, Stat.TPM)) {
+			displayableStats.add(Stat.FGM);
 		}
-		if (inputStats.contains(Stat.IIPF)) {
-			outputStats.add(Stat.FGA);
+		if (recordableStats.contains(Stat.IIPF)) {
+			displayableStats.add(Stat.FGA);
 		}
-		if (inputStats.contains(Stat.TPM)) {
-			outputStats.add(Stat.TPM);
+		if (recordableStats.contains(Stat.TPM)) {
+			displayableStats.add(Stat.TPM);
 		}
-		if (inputStats.contains(Stat.TPF)) {
-			outputStats.add(Stat.TPA);
+		if (recordableStats.contains(Stat.TPF)) {
+			displayableStats.add(Stat.TPA);
 		}
-		if (inputStats.contains(Stat.FTM)) {
-			outputStats.add(Stat.FTM);
+		if (recordableStats.contains(Stat.FTM)) {
+			displayableStats.add(Stat.FTM);
 		}
-		if (inputStats.contains(Stat.FTF)) {
-			outputStats.add(Stat.FTA);
+		if (recordableStats.contains(Stat.FTF)) {
+			displayableStats.add(Stat.FTA);
 		}
 		// NON SCORING
-		Stat[] nonScoringStats = getNonScoringOutputStatsFromInput(inputStats);
-		outputStats.addAll(Arrays.asList(nonScoringStats));
+		Stat[] nonScoringStats = getNonScoringDisplayableStatsFromRecordables(recordableStats);
+		displayableStats.addAll(Arrays.asList(nonScoringStats));
 		
-		return Util.getOrderedSet(outputStats);
+		return Util.getOrderedSet(displayableStats);
 	}
 	
-	public static Stat[] getNonScoringOutputStatsFromInput(Set<Stat> inputStats) {
-		Set<Stat> outputStats = new LinkedHashSet<Stat>();
+	public static Stat[] getNonScoringDisplayableStatsFromRecordables(Set<Stat> recordableStats) {
+		Set<Stat> displayableStats = new LinkedHashSet<Stat>();
+		// REBOUND transformations:
 		// if OFF, DEF  -> OFF, DEF, REB
 		// else if OFF -> OFF
 		// else if DEF -> DEF
@@ -205,12 +214,14 @@ public enum Stat {
 		boolean offFlag = false, defFlag = false;
 		for (Stat stat : Stat.values()) {
 			if (offFlag == true && defFlag == true) {
-				outputStats.add(Stat.TOT);
+				displayableStats.add(Stat.TOT);
 				offFlag = false;
 				defFlag = false;
 			}
-			if (!stat.isScoringValue() && stat.isOutputValue() && inputStats.contains(stat)) {
-				outputStats.add(stat);
+			if (!stat.isScoring() 
+					&& stat.isDisplayable() 
+					&& recordableStats.contains(stat)) {
+				displayableStats.add(stat);
 				if (stat == Stat.OFF) {
 					offFlag = true;
 				}
@@ -219,11 +230,11 @@ public enum Stat {
 				}
 			}
 		}
-		// PTS
-		if (Util.containsAny(inputStats, scoreChangingValues)) {
-			outputStats.add(Stat.PTS);
+		// PTS:
+		if (Util.containsAny(recordableStats, scoreChangingStats)) {
+			displayableStats.add(Stat.PTS);
 		}
-		return (Stat[]) outputStats.toArray(new Stat[outputStats.size()]);
+		return (Stat[]) displayableStats.toArray(new Stat[displayableStats.size()]);
 	}
 
 }

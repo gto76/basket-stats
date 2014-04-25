@@ -23,7 +23,7 @@ public class ListenerNewGame implements ActionListener {
 					"Are you sure you want to open new game?");
 		}
 		if (exit) {
-			Tuple<RecordingStats,ShotValues> statsAndValues = DialogNewGame.showDialogNullable();
+			Tuple<RecordingStats,ShotValues> statsAndValues = DialogNewGame.showDialogReturnNullIfCanceled();
 			if (statsAndValues == null) {
 				return;
 			}

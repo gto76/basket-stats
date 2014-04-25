@@ -12,7 +12,7 @@ import si.gto76.basketstats.GameLoader;
 import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
-import si.gto76.basketstats.coreclasses.PlayerStats;
+import si.gto76.basketstats.coreclasses.PlayerStatRecorder;
 import si.gto76.basketstats.coreclasses.RecordingStats;
 import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
@@ -71,7 +71,7 @@ public class Test {
 	
 	public static int saveLoadTest(boolean full) {
 		// for all combinations of input stats
-		Set<Set<Stat>> allCombinations = powerSet(new HashSet<Stat>(Arrays.asList(Stat.inputValues)));
+		Set<Set<Stat>> allCombinations = powerSet(new HashSet<Stat>(Arrays.asList(Stat.recordableStats)));
 		// get valid recording stats
 		Set<Set<Stat>> allValidCombinations = new HashSet<Set<Stat>>();
 		for (Set<Stat> combination : allCombinations) {
@@ -164,7 +164,7 @@ public class Test {
 		// create new game,
 		Game game = Conf.getDefaultGame(recordingStats, shotValues);
 		// fill one player with each stat once
-		PlayerStats playerStats = getFirstPlayersStats(game);
+		PlayerStatRecorder playerStats = getFirstPlayersStats(game);
 		for (Stat stat : game.recordingStats.values) {
 			if (stat == Stat.PM) {
 				continue;
@@ -186,7 +186,7 @@ public class Test {
 		return 0;
 	}
 
-	private static PlayerStats getFirstPlayersStats(Game game) {
+	private static PlayerStatRecorder getFirstPlayersStats(Game game) {
 		Player firstPlayer = game.getTeam1().getAllPlayersStats().keySet().iterator().next();
 		return game.getPlayersStats(firstPlayer);
 	}
@@ -198,7 +198,7 @@ public class Test {
 	 */
 	public static int recordingStatsTest() {
 		// for all combinations of Input Stat run getValidSet
-		Set<Set<Stat>> allCombinations = powerSet(new HashSet<Stat>(Arrays.asList(Stat.inputValues)));
+		Set<Set<Stat>> allCombinations = powerSet(new HashSet<Stat>(Arrays.asList(Stat.recordableStats)));
 		for (Set<Stat> combination : allCombinations) {
 			Set<Stat> orderedStats = Util.getOrderedSet(combination);
 			Set<Stat> validSet = RecordingStats.getValidSet(combination);

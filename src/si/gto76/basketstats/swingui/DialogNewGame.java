@@ -41,7 +41,7 @@ public class DialogNewGame extends JFrame {
 	private Map<Stat,JSpinner> spinnerMap = new HashMap<Stat,JSpinner>();
 	//////////////////////////////////////////
 
-	public static Tuple<RecordingStats,ShotValues> showDialogNullable() {
+	public static Tuple<RecordingStats,ShotValues> showDialogReturnNullIfCanceled() {
 		try {
 			DialogNewGame dlg = new DialogNewGame();
 			if (dlg.optionPane.getValue() == null || (Integer)dlg.optionPane.getValue() == 2) {
@@ -63,7 +63,6 @@ public class DialogNewGame extends JFrame {
     	dialog = optionPane.createDialog(this, "Stat Selector");
     	
     	addStuff(mainPanel);
-    	
     	comboBox.setSelectedItem(comboBox.getSelectedItem());
     	
     	dialog.setSize(WIDTH, HEIGHT);
@@ -143,8 +142,8 @@ public class DialogNewGame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			@SuppressWarnings("unchecked")
-			StatsAndShotValues selectedTuple = (StatsAndShotValues) 
-					((JComboBox<StatsAndShotValues>) e.getSource()).getSelectedItem();
+			JComboBox<StatsAndShotValues> comboBox = (JComboBox<StatsAndShotValues>) e.getSource();
+			StatsAndShotValues selectedTuple = (StatsAndShotValues) comboBox.getSelectedItem();
 			RecordingStats stats = selectedTuple.statComb.stats;
 			setCheckBoxes(stats.values);
 
@@ -226,7 +225,7 @@ public class DialogNewGame extends JFrame {
 				} else {
 					enabledStats.add(stat);
 					RecordingStats rsOld = new RecordingStats(enabledStats);
-					rsNew = rsOld.removeNullable(stat);
+					rsNew = rsOld.remove_Nullable(stat);
 				}
 				
 				setCheckBoxes(rsNew.values);

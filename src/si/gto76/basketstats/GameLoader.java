@@ -18,7 +18,7 @@ import java.util.Set;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Venue;
 import si.gto76.basketstats.coreclasses.Player;
-import si.gto76.basketstats.coreclasses.PlayerStats;
+import si.gto76.basketstats.coreclasses.PlayerStatRecorder;
 import si.gto76.basketstats.coreclasses.RecordingStats;
 import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
@@ -38,14 +38,14 @@ public class GameLoader {
 		String[] statsStrings = line[14].split(SPLITTER_STR);
 		statsStrings = Util.removeFirstElement(statsStrings);
 		Set<Stat> outputStats = getOutputStats(statsStrings); 
-		RecordingStats inputStats = new RecordingStats(Stat.getInputStatsFromOutput(outputStats));
+		RecordingStats inputStats = new RecordingStats(Stat.getRecordableStatsFromDisplayables(outputStats));
 		if (Conf.DEBUG) System.out.println("output Stats: " + Arrays.toString(outputStats.toArray()));
 		if (Conf.DEBUG) System.out.println("input Stats: " + inputStats);
 		// NEW GAME:
 		Integer[] shotPoints = {line[5].length(), line[7].length(), line[9].length()};
 		Map<Stat, Integer> valuesMap = ShotValues.getValuesMap(shotPoints);
-		Map<Player, PlayerStats> team1Stats = new LinkedHashMap<Player, PlayerStats>();
-		Map<Player, PlayerStats> team2Stats = new LinkedHashMap<Player, PlayerStats>();
+		Map<Player, PlayerStatRecorder> team1Stats = new LinkedHashMap<Player, PlayerStatRecorder>();
+		Map<Player, PlayerStatRecorder> team2Stats = new LinkedHashMap<Player, PlayerStatRecorder>();
 		Game game = new Game(team1Name, team1Stats, team2Name, team2Stats, date, new Venue(venue), 
 				inputStats, new ShotValues(valuesMap));
 		Team team1 = game.getTeam1();
@@ -82,7 +82,7 @@ public class GameLoader {
 		}
 		for (int i = 0; i < statsStrings.length; i++) {
 			String statName = statsStrings[i];
-			Stat stat = Stat.getByNameNullable(statName);
+			Stat stat = Stat.getByNameOrNull(statName);
 			if (stat != null) {
 				stats.add(stat);
 			}
@@ -91,7 +91,7 @@ public class GameLoader {
 	}
 
 	private static void loadPlayersStats(String playerString,
-			Map<Player, PlayerStats> playersWithStats, Team team, Set<Stat> outputStats) {
+			Map<Player, PlayerStatRecorder> playersWithStats, Team team, Set<Stat> outputStats) {
 		// playerString: Name	0-0 0-0 0 0 0 0 2 2 0 0 0 0
 		String playersName = playerString.substring(0, Conf.PLAYER_NAME_WIDTH-1).trim();
 		// playersStats: 0-0 0-0 0 0 0 0 2 2 0 0 0 0
@@ -120,7 +120,7 @@ public class GameLoader {
 			stats.put(next, Integer.valueOf(token));
 		}
 		
-		PlayerStats plStats = new PlayerStats(team, stats);
+		PlayerStatRecorder plStats = new PlayerStatRecorder(team, stats);
 		playersWithStats.put(pl, plStats);
 	}
 

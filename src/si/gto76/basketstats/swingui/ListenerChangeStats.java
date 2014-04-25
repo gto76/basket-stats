@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import si.gto76.basketstats.coreclasses.RecordingStats;
 
 public class ListenerChangeStats implements ActionListener {
-	SwinGui mainWindow;
+	private final SwinGui mainWindow;
 
 	public ListenerChangeStats(SwinGui mainWindow) {
 		this.mainWindow = mainWindow;
@@ -15,7 +15,7 @@ public class ListenerChangeStats implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		RecordingStats newRecordingStats = 
-				DialogChangeStats.showDialogNullable(mainWindow.game);
+				DialogChangeStats.showDialogReturnNullIfCanceled(mainWindow.game);
 		if (newRecordingStats == null) {
 			return;
 		}
