@@ -26,7 +26,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
 
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Event;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
@@ -171,7 +170,7 @@ public class SwinGui {
 		updateScore();
 		// Update the button
 		JButton button = buttonMap.get(lastAction);
-		Util.setButtonText(button, lastAction);
+		SwinGuiUtil.setButtonText(button, lastAction);
 		// Print
 		System.out.println(game);
 		System.out.println("UNDO!");
@@ -195,8 +194,8 @@ public class SwinGui {
 	
 	protected void pushCommandOnStack(Action action) {
 		stateChangedSinceLastSave = true;
-		Event event = new Event(action, new HashSet<Player>(game.getTeam1().getPlayersOnTheFloor()), 
-				new HashSet<Player>(game.getTeam2().getPlayersOnTheFloor()));
+		Event event = new Event(action, new HashSet<Player>(game.getTeam1().getPlayersThatAreOnTheFloor()), 
+				new HashSet<Player>(game.getTeam2().getPlayersThatAreOnTheFloor()));
 		stackOfCommands.push(event);
 		updateUndoLabel();
 		setUpNewContainer(); // because of remove player popup menu

@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.HasName;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.Team;
@@ -44,7 +43,7 @@ public class NamePanel {
 	 * ADD NAME PANEL
 	 */
 	private void addNamePanel() {
-		Util.setAllSizes(nameContainer, NAMEPANEL_WIDTH, NAMEPANEL_HEIGHT);
+		SwinGuiUtil.setAllSizes(nameContainer, NAMEPANEL_WIDTH, NAMEPANEL_HEIGHT);
 		nameLabel = new JLabel(hasName.getName());
 		
 		// Updates team1Label or team2Label global variable, so that updateScore()
@@ -101,7 +100,7 @@ public class NamePanel {
 			}
 		});
 		
-		Util.setAllSizes(textField, NAMEPANEL_WIDTH, TEXTFIELD_HEIGHT);
+		SwinGuiUtil.setAllSizes(textField, NAMEPANEL_WIDTH, TEXTFIELD_HEIGHT);
 		nameContainer.add(textField);
 		nameContainer.validate();
 		textField.requestFocus();

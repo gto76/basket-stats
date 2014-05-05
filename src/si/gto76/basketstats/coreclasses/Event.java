@@ -3,6 +3,10 @@ package si.gto76.basketstats.coreclasses;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Tells who was on the floor when action occured.
+ * You need a stack of Events to implement undo.
+ */
 public class Event {
 	public final Action action;
 	public final Set<Player> team1PlayersOnTheFloor;

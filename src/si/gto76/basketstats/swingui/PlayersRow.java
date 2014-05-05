@@ -15,7 +15,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Action;
 import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.Player;
@@ -160,7 +159,7 @@ public class PlayersRow {
 					playerStats.getTeam().getRecordingStats().values.contains(action.getStat());
 			if (we_are_recording_this_action) {
 				JButton button = createPlayersButton(action);
-				Util.setAllSizes(button, 100, 10);
+				SwinGuiUtil.setAllSizes(button, 100, 10);
 				buttons.add(button);
 				mainWindow.buttonMap.put(action, button);
 			}
@@ -204,7 +203,7 @@ public class PlayersRow {
 			button.setToolTipText(action.getPlayer() + " - " + stat.getExplanation());
 		}
 		// Text
-		Util.setButtonText(button, action);
+		SwinGuiUtil.setButtonText(button, action);
 		// Action Listener
 		button.addActionListener(new PlayersButtonListaner(action, button));
 		return button;
@@ -236,7 +235,7 @@ public class PlayersRow {
 			mainWindow.pushCommandOnStack(action);
 			System.out.println(mainWindow.game);
 			if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
-				Util.setButtonText(button, action);
+				SwinGuiUtil.setButtonText(button, action);
 			}
 		}
 		
@@ -247,7 +246,7 @@ public class PlayersRow {
 			if (!mainWindow.warnAboutUnevenSquads) {
 				return false;
 			}
-			if (game.doBothTeamsHaveSameNumberOfPlayersOnFloor()) {
+			if (game.doBothTeamsHaveSameNumberOfPlayersOnTheFloor()) {
 				return false;
 			}
 		    JCheckBox checkbox = new JCheckBox("Do not show this message again.");  

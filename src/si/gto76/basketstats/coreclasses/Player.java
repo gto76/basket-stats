@@ -9,12 +9,12 @@ public class Player implements HasName {
 		setName(name);
 	}
 	
+	/**
+	 * Throws illegal argument exception if name is null, empty or only whitespaces.
+	 */
 	@Override
 	public void setName(String name) {
-		name = name.trim();
-		if (name.length() >= Conf.PLAYER_NAME_WIDTH) {	
-			name = name.substring(0, Conf.PLAYER_NAME_WIDTH-1);
-		}
+		name = Util.checkNameForNullAndTrimIt(name, Conf.PLAYER_NAME_WIDTH);
 		this.name = name;
 	}
 	

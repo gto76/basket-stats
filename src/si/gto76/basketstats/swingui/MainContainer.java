@@ -36,7 +36,7 @@ public class MainContainer {
 	////////////////////////////////////////
 	
 	private void fillInstance(JLabel team1Label, JLabel team2Label) {
-		addPlace(game.getLocation());
+		addPlace(game.getVenue());
 		addTime();
 		addTeam(game.getTeam1(), team1Label);
 		addTeam(game.getTeam2(), team2Label);
@@ -71,7 +71,7 @@ public class MainContainer {
 	private void addTeam(Team team, JLabel label) {
 		addTeamName(team);
 		// Players names and buttons
-		addPlayers(team.getAllPlayersStats());
+		addPlayers(team.getAllPlayersStatRecorders());
 	}
 
 	private void addTeamName(Team team) {

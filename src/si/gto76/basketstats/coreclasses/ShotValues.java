@@ -10,7 +10,8 @@ import java.util.Map;
  * It tells how much points normal shot, three pointer and free throw are worth.
  */
 public class ShotValues {
-	private static final int MAX_VALUE = 10;
+	public static final int MAX_VALUE = 10;
+	public static final int MIN_VALUE = 1;
 	private static final Integer[] FULL_COURT_ARRAY = {1,2,3};
 	private static final Integer[] HALF_COURT_ARRAY = {1,1,1};
 	public static final ShotValues FULL_COURT = new ShotValues(getValuesMap(FULL_COURT_ARRAY));
@@ -19,6 +20,9 @@ public class ShotValues {
 	public final Map<Stat, Integer> values;
 	//////////////////////////////////
 	
+	/**
+	 * Starts with default values, and overwrites them by passed values.
+	 */
 	public ShotValues(Map<Stat, Integer> shotPoints) {
 		Map<Stat, Integer> mapBuilder = new HashMap<Stat,Integer>(getValuesMap(FULL_COURT_ARRAY));
 		for (Stat stat : Stat.scoreChangingStats) {
@@ -35,7 +39,7 @@ public class ShotValues {
 	//////////////////////////////////
 
 	private static void asertValidValue(int value) {
-		if (value < 1) {
+		if (value < MIN_VALUE) {
 			throw new IllegalArgumentException("Shot value is less than 1: "+ value);
 		}
 		if (value > MAX_VALUE) {

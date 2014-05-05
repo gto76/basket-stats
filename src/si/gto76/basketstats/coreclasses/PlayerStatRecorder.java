@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.Util;
 
 /**
  * Class for storing players stat values.
@@ -18,7 +17,7 @@ import si.gto76.basketstats.Util;
 public class PlayerStatRecorder implements HasStats {
 	////////////////////////////////////////	
 	private final Team team;
-	private Shots shootingStatRecorder;
+	private ShotRecorder shootingStatRecorder;
 	private Map<Stat, Integer> values = new HashMap<Stat, Integer>();
 	/**
 	 * Used for linking buttons with this classes specific setters, and also
@@ -29,7 +28,7 @@ public class PlayerStatRecorder implements HasStats {
 	
 	public PlayerStatRecorder(Team team) {
 		this.team = team;
-		shootingStatRecorder = new Shots(team.game);
+		shootingStatRecorder = new ShotRecorder(team.game);
 		initValuesAndActions(Stat.actionStats, Stat.playersStatRecorderStats);
 	}
 		
@@ -37,7 +36,7 @@ public class PlayerStatRecorder implements HasStats {
 		this(team);
 		Map<Stat,Integer> shotStats = Util.subMap(displayableStatsWithValues, Stat.scoringStats);
 		if (Conf.DEBUG) System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
-		this.shootingStatRecorder = new Shots(shotStats, team.game);
+		this.shootingStatRecorder = new ShotRecorder(shotStats, team.game);
 		for (Stat displayableStat : displayableStatsWithValues.keySet()) {
 			if (!displayableStat.isScoring() && displayableStat.isRecordable()) {
 				values.put(displayableStat, displayableStatsWithValues.get(displayableStat));
@@ -162,7 +161,7 @@ public class PlayerStatRecorder implements HasStats {
 	}
 	
 	public boolean areAllValuesZero() {
-		if (!shootingStatRecorder.isEmpty()) {
+		if (!shootingStatRecorder.allValuesAreZero()) {
 			return false;
 		}
 		for (Entry<Stat, Integer> entry : values.entrySet()) {
@@ -181,7 +180,7 @@ public class PlayerStatRecorder implements HasStats {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		team.appendStatsRow(sb, this);
+		PrinterCommon.appendStatsRow(sb, this, team);
 		return sb.toString();
 	}
 

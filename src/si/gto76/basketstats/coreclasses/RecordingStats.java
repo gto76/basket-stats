@@ -1,5 +1,6 @@
 package si.gto76.basketstats.coreclasses;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import si.gto76.basketstats.Util;
 
 /**
  * Class that contains unmodifiable set of input Stats that is guarantied to be in legal state.

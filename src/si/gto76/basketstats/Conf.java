@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import si.gto76.basketstats.coreclasses.Game;
+import si.gto76.basketstats.coreclasses.Util;
 import si.gto76.basketstats.coreclasses.Venue;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.RecordingStats;
@@ -63,6 +64,9 @@ public class Conf {
 	static public final int NUMBER_OF_TABS_FOR_PLAYER_NAME = 3;
 	static public final int TAB_WIDTH = 8;
 	static public final int PLAYER_NAME_WIDTH = NUMBER_OF_TABS_FOR_PLAYER_NAME * TAB_WIDTH;
+
+	static public final int MAX_VENUE_NAME_LENGTH = 100;
+	static public final int MAX_TEAM_NAME_LENGTH = 100;
 	
 	// Stat Combinations Presets
 	public enum StatComb {

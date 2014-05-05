@@ -1,28 +1,38 @@
 package si.gto76.basketstats.coreclasses;
 
+/**
+ * Used for button listeners and undo stack. It tells which player made what move,
+ * and enables to record it or undo it with use of trigger() and undo() methods.
+ */
 public class Action {
 	////////////////////////////////////////
 	private final Stat stat;
-	private final PlayerStatRecorder playerStats;
+	private final PlayerStatRecorder playerStatRecorder;
 	////////////////////////////////////////
 	
-	public Action(Stat stat, PlayerStatRecorder playersStats) {
+	public Action(Stat stat, PlayerStatRecorder playerStatRecorder) {
 		this.stat = stat;
-		this.playerStats = playersStats;
+		this.playerStatRecorder = playerStatRecorder;
 	}
 	
 	////////////////////////////////////////
 
+	/*
+	 * SETTERS:
+	 */
 	public boolean trigger() {
-		return playerStats.made(stat);
+		return playerStatRecorder.made(stat);
 	}
 
 	public void undo() {
-		playerStats.unMade(stat);
+		playerStatRecorder.unMade(stat);
 	}
 	
+	/*
+	 * GETTERS:
+	 */
 	public int getStatValue() {
-		return playerStats.get(stat);
+		return playerStatRecorder.get(stat);
 	}
 
 	public String getStatName() {
@@ -34,12 +44,11 @@ public class Action {
 	}
 
 	public Team getTeam() {
-		return playerStats.getTeam();
+		return playerStatRecorder.getTeam();
 	}
 
 	public Player getPlayer() {
-		return playerStats.getPlayer();
+		return playerStatRecorder.getPlayer();
 	}
-
 
 }

@@ -1,6 +1,5 @@
 package si.gto76.basketstats.coreclasses;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,13 +10,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.Util;
 
+/**
+ * All stats are kept per player, in players stat recorders. Every time a teams stat is needed,
+ * it gets agregated anew.
+ */
 public class Team implements HasName, HasStats {
-	private static final DecimalFormat ONE_DIGIT = new DecimalFormat("#,##0.0");
 	////////////////////////////////////////
 	private String name;
-	private Map<Player, PlayerStatRecorder> allPlayersStats = new LinkedHashMap<Player, PlayerStatRecorder>();
+	private Map<Player, PlayerStatRecorder> playersWithStatRecorders = new LinkedHashMap<Player, PlayerStatRecorder>();
 	Set<Player> playersOnTheFloor = new HashSet<Player>();
 	public final Game game;
 	////////////////////////////////////////
@@ -33,20 +34,21 @@ public class Team implements HasName, HasStats {
 	public Team(String name, Map<Player, PlayerStatRecorder> allPlayersStats, Game game) {
 		this.game = game;
 		setName(name);
-		this.allPlayersStats = allPlayersStats;
+		this.playersWithStatRecorders = allPlayersStats;
 	}
 
 	////////////////////////////////////////
-	
+
 	/*
-	 * ############### ############### ###############
-	 * GETTERS/SETTERS GETTERS/SETTERS GETTERS/SETTERS
-	 * ############### ############### ###############
+	 * GENERAL:
 	 */
 	
+	/**
+	 * Throws illegal argument exception if name is null or empty.
+	 */
 	@Override
 	public void setName(String name) {
-		name = name.trim();
+		name = Util.checkNameForNullAndTrimIt(name, Conf.MAX_TEAM_NAME_LENGTH);
 		this.name = name.toUpperCase();
 	}
 	
@@ -59,48 +61,81 @@ public class Team implements HasName, HasStats {
 		return game.recordingStats;
 	}
 	
+	protected void changePlusMinus(int points) {
+		for (Player player : playersOnTheFloor) {
+			PlayerStatRecorder playersStats = playersWithStatRecorders.get(player);
+			playersStats.changePlusMinus(points);
+		}
+	}
+
+	public int get(Stat stat) {
+		// plusMinus of team doesn't make sense
+		if (stat == Stat.PM) {
+			throw new IllegalArgumentException("Can not return plus minus of a team");
+		}
+		int sum = 0;
+		for (PlayerStatRecorder ps : playersWithStatRecorders.values()) {
+			sum += ps.get(stat);
+		}
+		return sum;
+	}
+	
+	public boolean hasUsedRebounds() {
+		for (PlayerStatRecorder ps : playersWithStatRecorders.values()) {
+			if (ps.hasUsedRebounds()) {
+				return true;
+			}
+		}
+		return false; 
+	}
+
+	////////////////////////////////////////
+	
+	/*
+	 * PLAYER:
+	 */
+	
 	public void addPlayer(Player player) {
 		PlayerStatRecorder ps = new PlayerStatRecorder(this);
-		allPlayersStats.put(player, ps);
+		playersWithStatRecorders.put(player, ps);
 		playersOnTheFloor.add(player);
 	}
 
-	public void addAllPlayersOnTheFloor() {
-		playersOnTheFloor.addAll(allPlayersStats.keySet());
-	}
-
-	public PlayerStatRecorder getPlayersStats(Player player) {
-		return allPlayersStats.get(player);
-	}
-
-	public Map<Player, PlayerStatRecorder> getAllPlayersStats() {
-		return Collections.unmodifiableMap(allPlayersStats);
-	}
-
 	public Player getPlayer(PlayerStatRecorder ps) {
-		for (Map.Entry<Player, PlayerStatRecorder> pair : allPlayersStats.entrySet()) {
+		for (Map.Entry<Player, PlayerStatRecorder> pair : playersWithStatRecorders.entrySet()) {
 			if (pair.getValue().equals(ps)) {
 				return pair.getKey();
 			}
 		}
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Passed players stat recorder does not belong to any player on this team.");
 	}
 
-	public List<Player> getPlayers() {
-		List<Player> players = new ArrayList<Player>();
-		for (Player player : allPlayersStats.keySet()) {
-			players.add(player);
+	public boolean hasPlayer(Player player) {
+		return playersWithStatRecorders.keySet().contains(player);
+	}
+	
+	/**
+	 * Returns whether player was removed.
+	 */
+	public boolean removePlayer(Player player) {
+		if (!getPlayersStatRecorder(player).areAllValuesZero()) {
+			return false;
 		}
-		return players;
+		if (playersWithStatRecorders.size() <= 1) {
+			return false;
+		}
+		playersWithStatRecorders.remove(player);
+		playersOnTheFloor.remove(player);
+		return true;
 	}
 
-	public int getNumberOfPlayers() {
-		return allPlayersStats.size();
+	public PlayerStatRecorder getPlayersStatRecorder(Player player) {
+		return playersWithStatRecorders.get(player);
 	}
-
+	
 	public void putPlayerOnTheFloor(Player player) {
-		// if there's no passed player among teams players
-		if (!allPlayersStats.keySet().contains(player)) {
+		boolean player_is_not_on_this_team = !hasPlayer(player);
+		if (player_is_not_on_this_team) {
 			return;
 			// Is not throwing exception because a player may be deleted in meantime, 
 			// and then undo calls this function.
@@ -112,7 +147,29 @@ public class Team implements HasName, HasStats {
 		playersOnTheFloor.remove(player);
 	}
 	
-	public Set<Player> getPlayersOnTheFloor() {
+	///////////////////////////////////////
+	
+	/*
+	 * PLAYERS:
+	 */
+	
+	/**
+	 * Rerurns unmodifiable map.
+	 */
+	public Map<Player, PlayerStatRecorder> getAllPlayersStatRecorders() {
+		return Collections.unmodifiableMap(playersWithStatRecorders);
+	}
+
+
+	public int getNumberOfPlayers() {
+		return playersWithStatRecorders.size();
+	}
+	
+	public void putAllPlayersOnTheFloor() {
+		playersOnTheFloor.addAll(playersWithStatRecorders.keySet());
+	}
+
+	public Set<Player> getPlayersThatAreOnTheFloor() {
 		return Collections.unmodifiableSet(playersOnTheFloor);
 	}
 	
@@ -120,25 +177,12 @@ public class Team implements HasName, HasStats {
 		playersOnTheFloor = new HashSet<Player>(players);
 	}
 
-	protected void changePlusMinus(int points) {
-		for (Player player : playersOnTheFloor) {
-			PlayerStatRecorder playersStats = allPlayersStats.get(player);
-			playersStats.changePlusMinus(points);
-		}
-	}
+	////////////////////////////////////////
 
-	public int get(Stat stat) {
-		// plusMinus of team doesn't make sense
-		if (stat == Stat.PM) {
-			throw new IllegalArgumentException("Can not return plus minus of a team");
-		}
-		int sum = 0;
-		for (PlayerStatRecorder ps : allPlayersStats.values()) {
-			sum += ps.get(stat);
-		}
-		return sum;
-	}
-
+	/*
+	 * SHOTING PERCENTAGES:
+	 */
+	
 	public double getFgPercent() {
 		return getPercent(Stat.FGM, Stat.FGA);
 	}
@@ -156,19 +200,12 @@ public class Team implements HasName, HasStats {
 		int attempts = get(attemptsStat);
 		return Util.zeroIfDevideByZero(made, attempts);
 	}
-
-	public boolean hasPlayer(Player player) {
-		return allPlayersStats.keySet().contains(player);
-	}
 	
-	public boolean hasUsedRebounds() {
-		for (PlayerStatRecorder ps : allPlayersStats.values()) {
-			if (ps.hasUsedRebounds()) {
-				return true;
-			}
-		}
-		return false; 
-	}
+	//////////////////////////////////////////
+	
+	/*
+	 * REPOSITION PLAYER:
+	 */
 	
 	public boolean isPlayerFirst(Player player) {
 		if (getPlayersIndex(player) == 0) {
@@ -178,14 +215,14 @@ public class Team implements HasName, HasStats {
 	}
 	
 	public boolean isPlayerLast(Player player) {
-		if (getPlayersIndex(player) == allPlayersStats.size()-1) {
+		if (getPlayersIndex(player) == getNumberOfPlayers()-1) {
 			return true;
 		}
 		return false;
 	}
 	
 	private int getPlayersIndex(Player player) {
-		List<Player> playerList = new ArrayList<Player>(allPlayersStats.keySet());
+		List<Player> playerList = new ArrayList<Player>(playersWithStatRecorders.keySet());
 		return playerList.indexOf(player);
 	}
 	
@@ -198,12 +235,12 @@ public class Team implements HasName, HasStats {
 	}
 	
 	/**
-	 * Moves player one row up or down
+	 * Moves player one row up or down.
 	 */
 	private void move(Player player, boolean up) {
-		List<Player> playerList = new ArrayList<Player>(allPlayersStats.keySet());
+		List<Player> playerList = new ArrayList<Player>(playersWithStatRecorders.keySet());
 		List<Entry<Player, PlayerStatRecorder>> entryList = 
-				new ArrayList<Entry<Player, PlayerStatRecorder>>(allPlayersStats.entrySet());
+				new ArrayList<Entry<Player, PlayerStatRecorder>>(playersWithStatRecorders.entrySet());
 		int index = playerList.indexOf(player);
 		if (index == -1	|| (up && index == 0)
 			|| (!up && index == playerList.size()-1) ) {
@@ -215,175 +252,14 @@ public class Team implements HasName, HasStats {
 		for (Entry<Player, PlayerStatRecorder> entry : entryList) {
 			tempMap.put(entry.getKey(), entry.getValue());
 		}
-		allPlayersStats = tempMap;
+		playersWithStatRecorders = tempMap;
 	}
-	
-	/*
-	 * Returns whether player was removed.
-	 */
-	public boolean removePlayer(Player player) {
-		if (!getPlayersStats(player).areAllValuesZero()) {
-			return false;
-		}
-		if (allPlayersStats.size() <= 1) {
-			return false;
-		}
-		allPlayersStats.remove(player);
-		playersOnTheFloor.remove(player);
-		return true;
-	}
-	
-	/*
-	 * ######### ######### ######### ######### #########
-	 * TO STRING TO STRING TO STRING TO STRING TO STRING
-	 * ######### ######### ######### ######### #########
-	 */
+
+	/////////////////////
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		appendHeader(sb);
-		appendPlayerStats(sb);
-		appendTotals(sb);
-		appendPercents(sb);
-		return sb.toString();
-	}
-
-	private void appendHeader(StringBuilder sb) {
-		//FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
-		sb.append(name).append("\n").
-		append(emptyPlayersName());
-		appendScoringHeader(sb);
-		appendNonScoringHeader(sb);
-	}
-	
-	private void appendScoringHeader(StringBuilder sb) {
-		Set<Stat> stats = game.recordingStats.values;
-		if (!stats.contains(Stat.IIPM)) {
-			return;
-		}
-		////
-		if (stats.contains(Stat.IIPF) || 
-				stats.contains(Stat.TPF)) {
-			sb.append(padTab("FGM-A"));
-		} else {
-			sb.append(padTab("FGM"));
-		}
-		if (stats.contains(Stat.TPM)) {
-			if (stats.contains(Stat.TPF)) {
-				sb.append(padTab("3PM-A"));
-			} else {
-				sb.append(padTab("3PM"));
-			}
-		}
-		if (stats.contains(Stat.FTM)) {
-			if (stats.contains(Stat.FTF)) {
-				sb.append(padTab("FTM-A"));
-			} else {
-				sb.append(padTab("FTM"));
-			}
-		}
-	}
-	
-	private void appendNonScoringHeader(StringBuilder sb) {
-		for (Stat sc : Stat.getNonScoringDisplayableStatsFromRecordables(game.recordingStats.values)) {
-			sb.append(padTab(sc.getName().toUpperCase()));
-		}
-		sb.append("\n");
-	}
-
-	private void appendPlayerStats(StringBuilder sb) {
-		for (Player player : allPlayersStats.keySet()) {
-			String playersName = player.getName();
-			sb.append(Util.padEnd(playersName, Conf.PLAYER_NAME_WIDTH, ' ')).
-			append(allPlayersStats.get(player)).append("\n");
-		}
-	}
-	
-	private void appendTotals(StringBuilder sb) {
-		sb.append(Util.padEnd("Totals", Conf.PLAYER_NAME_WIDTH, ' '));		
-		appendStatsRow(sb, this);
-		sb.append("\n");
-	}
-	
-	private void appendPercents(StringBuilder sb) {
-		Set<Stat> stats = game.recordingStats.values;
-		sb.append(emptyPlayersName());
-		if (stats.contains(Stat.IIPF)) {				
-			sb.append(padTab(ONE_DIGIT.format(getFgPercent())+"%") );
-		} else {
-			sb.append(padTab(""));
-		}
-		if (stats.contains(Stat.TPF)) {				
-			sb.append(padTab(ONE_DIGIT.format(getTpPercent())+"%") );
-		} else {
-			if (stats.contains(Stat.TPM)) {
-				sb.append(padTab(""));
-			}
-		}
-		if (stats.contains(Stat.FTF)) {				
-			sb.append(padTab(ONE_DIGIT.format(getFtPercent())+"%") );
-		}
-		sb.append("\n");
-	}
-
-	/*
-	 * Also used by PlayerStat.toString()
-	 */
-	protected void appendStatsRow(StringBuilder sb, HasStats hs) {
-		// FGM-A 3PM-A FTM-A +/- OFF DEF TOT AST PF ST TO BS BA PTS
-		Set<Stat> stats = game.recordingStats.values;
-		// Scoring
-		if (stats.contains(Stat.IIPM)) {
-			appendScoringValues(sb, hs);
-		}
-		// Non-scoring
-		for (Stat sc : Stat.getNonScoringDisplayableStatsFromRecordables(stats)) {
-			// For team totals we don't need plus minus
-			if (hs instanceof Team && sc == Stat.PM) {
-				sb.append(padTab(""));
-				continue;
-			}
-			sb.append(padTab(hs.get(sc) + ""));
-		}
-	}
-	
-	private void appendScoringValues(StringBuilder sb, HasStats hs) {
-		// FGM-A 3PM-A FTM-A +/-
-		Set<Stat> stats = game.recordingStats.values;
-		if (stats.contains(Stat.IIPF) || stats.contains(Stat.TPF)) {
-			sb.append(padTab(hs.get(Stat.FGM)+"-"+hs.get(Stat.FGA)));
-		} else {
-			sb.append(padTab(hs.get(Stat.FGM) + ""));
-		}
-		if (stats.contains(Stat.TPM)) {
-			if (stats.contains(Stat.TPF)) {
-				sb.append(padTab(hs.get(Stat.TPM)+"-"+hs.get(Stat.TPA)));
-			} else {
-				sb.append(padTab(hs.get(Stat.TPM) + ""));
-			}
-		}
-		if (stats.contains(Stat.FTM)) {
-			if (stats.contains(Stat.FTF)) {
-				sb.append(padTab(hs.get(Stat.FTM)+"-"+hs.get(Stat.FTA)));
-			} else {
-				sb.append(padTab(hs.get(Stat.FTM) + ""));
-			}
-		}
-	}
-
-	/*
-	 * ##### ##### ##### ##### ##### ##### #####
-	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 
-	 * ##### ##### ##### ##### ##### ##### #####
-	 */
-	
-	public static String emptyPlayersName() {
-		return Util.padEnd("", Conf.PLAYER_NAME_WIDTH, ' ');
-	}
-	
-	public static String padTab(String string) {
-		return Util.padEnd(string, Conf.TAB_WIDTH, ' ');
+		return PrinterTeam.toString(this);
 	}
 	
 }

@@ -4,11 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
-import si.gto76.basketstats.GameLoader;
+import javax.swing.JOptionPane;
+
 import si.gto76.basketstats.coreclasses.Game;
+import si.gto76.basketstats.coreclasses.GameLoader;
 
 public class ListenerLoad implements ActionListener {
 	SwinGui mainWindow;
@@ -37,11 +40,16 @@ public class ListenerLoad implements ActionListener {
 					Scanner sc = new Scanner(fIn);
 					String gameString = sc.useDelimiter("\\A").next();
 					sc.close();
-					Game derbi = GameLoader.createGameFromString(gameString);
-					new SwinGui(derbi);
-					System.out.println(derbi);
-					//mainWindow.frame.hide(); // OLD
-					mainWindow.frame.setVisible(false);
+					try {
+					 	Game derbi = GameLoader.createGameFromString(gameString);
+						new SwinGui(derbi);
+						System.out.println(derbi);
+						mainWindow.frame.setVisible(false);
+					} catch (ParseException e1) {
+						JOptionPane.showMessageDialog(null, 
+								"Could not load game.\nError at line " +e1.getErrorOffset()+1+ ":\n" +e1.getMessage(), 
+								"Load Failure", JOptionPane.WARNING_MESSAGE);
+					}
 				}
 			} catch (IOException f) {
 			}

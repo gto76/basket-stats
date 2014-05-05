@@ -7,10 +7,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import si.gto76.basketstats.Util;
 
 /**
- * Enum with all statistical categories.
+ * Enum with all statistical categories and their characteristics.
+ * Two important characteristics are isRecordable and isDisplayable.
+ * Basicly the first one tells wether the stat is meant to be inputed with gui,
+ * and the other wether it's meant to be displayed in a box score.
+ * Also two mapping functions are probided that transform a set of Recording Stats 
+ * to a set of Displayable Stats and other way around.
  */
 public enum Stat {
 	/////
@@ -128,14 +132,28 @@ public enum Stat {
 	    return null;
 	}
 	
+	//////////////////////////////////
+
+	/*
+	 * RECORDABLE -> DISPLAYABLE
+	 */
+	
 	public static Set<Stat> getRecordableStatsFromDisplayables(Set<Stat> displayableStatsIn) {
 		Set<Stat> displayableStats = new HashSet<Stat>(displayableStatsIn);
 		Set<Stat> recordableStats = new HashSet<Stat>();
-		// SCORING transformations:
-		// TPA -> IIPM, TPM, IIPF, TPF
-		// TPM -> IIPM, TPM,
-		// FGA -> IIPM, IIPF
-		// else -> IIPM
+		transformDisplayableScoringStats(recordableStats, displayableStats);
+		transformDisplayableNonScoringStats(recordableStats, displayableStats);
+		return Util.getOrderedSet(recordableStats);
+	}
+	
+	/**
+	 * SCORING transformations:
+	 * TPA -> IIPM, TPM, IIPF, TPF
+	 * TPM -> IIPM, TPM,
+	 * FGA -> IIPM, IIPF
+	 * else -> IIPM
+	 */
+	private static void transformDisplayableScoringStats(Set<Stat> recordableStats, Set<Stat> displayableStats) {
 		if (displayableStats.contains(Stat.FGM)) {
 			recordableStats.add(Stat.IIPM);
 		}
@@ -154,11 +172,16 @@ public enum Stat {
 		if (displayableStats.contains(Stat.FTA)) {
 			recordableStats.add(Stat.FTF);
 		}
-		// REBOUND transformations:
-		// OFF, DEF, REB -> OFF, DEF
-		// OFF -> OFF
-		// DEF -> DEF
-		// REB -> REB
+	}
+
+	/**
+	 *  REBOUND transformations:
+	 *  OFF, DEF, REB -> OFF, DEF
+	 *  OFF -> OFF
+	 *  DEF -> DEF
+	 *  REB -> REB
+	 */
+	private static void transformDisplayableNonScoringStats(Set<Stat> recordableStats,	Set<Stat> displayableStats) {
 		displayableStats.remove(Stat.TOT);
 		if (displayableStats.contains(Stat.REB) 
 				&& (displayableStats.contains(Stat.OFF) || displayableStats.contains(Stat.DEF))) {
@@ -169,16 +192,31 @@ public enum Stat {
 				recordableStats.add(outputStat);
 			}
 		}
-		return Util.getOrderedSet(recordableStats);
 	}
+
+	//////////////////////////////////
+	
+	/*
+	 *  DISPLAYABLE -> RECORDABLE
+	 */
 	
 	public static Set<Stat> getDisplayableStatsFromRecordables(Set<Stat> recordableStats) {
 		Set<Stat> displayableStats = new HashSet<Stat>();
-		// SCORING transformations:
-		// if TPF -> FGM, FGA, TPM, TPA
-		// else if TPM -> FGM, TPM
-		// else if IIPF -> FGM, FGA
-		// else -> FGM
+		transformRecordableScoringStats(displayableStats, recordableStats);
+		Stat[] nonScoringStats = getNonScoringDisplayableStatsFromRecordables(recordableStats);
+		displayableStats.addAll(Arrays.asList(nonScoringStats));
+		return Util.getOrderedSet(displayableStats);
+	}
+
+	/**
+	 * SCORING transformations:
+	 * if TPF -> FGM, FGA, TPM, TPA
+	 * else if TPM -> FGM, TPM
+	 * else if IIPF -> FGM, FGA
+	 * else -> FGM
+	 */
+	private static void transformRecordableScoringStats(
+			Set<Stat> displayableStats, Set<Stat> recordableStats) {
 		if (Util.containsAny(recordableStats, Stat.IIPM, Stat.TPM)) {
 			displayableStats.add(Stat.FGM);
 		}
@@ -197,20 +235,17 @@ public enum Stat {
 		if (recordableStats.contains(Stat.FTF)) {
 			displayableStats.add(Stat.FTA);
 		}
-		// NON SCORING
-		Stat[] nonScoringStats = getNonScoringDisplayableStatsFromRecordables(recordableStats);
-		displayableStats.addAll(Arrays.asList(nonScoringStats));
-		
-		return Util.getOrderedSet(displayableStats);
 	}
-	
+
+	/**
+	 * REBOUND transformations:
+	 * if OFF, DEF  -> OFF, DEF, REB
+	 * else if OFF -> OFF
+	 * else if DEF -> DEF
+	 * else if REB -> REB
+	 */
 	public static Stat[] getNonScoringDisplayableStatsFromRecordables(Set<Stat> recordableStats) {
 		Set<Stat> displayableStats = new LinkedHashSet<Stat>();
-		// REBOUND transformations:
-		// if OFF, DEF  -> OFF, DEF, REB
-		// else if OFF -> OFF
-		// else if DEF -> DEF
-		// else if REB -> REB
 		boolean offFlag = false, defFlag = false;
 		for (Stat stat : Stat.values()) {
 			if (offFlag == true && defFlag == true) {

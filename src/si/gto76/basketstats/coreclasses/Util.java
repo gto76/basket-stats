@@ -1,7 +1,5 @@
-package si.gto76.basketstats;
+package si.gto76.basketstats.coreclasses;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,33 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.JButton;
-
-import si.gto76.basketstats.coreclasses.Action;
-import si.gto76.basketstats.coreclasses.Stat;
+import si.gto76.basketstats.Conf;
 
 public class Util {
-	
-	public static void setButtonText(JButton button, Action action) {
-		if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
-			String name = action.getStatName();
-			button.setText(formatButtonText(name, action.getStatValue()));
-		} else {
-			button.setText(action.getStatName());
-		}
-	}
-	
-	public static String formatButtonText(String name, int value) {
-		return name + Conf.BUTTON_TEXT_SEPARATOR + value;
-	}
-	
-	public static void setAllSizes(Component comp, int width, int height) {
-		Dimension dim = new Dimension(width, height);
-		comp.setMinimumSize(dim);
-		comp.setMaximumSize(dim);
-		comp.setPreferredSize(dim);
-	}
-	
 	public static Set<Stat> arrayToSet(Stat[] array) {
 		Set<Stat> set = new HashSet<Stat>();
 		set.addAll(Arrays.asList(array));
@@ -81,12 +55,13 @@ public class Util {
 		return mapOut;
 	}
 	
-	public static void assertPositive(Collection<Integer> values) {
+	public static boolean areAllPositive(Collection<Integer> values) {
 		for (Integer value : values) {
 			if (value < 0) {
-				throw new IllegalArgumentException("Some of shot values are negative: " + values.toString());
+				return false;
 			}
 		}
+		return true;
 	}	
 	
 	public static void putSetInMap(Map<Stat, Set<Stat>> map, Stat key, Stat... values) {
@@ -161,6 +136,56 @@ public class Util {
 	    	sb.append(padChar);
 	    }
 	    return sb.toString();
+	}
+	
+	public static int zeroIfNull(Integer number) {
+		if (number == null) {
+			return 0;
+		} else {
+			return number;
+		}
+	}
+	
+	public static boolean areAllPositive(int... numbers) {
+		for (int number : numbers) {
+			if (isNegative(number)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean isNegative(int number) {
+		if (number < 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static String padTab(String string) {
+		return Util.padEnd(string, Conf.TAB_WIDTH, ' ');
+	}
+	
+	public static String checkNameForNullAndTrimIt(String name, int maxNameLength) {
+		if (name == null) {
+			throw new IllegalArgumentException("Name is null");
+		}
+		name = name.trim();
+		if (name.length() == 0) {
+			throw new IllegalArgumentException("Name is empty or only whitespaces.");
+		}
+		if (name.length() >= maxNameLength) {	
+			name = name.substring(0, maxNameLength-1);
+		}
+		return name;
+	}
+	
+	public static int zeroOrPositive(int num) {
+		if (num < 0) {
+			return 0;
+		}
+		return num;
 	}
 	
 }

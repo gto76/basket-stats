@@ -63,15 +63,15 @@ public class PopUpMenu {
 			popupMenu.addSeparator();
 		}
 		if (!team.isPlayerFirst(player)) {
-			addNewItemToMenu(popupMenu, "Move Up", new MoveUpActionListener());
+			addNewItemToMenu(popupMenu, "Move Up", new MovePlayerUpActionListener());
 		}
 		if (!team.isPlayerLast(player)) {
-			addNewItemToMenu(popupMenu, "Move Down", new MoveDownActionListener());
+			addNewItemToMenu(popupMenu, "Move Down", new MovePlayerDownActionListener());
 		}
 	    popupMenu.addSeparator();
 	    addNewItemToMenu(popupMenu, "Add New Player", new AddNewPlayerActionListener());
 	    
-	    boolean player_has_not_yet_booked_any_stats = game.getPlayersStats(player).areAllValuesZero();
+	    boolean player_has_not_yet_booked_any_stats = game.getPlayersStatRecorder(player).areAllValuesZero();
 	    boolean player_is_not_alone_on_the_team = team.getNumberOfPlayers() > 1;
 	    if (player_has_not_yet_booked_any_stats 
 	    		&& player_is_not_alone_on_the_team) {
@@ -79,7 +79,7 @@ public class PopUpMenu {
 	    }
 	}
 	
-	class MoveUpActionListener implements ActionListener {
+	class MovePlayerUpActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			team.moveUpOneRow(player);
@@ -88,7 +88,7 @@ public class PopUpMenu {
 		}
 	}
 	
-	class MoveDownActionListener implements ActionListener {
+	class MovePlayerDownActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			team.moveDownOneRow(player);

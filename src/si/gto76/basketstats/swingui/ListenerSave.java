@@ -11,11 +11,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class ListenerSave implements ActionListener {
+	/////////////////////////
 	SwinGui mainWindow;
-
+	/////////////////////////
 	public ListenerSave(SwinGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
+	/////////////////////////
 	
 	private void saveFile(String formatName, File outputFile) {
 		PrintStream out;

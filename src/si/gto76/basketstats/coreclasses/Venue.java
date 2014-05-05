@@ -1,19 +1,20 @@
 package si.gto76.basketstats.coreclasses;
 
+import si.gto76.basketstats.Conf;
+
 public class Venue implements HasName {
-	private static final int MAX_NAME_LENGTH = 100;
 	private String name;
 
 	public Venue(String name) {
 		setName(name);
 	}
 
+	/**
+	 * Throws illegal argument exception if name is null, empty or only whitespaces.
+	 */
 	@Override
 	public void setName(String name) {
-		name = name.trim();
-		if (name.length() >= MAX_NAME_LENGTH) {	
-			name = name.substring(0, MAX_NAME_LENGTH-1);
-		}
+		name = Util.checkNameForNullAndTrimIt(name, Conf.MAX_VENUE_NAME_LENGTH);
 		this.name = name;
 	}
 

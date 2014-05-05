@@ -1,5 +1,6 @@
 package si.gto76.basketstats.test;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,14 +9,14 @@ import java.util.Set;
 
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.Conf.StatComb;
-import si.gto76.basketstats.GameLoader;
-import si.gto76.basketstats.Util;
 import si.gto76.basketstats.coreclasses.Game;
+import si.gto76.basketstats.coreclasses.GameLoader;
 import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStatRecorder;
 import si.gto76.basketstats.coreclasses.RecordingStats;
 import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
+import si.gto76.basketstats.coreclasses.Util;
 
 public class Test {
 
@@ -174,7 +175,13 @@ public class Test {
 		// create new game by sending game string to game loader
 		String gameString = game.toString();
 		if (DISPLAY_ORIGINAL_GAMES) System.out.println("# ORIGINAL GAME: #\n"+game);
-		Game loadedGame = GameLoader.createGameFromString(gameString);
+		Game loadedGame;
+		try {
+			loadedGame = GameLoader.createGameFromString(gameString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return 2; // Error: Parse Exception
+		}
 		if (DISPLAY_LOADED_GAMES) System.out.println("# LOADED GAME: #\n"+loadedGame);
 		// and compare strings
 		if (!loadedGame.toString().equals(gameString)) {
@@ -187,8 +194,8 @@ public class Test {
 	}
 
 	private static PlayerStatRecorder getFirstPlayersStats(Game game) {
-		Player firstPlayer = game.getTeam1().getAllPlayersStats().keySet().iterator().next();
-		return game.getPlayersStats(firstPlayer);
+		Player firstPlayer = game.getTeam1().getAllPlayersStatRecorders().keySet().iterator().next();
+		return game.getPlayersStatRecorder(firstPlayer);
 	}
 	
 	//////////////////////

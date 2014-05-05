@@ -155,7 +155,7 @@ public class DialogChangeStats extends JFrame {
 				RecordingStats rsOld = new RecordingStats(enabledStats);
 				if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
 				newRecordingStats = rsOld.add(stat);
-				if (!game.areValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
+				if (!game.areNewStatsValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
 					newRecordingStats = rsOld;
 				}
 			} else { // was unchecked
@@ -163,7 +163,7 @@ public class DialogChangeStats extends JFrame {
 				RecordingStats rsOld = new RecordingStats(enabledStats);
 				if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
 				newRecordingStats = rsOld.remove_Nullable(stat);
-				if (newRecordingStats == null || !game.areValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
+				if (newRecordingStats == null || !game.areNewStatsValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
 					newRecordingStats = rsOld;
 				}
 			}
