@@ -72,7 +72,8 @@ public class ShotRecorder {
 	 * Now checked only when made, so we can undo stats that are no longer tracked.
 	 */
 	private void assertStatIsRecording(Stat stat) {
-		if (!game.recordingStats.values.contains(stat)) {
+		boolean stat_is_not_in_recording_stats = !game.recordingStats.values.contains(stat);
+		if (stat_is_not_in_recording_stats) {
 			throw new IllegalArgumentException("Tried to change non recording stat: " + stat);
 		}
 	}

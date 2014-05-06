@@ -8,94 +8,114 @@ import java.awt.event.MouseListener;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JSpinner.DateEditor;
 import javax.swing.SpinnerDateModel;
 
 import si.gto76.basketstats.Conf;
 
+/**
+ * Label showing time, that turns into time spinner when double clicked,
+ * and back to label when enter or esc is pressed.
+ */
 public class TimePanel {
-	SwinGui swingFiller;
-	
-	public TimePanel(SwinGui swingFiller, JPanel dateContainer) {
-		this.swingFiller = swingFiller;
-		addTimePanel(dateContainer);
+	private static final String SPINNER_DATE_FORMAT = "HH:mm dd/MM/yyyy";
+	//////////////////////
+	private final SwinGui swinGui;
+	private final JPanel panel;
+	//////////////////////
+	public TimePanel(SwinGui swinGui, JPanel panel) {
+		this.swinGui = swinGui;
+		this.panel = panel;
+		addTimeLabel();
 	}
-
-	private void addTimePanel(final JPanel dateContainer) {
-		JLabel dateLabel = new JLabel(swingFiller.game.getDate().toString());
-		
-		dateContainer.addMouseListener(new MouseListener() {
-				public void mouseReleased(MouseEvent arg0) {}
-				public void mousePressed(MouseEvent arg0) {}
-				public void mouseExited(MouseEvent arg0) {}
-				public void mouseEntered(MouseEvent arg0) {}
-				
-				long clickedTimeOld = System.nanoTime();
-				@Override
-				public void mouseClicked(MouseEvent arg0) {
-					long clickedTimeNew = System.nanoTime();
-					long deltaTime = clickedTimeNew - clickedTimeOld;
-					if (deltaTime < Conf.DOUBLE_CLICK_LAG) {
-						switchNameLabelWithSpinner(dateContainer);
-					}
-					else {
-						clickedTimeOld = clickedTimeNew;
-					}
-				}
+	//////////////////////
+	
+	private void addTimeLabel() {
+		JLabel dateLabel = new JLabel(swinGui.game.getDate().toString());
+		MouseListener listener = new SwitchLabelWithSpinnerOnDoubleClick();
+		panel.addMouseListener(listener);
+		panel.setLayout(new GridLayout(1, 1));
+		panel.add(dateLabel);
+	}
+	
+	private class SwitchLabelWithSpinnerOnDoubleClick implements MouseListener {
+		public void mouseReleased(MouseEvent arg0) {}
+		public void mousePressed(MouseEvent arg0) {}
+		public void mouseExited(MouseEvent arg0) {}
+		public void mouseEntered(MouseEvent arg0) {}
+		long clickedTimeOld = System.nanoTime();
+		@Override
+		public void mouseClicked(MouseEvent arg0) {
+			long clickedTimeNew = System.nanoTime();
+			long deltaTime = clickedTimeNew - clickedTimeOld;
+			if (deltaTime < Conf.DOUBLE_CLICK_LAG) {
+				switchLabelWithSpinner();
 			}
-		);
-		dateContainer.setLayout(new GridLayout(1, 1));
-		dateContainer.add(dateLabel);
+			else {
+				clickedTimeOld = clickedTimeNew;
+			}
+		}
 	}
 
-	private void switchNameLabelWithSpinner(final JPanel dateContainer) {
-		dateContainer.removeAll();
-		
-		final JSpinner s = new JSpinner(new SpinnerDateModel(swingFiller.game.getDate(), null, null,
-			        Calendar.MONTH));
-	    JSpinner.DateEditor de = new JSpinner.DateEditor(s, "HH:mm dd/MM/yyyy");
-	    s.setEditor(de);
-		
-	    // You need to put keylistener to spiner and its text field
-	    s.addKeyListener(new SpinnerKeyListener(s, dateContainer));
-	    ((JSpinner.DefaultEditor)s.getEditor()).getTextField().addKeyListener(new SpinnerKeyListener(s, dateContainer));
-		
-	    dateContainer.add(s);
-		dateContainer.validate();
-		s.requestFocus();
-	}
-
-	private void switchBackToLabel(JPanel dateContainer) {
-		dateContainer.removeAll();
-		dateContainer.add(new JLabel(swingFiller.game.getDate().toString()));
-		swingFiller.mainPanel.validate();
+	private void switchLabelWithSpinner() {
+		panel.removeAll();
+		JSpinner spinner = getSpinner();
+	    addKeyListenerToSpinner(spinner);
+	    panel.add(spinner);
+		panel.validate();
+		spinner.requestFocus();
 	}
 	
-	class SpinnerKeyListener implements KeyListener {
-		JSpinner s;
-		JPanel dateContainer;
+	private JSpinner getSpinner() {
+		SpinnerDateModel dateModel = new SpinnerDateModel(swinGui.game.getDate(), null, null, Calendar.MONTH);
+		JSpinner spinner = new JSpinner(dateModel);
+		DateEditor dateEditor = new DateEditor(spinner, SPINNER_DATE_FORMAT);
+		spinner.setEditor(dateEditor);
+		return spinner;
+	}
+	
+	private void addKeyListenerToSpinner(JSpinner spinner) {
+	    KeyListener listener = new ChangeDateOnEnter(spinner);
+	    spinner.addKeyListener(listener);
+	    // Also add listener to spiners text field:
+	    JFormattedTextField spinnersTextField = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
+	    spinnersTextField.addKeyListener(listener);
+	}
 
-		public SpinnerKeyListener(JSpinner s, JPanel dateContainer) {
-			this.s = s;
-			this.dateContainer = dateContainer;
+	private class ChangeDateOnEnter implements KeyListener {
+		JSpinner spinner;
+		public ChangeDateOnEnter(JSpinner spinner) {
+			this.spinner = spinner;
 		}
-		
+		/////
 		public void keyTyped(KeyEvent e) {}
 		public void keyReleased(KeyEvent e) {}
 		public void keyPressed(KeyEvent e) {
 		    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 		    	e.consume();
-		    	Date newDate = (Date) s.getValue();
-		    	swingFiller.game.setDate(newDate);
-		    	switchBackToLabel(dateContainer);
-		    	System.out.println(swingFiller.game);
+		    	setNewDate();
+		    	switchSpinnerWithLabel();
 		    }
 		    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-		    	switchBackToLabel(dateContainer);
+		    	switchSpinnerWithLabel();
 		    }
 		}
+		
+		private void setNewDate() {
+			Date newDate = (Date) spinner.getValue();
+	    	swinGui.game.setDate(newDate);
+	    	System.out.println(swinGui.game);
+		}
+	}
+
+	private void switchSpinnerWithLabel() {
+		panel.removeAll();
+		panel.add(new JLabel(swinGui.game.getDate().toString()));
+		swinGui.mainPanel.validate();
 	}
 	
 }

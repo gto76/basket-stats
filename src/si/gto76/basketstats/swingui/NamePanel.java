@@ -133,7 +133,7 @@ public class NamePanel {
 		JLabel teamLabel = (JLabel) nameContainer.getComponent(0);
 		Team team = (Team) hasName;
 		mainWindow.updateTeamLabelReference(team, teamLabel);
-		mainWindow.updateScore();
+		mainWindow.updateScoreLabel();
 	}
 	
 }

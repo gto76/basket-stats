@@ -1,5 +1,6 @@
 package si.gto76.basketstats.coreclasses;
 
+import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -187,5 +188,12 @@ public class Util {
 		}
 		return num;
 	}
-	
+
+	public static GridBagConstraints getGridBagConstraints(int gridx, int gridy) {
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = gridx;       
+		c.gridy = gridy;
+		return c;
+	}
+
 }

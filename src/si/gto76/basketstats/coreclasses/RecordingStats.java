@@ -193,7 +193,8 @@ public class RecordingStats {
 	
 	private static boolean violatesAnyDependency(Set<Stat> recordingStats) {
 		Set<Stat> mandatories = getMandatoryStats(recordingStats);
-		if (!recordingStats.containsAll(mandatories)) {
+		boolean stats_dont_contain_all_the_mandatories = !recordingStats.containsAll(mandatories);
+		if (stats_dont_contain_all_the_mandatories) {
 			return true;
 		}
 		Set<Stat> forbidens = getForbidenStats(recordingStats);

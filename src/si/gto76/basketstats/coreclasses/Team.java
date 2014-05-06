@@ -118,7 +118,8 @@ public class Team implements HasName, HasStats {
 	 * Returns whether player was removed.
 	 */
 	public boolean removePlayer(Player player) {
-		if (!getPlayersStatRecorder(player).areAllValuesZero()) {
+		boolean some_players_values_are_not_zero = !getPlayersStatRecorder(player).areAllValuesZero();
+		if (some_players_values_are_not_zero) {
 			return false;
 		}
 		if (playersWithStatRecorders.size() <= 1) {

@@ -187,9 +187,9 @@ public enum Stat {
 				&& (displayableStats.contains(Stat.OFF) || displayableStats.contains(Stat.DEF))) {
 			displayableStats.remove(Stat.REB);
 		}
-		for (Stat outputStat : displayableStats) {
-			if (!outputStat.isScoring() && outputStat.isRecordable()) {
-				recordableStats.add(outputStat);
+		for (Stat displayableStat : displayableStats) {
+			if (!displayableStat.isScoring() && displayableStat.isRecordable()) {
+				recordableStats.add(displayableStat);
 			}
 		}
 	}

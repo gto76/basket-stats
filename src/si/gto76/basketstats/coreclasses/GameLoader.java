@@ -69,7 +69,8 @@ public class GameLoader {
 			throw new ParseException("Stats row does not have enough elements.", 14);
 		}
 		Set<Stat> recordableStats = Stat.getRecordableStatsFromDisplayables(displayableStats);
-		if (!RecordingStats.isValidSet(recordableStats)) {
+		boolean stats_set_is_not_valid = !RecordingStats.isValidSet(recordableStats);
+		if (stats_set_is_not_valid) {
 			throw new ParseException("There is a problem with stats row.", 14);
 		}
 		RecordingStats recordingStats = new RecordingStats(recordableStats);

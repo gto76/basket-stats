@@ -37,9 +37,10 @@ public class PlayerStatRecorder implements HasStats {
 		Map<Stat,Integer> shotStats = Util.subMap(displayableStatsWithValues, Stat.scoringStats);
 		if (Conf.DEBUG) System.out.println("SHot STats: " + Arrays.toString(shotStats.values().toArray()));
 		this.shootingStatRecorder = new ShotRecorder(shotStats, team.game);
-		for (Stat displayableStat : displayableStatsWithValues.keySet()) {
-			if (!displayableStat.isScoring() && displayableStat.isRecordable()) {
-				values.put(displayableStat, displayableStatsWithValues.get(displayableStat));
+		for (Stat stat : displayableStatsWithValues.keySet()) {
+			boolean stat_is_not_of_scoring_type = !stat.isScoring();
+			if (stat_is_not_of_scoring_type && stat.isRecordable()) {
+				values.put(stat, displayableStatsWithValues.get(stat));
 			}
 		}
 	}
@@ -97,7 +98,8 @@ public class PlayerStatRecorder implements HasStats {
 	}
 	
 	private void isStatInRecordingStats(Stat stat) {
-		if (!team.getRecordingStats().values.contains(stat)) {
+		boolean stat_is_not_in_recording_stats = !team.getRecordingStats().values.contains(stat);
+		if (stat_is_not_in_recording_stats) {
 			throw new IllegalArgumentException("Tried to input non input stat.");
 		}
 		if (stat == Stat.PM) {
@@ -161,7 +163,8 @@ public class PlayerStatRecorder implements HasStats {
 	}
 	
 	public boolean areAllValuesZero() {
-		if (!shootingStatRecorder.allValuesAreZero()) {
+		boolean some_shooting_values_are_not_zero = !shootingStatRecorder.allValuesAreZero();
+		if (some_shooting_values_are_not_zero) {
 			return false;
 		}
 		for (Entry<Stat, Integer> entry : values.entrySet()) {

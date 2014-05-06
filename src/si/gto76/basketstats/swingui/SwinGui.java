@@ -33,9 +33,16 @@ import si.gto76.basketstats.coreclasses.Action;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 
+/**
+ * Main Swing Gui Class.
+ * Takes care of input, output gets printed to stdout after every change to Game.
+ * It also takes care of undo functionality.
+ */
 public class SwinGui {
     //private static ArrayList<Image> iconsActive;
-    private static ArrayList<Image> iconsNotActive;
+    private static ArrayList<Image> ICONS_NOT_ACTIVE;
+	private static final int MAIN_BORDER_TOP = 5, MAIN_BORDER_LEFT = 6, 
+			 MAIN_BORDER_BOTTOM = 1, MAIN_BORDER_RIGHT = 2;
     //private static String os = System.getProperty("os.name");
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     
@@ -58,15 +65,19 @@ public class SwinGui {
 	protected boolean warnAboutUnevenSquads = true;
 	//////////////////////////////////////////////////////////////
 	
-    /*
-	 * #### #### #### #### #### #### ####
-	 * INIT INIT INIT INIT INIT INIT INIT
-	 * #### #### #### #### #### #### ####
-	 */
+	// Initialization block (executed before constructor):
 	{
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent we) {
+				onWindowClose();
+			}
+		});
 	    ToolTipManager.sharedInstance().setInitialDelay(Conf.TOOLTIP_DELAY);
 	}
+	
+	// Constructor:
 	public SwinGui(final Game game) {
 		this.game = game;
 		setIcons();
@@ -75,6 +86,14 @@ public class SwinGui {
 		updateUndoLabel();
 	}
 
+	//////////////////////////////////////////////////////////////
+	
+    /*
+	 * #### #### #### #### #### #### ####
+	 * INIT INIT INIT INIT INIT INIT INIT
+	 * #### #### #### #### #### #### ####
+	 */
+	
 	/*
 	 * 1. SET ICONS
 	 */
@@ -89,7 +108,7 @@ public class SwinGui {
 //			private static final long serialVersionUID = 4560955969369357297L;
 //			{add(iconImgSBlue.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
 //    	};
-    	iconsNotActive = new ArrayList<Image>() {
+    	ICONS_NOT_ACTIVE = new ArrayList<Image>() {
 			private static final long serialVersionUID = -337325274310404675L;
 			{add(iconImgS.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
     	};
@@ -105,7 +124,7 @@ public class SwinGui {
 //	            }
 //	        });
 //    	} else {
-    		frame.setIconImages(iconsNotActive);
+    		frame.setIconImages(ICONS_NOT_ACTIVE);
 //		}
 	}
 	
@@ -117,12 +136,6 @@ public class SwinGui {
 		frame.setJMenuBar(menu.getMenuBar());
 		ListenersMenu.add(menu, this);
 		
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent we) {
-				onWindowClose();
-			}
-		});
 	}
 	
 	/*
@@ -140,98 +153,34 @@ public class SwinGui {
 
 	private void fillContainer() {
 		MainContainer.fill(this, team1Label, team2Label);
-		updateScore();
+		updateScoreLabel();
 	}
 	
 	private void sealContainer() {
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 6, 1, 2));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(MAIN_BORDER_TOP, MAIN_BORDER_LEFT, 
+				MAIN_BORDER_BOTTOM, MAIN_BORDER_RIGHT));
 		frame.setContentPane(mainPanel);
 		frame.setSize(windowWidth, windowHeight);
 		frame.setVisible(true);
 	}
 	
+	//////////////////////////////////////////////////////////////
+	
 	/*
-	 * #### #### #### #### #### #### ####
-	 * UNDO UNDO UNDO UNDO UNDO UNDO UNDO
-	 * #### #### #### #### #### #### ####
+	 * ####### ####### ####### ####### ####### #######
+	 * METHODS METHODS METHODS METHODS METHODS METHODS
+	 * ####### ####### ####### ####### ####### #######
 	 */
 	
-	protected void undo() {
-		if (stackOfCommands.size() == 0) {
-			return;
-		}
-		// Put right players on floor
-		Event lastCommand = popCommandFromStack();
-		setPlayersOnFloorAndUpdatePlayersRow(lastCommand);
-		// Undo the action
-		Action lastAction = lastCommand.action;
-		//Integer scoreDelta = lastAction.undo();
-		lastAction.undo();
-		updateScore();
-		// Update the button
-		JButton button = buttonMap.get(lastAction);
-		SwinGuiUtil.setButtonText(button, lastAction);
-		// Print
-		System.out.println(game);
-		System.out.println("UNDO!");
-		setUpNewContainer(); // because of remove player popup menu
-	}
-
-	private void setPlayersOnFloorAndUpdatePlayersRow(Event command) {
-		Set<Player> team1players = command.team1PlayersOnTheFloor;
-		Set<Player> team2players = command.team2PlayersOnTheFloor;
-
-		for (Entry<Player, PlayersRow> tuple : playersRowMap.entrySet()) {
-			Player player = tuple.getKey(); 
-			PlayersRow playersRow = tuple.getValue();
-			if (team1players.contains(player) || team2players.contains(player)) {
-				playersRow.enable();
-			} else {
-				playersRow.disable();
-			}
-		}
-	}
-	
-	protected void pushCommandOnStack(Action action) {
-		stateChangedSinceLastSave = true;
-		Event event = new Event(action, new HashSet<Player>(game.getTeam1().getPlayersThatAreOnTheFloor()), 
-				new HashSet<Player>(game.getTeam2().getPlayersThatAreOnTheFloor()));
-		stackOfCommands.push(event);
-		updateUndoLabel();
-		setUpNewContainer(); // because of remove player popup menu
-	}
-
-	private Event popCommandFromStack() {
-		stateChangedSinceLastSave = true;
-		Event command = stackOfCommands.pop();
-		updateUndoLabel();
-		return command;
-	}
-	
-	private void updateUndoLabel() {
-		Event command = stackOfCommands.peek();
-		if (command != null) {
-			Action action = command.action;
-			menu.menuEditUndo.setEnabled(true);
-			menu.menuEditUndo.setText("Undo \"" + action.getStat().getExplanation() +
-					" by " + action.getPlayer().getName() + "\"");
-		} else {
-			menu.menuEditUndo.setEnabled(false);
-			menu.menuEditUndo.setText("Undo");
-		}
-	}
-
-	/*
-	 * ##### ##### ##### ##### ##### ##### #####
-	 * OTHER OTHER OTHER OTHER OTHER OTHER OTHER 
-	 * ##### ##### ##### ##### ##### ##### #####
-	 */
-	
-	protected void updateScore() {
+	protected void updateScoreLabel() {
 		Team team1 = game.getTeam1();
 		team1Label.setText(getTeamNameAndScore(team1));
 		Team team2 = game.getTeam2();
 		team2Label.setText(getTeamNameAndScore(team2));
+	}
+
+	private static String getTeamNameAndScore(Team team) {
+		return team.getName() + ": " + team.get(Stat.PTS);
 	}
 	
 	protected void updateTeamLabelReference(Team team, JLabel teamLabel) {
@@ -258,9 +207,86 @@ public class SwinGui {
 		System.out.println(game);
 	}
 	
+	//////////////////////////////////////////////////////////////
+	
 	/*
-	 * ON EXIT
+	 * #### #### #### #### #### #### ####
+	 * UNDO UNDO UNDO UNDO UNDO UNDO UNDO
+	 * #### #### #### #### #### #### ####
 	 */
+	
+	protected void undo() {
+		if (stackOfCommands.size() == 0) {
+			return;
+		}
+		// Put right players on floor
+		Event lastCommand = popCommandFromStack();
+		setPlayersOnFloorAndUpdatePlayersRow(lastCommand);
+		// Undo the action
+		Action lastAction = lastCommand.action;
+		lastAction.undo();
+		updateScoreLabel();
+		// Update the button
+		JButton button = buttonMap.get(lastAction);
+		SwinGuiUtil.setButtonText(button, lastAction);
+		// Print
+		System.out.println(game);
+		System.out.println("UNDO!");
+		setUpNewContainer(); // So that players popup menu gets updated.
+	}
+
+	private void setPlayersOnFloorAndUpdatePlayersRow(Event command) {
+		Set<Player> team1players = command.team1PlayersOnTheFloor;
+		Set<Player> team2players = command.team2PlayersOnTheFloor;
+
+		for (Entry<Player, PlayersRow> tuple : playersRowMap.entrySet()) {
+			Player player = tuple.getKey(); 
+			PlayersRow playersRow = tuple.getValue();
+			if (team1players.contains(player) || team2players.contains(player)) {
+				playersRow.enable();
+			} else {
+				playersRow.disable();
+			}
+		}
+	}
+	
+	protected void pushCommandOnStack(Action action) {
+		stateChangedSinceLastSave = true;
+		Event event = new Event(action, new HashSet<Player>(game.getTeam1().getPlayersThatAreOnTheFloor()), 
+				new HashSet<Player>(game.getTeam2().getPlayersThatAreOnTheFloor()));
+		stackOfCommands.push(event);
+		updateUndoLabel();
+		setUpNewContainer();// So that players popup menu gets updated.
+	}
+
+	private Event popCommandFromStack() {
+		stateChangedSinceLastSave = true;
+		Event command = stackOfCommands.pop();
+		updateUndoLabel();
+		return command;
+	}
+	
+	private void updateUndoLabel() {
+		Event command = stackOfCommands.peek();
+		if (command != null) {
+			Action action = command.action;
+			menu.menuEditUndo.setEnabled(true);
+			menu.menuEditUndo.setText("Undo \"" + action.getStat().getExplanation() +
+					" by " + action.getPlayer().getName() + "\"");
+		} else {
+			menu.menuEditUndo.setEnabled(false);
+			menu.menuEditUndo.setText("Undo");
+		}
+	}
+
+	//////////////////////////////////////////////////////////////
+	
+	/*
+	 * ####### ####### ####### ####### #######
+	 * ON EXIT ON EXIT ON EXIT ON EXIT ON EXIT
+	 * ####### ####### ####### ####### ####### 
+	 */
+
 	protected void onWindowClose() {
 		if (stateChangedSinceLastSave) {
 			confirmExit();
@@ -275,13 +301,7 @@ public class SwinGui {
 			System.exit(0);
 		}
 	}
-	
-	/*
-	 * ##### ##### ##### ##### ##### ##### #####
-	 * UTILS UTILS UTILS UTILS UTILS UTILS UTILS 
-	 * ##### ##### ##### ##### ##### ##### #####
-	 */
-	
+
 	protected static boolean exitDialog(String text) {
 		String ObjButtons[] = { "Yes", "No" };
 		int PromptResult = JOptionPane.showOptionDialog(null,
@@ -295,7 +315,4 @@ public class SwinGui {
 		}
 	}
 
-	private static String getTeamNameAndScore(Team team) {
-		return team.getName() + ": " + team.get(Stat.PTS);
-	}
 }

@@ -3,6 +3,7 @@ package si.gto76.basketstats.swingui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Scanner;
@@ -14,46 +15,63 @@ import si.gto76.basketstats.coreclasses.Game;
 import si.gto76.basketstats.coreclasses.GameLoader;
 
 public class ListenerLoad implements ActionListener {
+	///////////////////
 	SwinGui mainWindow;
-
+	///////////////////
 	public ListenerLoad(SwinGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
-
+	///////////////////
+	
 	public void actionPerformed(ActionEvent e) {
-		JFileChooser fc = new JFileChooser();
-		// adds file filters
+		JFileChooser fileChooser = new JFileChooser();
 		for (FileFilterExtension filter : FileFilterExtension.all) {
-			fc.addChoosableFileFilter(filter);
+			fileChooser.addChoosableFileFilter(filter);
 		}
-		fc.setFileFilter(FileFilterExtension.hsg);
-		int returnVal = fc.showOpenDialog(mainWindow.frame);
+		fileChooser.setFileFilter(FileFilterExtension.hsg);
+		int returnVal = fileChooser.showOpenDialog(mainWindow.frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
-				boolean exit = true;
-				if (mainWindow.stateChangedSinceLastSave) {
-					exit = SwinGui.exitDialog("Game was not saved.\n" +
-							"Are you sure you want to open another game?");
-				}
-				if (exit) {
-					File fIn = fc.getSelectedFile();
-					Scanner sc = new Scanner(fIn);
-					String gameString = sc.useDelimiter("\\A").next();
-					sc.close();
-					try {
-					 	Game derbi = GameLoader.createGameFromString(gameString);
-						new SwinGui(derbi);
-						System.out.println(derbi);
-						mainWindow.frame.setVisible(false);
-					} catch (ParseException e1) {
-						JOptionPane.showMessageDialog(null, 
-								"Could not load game.\nError at line " +e1.getErrorOffset()+1+ ":\n" +e1.getMessage(), 
-								"Load Failure", JOptionPane.WARNING_MESSAGE);
-					}
-				}
+				loadGame(fileChooser);
 			} catch (IOException f) {
+				JOptionPane.showMessageDialog(null, 
+						"Problem occured while opening file.", "Load Failure", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
+
+	private void loadGame(JFileChooser fileChooser) throws FileNotFoundException {
+		boolean current_game_is_not_saved = mainWindow.stateChangedSinceLastSave;
+		if (current_game_is_not_saved && user_wants_to_abort_loading()) {
+			return;
+		}
+		String gameString = getGameString(fileChooser);
+		createNewGameAndSetUpGui(gameString);
+	}
+
+	private boolean user_wants_to_abort_loading() {
+		return !SwinGui.exitDialog("Game was not saved.\nAre you sure you want to open another game?");
+	}
+
+	private String getGameString(JFileChooser fileChooser) throws FileNotFoundException {
+		File fIn = fileChooser.getSelectedFile();
+		Scanner sc = new Scanner(fIn);
+		String gameString = sc.useDelimiter("\\A").next();
+		sc.close();
+		return gameString;
+	}
+
+	private void createNewGameAndSetUpGui(String gameString) {
+		try {
+		 	Game game = GameLoader.createGameFromString(gameString);
+			new SwinGui(game);
+			System.out.println(game);
+			mainWindow.frame.setVisible(false);
+		} catch (ParseException e1) {
+			JOptionPane.showMessageDialog(null, 
+					"Could not load game.\nError at line " +(e1.getErrorOffset()+1)+ ":\n" +e1.getMessage(), 
+					"Load Failure", JOptionPane.ERROR_MESSAGE);
+		}
+	}	
 	
 }

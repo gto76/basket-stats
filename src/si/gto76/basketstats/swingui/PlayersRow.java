@@ -21,6 +21,7 @@ import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.PlayerStatRecorder;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
+import si.gto76.basketstats.coreclasses.Util;
 
 public class PlayersRow {
 	////////////////////////////
@@ -107,9 +108,7 @@ public class PlayersRow {
 		JPanel playersNameContainer = new JPanel();
 		NamePanel namePanel = new NamePanel(mainWindow, playersNameContainer, player);
 		
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;       
-		c.gridy = row;       
+		GridBagConstraints c = Util.getGridBagConstraints(0, row);		
 		c.weighty = 1.0;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
@@ -142,9 +141,7 @@ public class PlayersRow {
 	}
 	
 	private void addPlayersCheckBox(JCheckBox checkBox) {
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 1;       
-		c.gridy = row;       
+		GridBagConstraints c = Util.getGridBagConstraints(1, row);	
 		c.weighty = 1.0;
 		mainPanel.add(checkBox, c);
 	}
@@ -175,9 +172,7 @@ public class PlayersRow {
 			panel.add(b);
 		}
 		
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 2;       
-		c.gridy = row;       
+		GridBagConstraints c = Util.getGridBagConstraints(2, row);	
 		c.weighty = 1.0;
 		c.weightx = 1.0;
 		c.fill = GridBagConstraints.BOTH;
@@ -221,17 +216,16 @@ public class PlayersRow {
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
-			boolean shouldReturn = checkForUnevenSquads();
-			if (shouldReturn) {
+			if (shouldButtonEventTerminate()) {
 				return;
 			}
-			boolean suceeded = action.trigger();
-			if (!suceeded) {
+			boolean action_failed = !action.trigger();
+			if (action_failed) {
 				JOptionPane.showMessageDialog(null,"One of the teams has no players on the floor.", "",
 				        JOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			mainWindow.updateScore();
+			mainWindow.updateScoreLabel();
 			mainWindow.pushCommandOnStack(action);
 			System.out.println(mainWindow.game);
 			if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
@@ -239,10 +233,7 @@ public class PlayersRow {
 			}
 		}
 		
-		/*
-		 * Returns weather action listener should terminate;
-		 */
-		private boolean checkForUnevenSquads() {
+		private boolean shouldButtonEventTerminate() {
 			if (!mainWindow.warnAboutUnevenSquads) {
 				return false;
 			}

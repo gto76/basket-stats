@@ -180,15 +180,16 @@ public class Test {
 			loadedGame = GameLoader.createGameFromString(gameString);
 		} catch (ParseException e) {
 			e.printStackTrace();
-			return 2; // Error: Parse Exception
+			return 2; // ERROR: Parse Exception
 		}
 		if (DISPLAY_LOADED_GAMES) System.out.println("# LOADED GAME: #\n"+loadedGame);
 		// and compare strings
-		if (!loadedGame.toString().equals(gameString)) {
+		boolean original_and_loaded_game_differ = !loadedGame.toString().equals(gameString);
+		if (original_and_loaded_game_differ) {
 			System.out.println("## TEST FAILED AT GAME: ##" 
 							+ "\n# ORIGINAL GAME: #" + gameString 
 							+ "\n# LOADED GAME: #" + loadedGame);
-			return 1; // Error: Game and loaded game are different
+			return 1; // ERROR: Game and loaded game are different
 		}
 		return 0;
 	}

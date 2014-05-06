@@ -9,29 +9,35 @@ import si.gto76.basketstats.coreclasses.RecordingStats;
 import si.gto76.basketstats.coreclasses.ShotValues;
 
 public class ListenerNewGame implements ActionListener {
+	///////////////////
 	SwinGui mainWindow;
-
+	///////////////////
 	public ListenerNewGame(SwinGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
-	
+	///////////////////
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		boolean exit = true;
-		if (mainWindow.stateChangedSinceLastSave) {
-			exit = SwinGui.exitDialog("Game was not saved.\n" +
-					"Are you sure you want to open new game?");
+		boolean current_game_is_not_saved = mainWindow.stateChangedSinceLastSave;
+		if (current_game_is_not_saved && user_wants_to_abort_loading()) {
+			return;
 		}
-		if (exit) {
-			Tuple<RecordingStats,ShotValues> statsAndValues = DialogNewGame.showDialogReturnNullIfCanceled();
-			if (statsAndValues == null) {
-				return;
-			}
-			Game derbi = Conf.getDefaultGame(statsAndValues.x, statsAndValues.y);
-			new SwinGui(derbi);
-			System.out.println(derbi);
-			mainWindow.frame.setVisible(false);
+		Tuple<RecordingStats,ShotValues> statsAndValues = DialogNewGame.showDialogReturnNullIfCanceled();
+		if (statsAndValues == null) {
+			return;
 		}
+		createNewGameAndSetUpGui(statsAndValues);
+	}
+	
+	private boolean user_wants_to_abort_loading() {
+		return !SwinGui.exitDialog("Game was not saved.\nAre you sure you want to open another game?");
 	}
 
+	private void createNewGameAndSetUpGui(Tuple<RecordingStats, ShotValues> statsAndValues) {
+		Game newGame = Conf.getDefaultGame(statsAndValues.x, statsAndValues.y);
+		new SwinGui(newGame);
+		System.out.println(newGame);
+		mainWindow.frame.setVisible(false);
+	}
+	
 }
