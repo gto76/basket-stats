@@ -131,14 +131,14 @@ public class DialogNewGame extends JFrame {
 		combo.addItem(new StatsAndShotValues(StatComb.SIMPLIFIED_HALF_COURT_STATS, ShotValues.HALF_COURT));
 		combo.setPreferredSize(new Dimension(WIDTH, COMBO_HEIGHT));
 
-		ActionListener actionListener = new ComboBoxActionListener();
+		ActionListener actionListener = new ComboBoxListener();
 		combo.addActionListener(actionListener);
 		comboBox = combo;
 		
 		addComponent(combo, 0, 0, 3, GridBagConstraints.CENTER);
 	}
 	
-	class ComboBoxActionListener implements ActionListener {
+	class ComboBoxListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			@SuppressWarnings("unchecked")
@@ -176,13 +176,12 @@ public class DialogNewGame extends JFrame {
 	}
 	
 	private JSpinner createSpinner(int defaultValue) {
-	    SpinnerNumberModel m_numberSpinnerModel;
 	    Integer current = new Integer(defaultValue);
 	    Integer min = new Integer(1);
 	    Integer max = new Integer(10);
 	    Integer step = new Integer(1);
-	    m_numberSpinnerModel = new SpinnerNumberModel(current, min, max, step);
-	    return new JSpinner(m_numberSpinnerModel);
+	    SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(current, min, max, step);
+	    return new JSpinner(spinnerNumberModel);
 	}
 	
     /////////////////////////////////
@@ -213,29 +212,34 @@ public class DialogNewGame extends JFrame {
 	
 	private void addCheckBox(final Stat stat, int x, int y, int width) {
 		final JCheckBox checkBox = new JCheckBox(stat.getName());
-		
-	    ActionListener actionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				Set<Stat> enabledStats = getEnabledStats();
-				RecordingStats rsNew;
-				if (checkBox.isSelected()) {
-					enabledStats.remove(stat);
-					RecordingStats rsOld = new RecordingStats(enabledStats);
-					rsNew = rsOld.add(stat);
-				} else {
-					enabledStats.add(stat);
-					RecordingStats rsOld = new RecordingStats(enabledStats);
-					rsNew = rsOld.remove_Nullable(stat);
-				}
-				
-				setCheckBoxes(rsNew.values);
-			}
-	    };
-		
-		checkBox.addActionListener(actionListener);
+		checkBox.addActionListener(new CheckBoxListener(checkBox, stat));
 		checkBoxMap.put(stat, checkBox);
 		addComponent(checkBox, x, y, width, GridBagConstraints.WEST);
 	}
+	
+	class CheckBoxListener implements ActionListener {
+		JCheckBox checkBox;
+		Stat stat;
+		public CheckBoxListener(JCheckBox checkBox, Stat stat) {
+			this.checkBox = checkBox;
+			this.stat = stat;
+		}
+		@Override
+		public void actionPerformed(ActionEvent actionEvent) {
+			Set<Stat> enabledStats = getEnabledStats();
+			RecordingStats rsNew;
+			if (checkBox.isSelected()) {
+				enabledStats.remove(stat);
+				RecordingStats rsOld = new RecordingStats(enabledStats);
+				rsNew = rsOld.add(stat);
+			} else {
+				enabledStats.add(stat);
+				RecordingStats rsOld = new RecordingStats(enabledStats);
+				rsNew = rsOld.remove_Nullable(stat);
+			}
+			setCheckBoxes(rsNew.values);
+		}
+    };
 
 	/////////////////////////////////
 	

@@ -39,9 +39,6 @@ public class DialogChangeStats extends JFrame {
 	Game game;
 	//////////////////////////////////////////
 
-	/*
-	 * Returns null if dialog was canceled.
-	 */
 	public static RecordingStats showDialogReturnNullIfCanceled(Game game) {
 		try {
 			DialogChangeStats dlg = new DialogChangeStats(game);
@@ -55,7 +52,7 @@ public class DialogChangeStats extends JFrame {
 		return null;
 	}
 	
-    public DialogChangeStats(Game game) throws URISyntaxException {
+    private DialogChangeStats(Game game) throws URISyntaxException {
     	this.oldRecordingStats = new RecordingStats(game.recordingStats);
     	this.game = game;
     	
@@ -76,14 +73,12 @@ public class DialogChangeStats extends JFrame {
     	dialog.dispose();
 	}
 
-    /////////////////////////////////
+	//////////////////////////////////////////
     
-    public RecordingStats getRecordingStats() {
+    private RecordingStats getRecordingStats() {
     	return new RecordingStats(getEnabledStats());
     }
     
-    /////////////////////////////////
-
     private Set<Stat> getEnabledStats() {
     	Set<Stat> enabledStats = new HashSet<Stat>();
     	for (Entry<Stat,JCheckBox> entry : checkBoxMap.entrySet()) {
@@ -132,8 +127,8 @@ public class DialogChangeStats extends JFrame {
 	
 	private void addCheckBox(final Stat stat, int x, int y, int width) {
 		final JCheckBox checkBox = new JCheckBox(stat.getName());
-	    ActionListener actionListener = new CheckBoxListener(checkBox, stat);
-		checkBox.addActionListener(actionListener);
+	    ActionListener checkBoxListener = new CheckBoxListener(checkBox, stat);
+		checkBox.addActionListener(checkBoxListener);
 		checkBoxMap.put(stat, checkBox);
 		addComponent(checkBox, x, y, width, GridBagConstraints.WEST);
 	}
@@ -149,28 +144,36 @@ public class DialogChangeStats extends JFrame {
 		public void actionPerformed(ActionEvent actionEvent) {
 			Set<Stat> enabledStats = getEnabledStats();
 			RecordingStats newRecordingStats;
-
 			if (checkBox.isSelected()) { // was checked
-				enabledStats.remove(stat);
-				RecordingStats rsOld = new RecordingStats(enabledStats);
-				if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
-				newRecordingStats = rsOld.add(stat);
-				if (!game.areNewStatsValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
-					newRecordingStats = rsOld;
-				}
+				newRecordingStats = getNewStats(enabledStats, true);
 			} else { // was unchecked
-				enabledStats.add(stat);
-				RecordingStats rsOld = new RecordingStats(enabledStats);
-				if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
-				newRecordingStats = rsOld.remove_Nullable(stat);
-				if (newRecordingStats == null || !game.areNewStatsValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
-					newRecordingStats = rsOld;
-				}
+				newRecordingStats = getNewStats(enabledStats, false);
 			}
-			
 			if (Conf.DEBUG) System.out.println("New recording stats: " + newRecordingStats);
 			setCheckBoxes(newRecordingStats.values);
 		}
+		
+		private RecordingStats getNewStats(Set<Stat> enabledStats, boolean wasChecked) {
+			if (wasChecked) {
+				enabledStats.remove(stat);
+			} else {
+				enabledStats.add(stat);
+			}
+			RecordingStats rsOld = new RecordingStats(enabledStats);
+			if (Conf.DEBUG) System.out.println("Old recording stats: " + rsOld);
+			RecordingStats newRecordingStats;
+			if (wasChecked) {
+				newRecordingStats = rsOld.add(stat);
+			} else {
+				newRecordingStats = rsOld.remove_Nullable(stat);
+			}
+			if (newRecordingStats == null 
+					|| !game.areNewStatsValidDependingOnWhatHappenedInTheGame(newRecordingStats)) {
+				newRecordingStats = rsOld;
+			}
+			return newRecordingStats;
+		}
+		
 	}
 
 	/////////////////////////////////
