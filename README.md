@@ -12,7 +12,7 @@ Basketball statistics gui tool.
 
 
 #### Gui:
-![Alt text](/src/resources/Screenshot of Gui.png?raw=true "Optional Title")
+![Alt text](/src/doc/basket-stats.png?raw=true "Screenshot")
 
 
 
