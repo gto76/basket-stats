@@ -11,7 +11,7 @@ import java.util.Set;
 
 
 /**
- * Class that contains unmodifiable set of input Stats that is guarantied to be in legal state.
+ * Class that contains unmodifiable set of input Stats that is guaranteed to be in legal state.
  * Legality is decided by rules that demand or forbid some Stats in presence of anothers.
  * (For example you can not track three point shots if you don't also track two pointers.)
  * Set that is sent to constructor should be checked for legality with static function isValidSet(Set<Stat>),

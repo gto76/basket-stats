@@ -11,7 +11,7 @@ import si.gto76.basketstats.Conf;
 
 /**
  * Class for storing players stat values.
- * What is actualy tracked is defined in Team.recordingStats set, so some values may be redundand;
+ * What is actually tracked is defined in Team.recordingStats set, so some values may be redundant;
  * for instance three point shots are always initialized, even if they are not tracked.
  */
 public class PlayerStatRecorder implements HasStats {
