@@ -1,14 +1,16 @@
 Basket Stats
 ============
 
-Basketball statistics gui tool. 
+Basketball game statistics gui tool. 
 * Written in Java.
-* Uses Swing for data input.
+* Uses Swing for gui.
 * Value of different shots can be adjusted at the start of a new game.
-* Individual stats can be selected/deselected at any time in game.
+* What stats are being recorded can be changed at any time in game.
+* New players can be added to teams during game.
 * Players can be pulled out/put in the game, so plus/minus stat can be tracked.
 * Prints complete stats on console after every input.
 * Games are saved in text file that is the same as the last output on console.
+* Multilevel Undo
 
 
 #### Gui:
@@ -55,8 +57,7 @@ sudo apt-get install maven
 git clone https://github.com/gto76/basket-stats.git
 cd basket-stats
 mvn clean install
-cd target
-java -jar BasketStats-0.9.3-SNAPSHOT.jar
+java -jar target/BasketStats-0.9.3-SNAPSHOT.jar
 ```
 #### UML Diagram Of Core Classes:
 ![Alt text](/src/doc/uml-diagram.png?raw=true "Screenshot")

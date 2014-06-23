@@ -240,7 +240,7 @@ public class PlayersRow {
 			if (game.doBothTeamsHaveSameNumberOfPlayersOnTheFloor()) {
 				return false;
 			}
-		    JCheckBox checkbox = new JCheckBox("Do not show this message again.");  
+		    JCheckBox checkbox = new JCheckBox("Do not show this message again during this game.");  
 		    String message = "Teams don't have equal number of players on the floor.\n" +
 					"Do you want to continue?";
 		    Object[] params = {message, checkbox};  

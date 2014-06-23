@@ -45,7 +45,7 @@ public class Menu {
 		menuEditAddPlayer1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
 		menuEditAddPlayer2.setText("Add Player to TEAM B");
 		menuEditAddPlayer2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
-		menuEditChangeStats.setText("Change Stats...");
+		menuEditChangeStats.setText("Configure Stats...");
 		menuEditChangeStats.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
 		
 		menuHelp.setText("Help");
