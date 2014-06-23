@@ -49,7 +49,7 @@ Totals                  21-41   2-7     14-17           6       14      20      
 --------------------------------------------------------------------------------------------------------------------------------
 ```
 
-#### How To Run:
+### How To Run:
 ```bash
 sudo apt-get install maven
 git clone https://github.com/gto76/basket-stats.git
@@ -59,4 +59,4 @@ cd target
 java -jar BasketStats-0.9.3-SNAPSHOT.jar
 ```
 #### UML Diagram Of Core Classes:
-![Alt text](/src/doc/basket-stats.png?raw=true "Screenshot")
+![Alt text](/src/doc/uml-diagram.png?raw=true "Screenshot")
