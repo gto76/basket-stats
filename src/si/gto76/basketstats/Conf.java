@@ -27,6 +27,9 @@ public class Conf {
 	public static final String YEARS = "2013-2014";
 	public static final String FILE_EXTENSION = "hsg";
 	
+	// Look and Feel
+	public static final String LOOK_AND_FEEL = "CrossPlatformLookAndFeel";
+	
 	// Window
 	static public final int WINDOW_WIDTH = 1365;
 	static public final int WINDOW_HEIGHT = 350;
