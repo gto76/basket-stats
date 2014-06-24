@@ -142,9 +142,19 @@ public class SwinGui {
 	 * 3. ADD CONTAINER
 	 */
 	protected void setUpNewContainer() {
+		Dimension newFrameSize = getNewFrameSize();
 		initializeContainer();
 		fillContainer();
-		sealContainer();
+		sealContainer(newFrameSize);
+	}
+	
+	private Dimension getNewFrameSize() {
+		Dimension currentFrameSize = frame.getSize();
+		if (currentFrameSize.width == 0) {
+			return new Dimension(windowWidth, windowHeight);
+		} else {
+			return frame.getSize();
+		}
 	}
 	
 	private void initializeContainer() {
@@ -156,11 +166,11 @@ public class SwinGui {
 		updateScoreLabel();
 	}
 	
-	private void sealContainer() {
+	private void sealContainer(Dimension newFrameSize) {
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(MAIN_BORDER_TOP, MAIN_BORDER_LEFT, 
 				MAIN_BORDER_BOTTOM, MAIN_BORDER_RIGHT));
 		frame.setContentPane(mainPanel);
-		frame.setSize(windowWidth, windowHeight);
+		frame.setSize(newFrameSize);
 		frame.setVisible(true);
 	}
 	

@@ -57,11 +57,11 @@ public class Conf {
 	public static Map<Stat,Color> BUTTON_COLORS = new HashMap<Stat,Color>();
 
 	// Icons
-	public static final String ICON_FILENAME_S = "/resources/ba16.png"; 
-	public static final String ICON_FILENAME_S_BLUE = "/resources/ba16blue.png"; // b8cfe5 is color of background
-	public static final String ICON_FILENAME_M = "/resources/ba32.png"; 
-	public static final String ICON_FILENAME_L = "/resources/ba64.png"; 
-	public static final String ICON_FILENAME_XL = "/resources/ba128.png";
+	public static final String ICON_FILENAME_S = "/main/resources/ba16.png/"; 
+	public static final String ICON_FILENAME_S_BLUE = "/main/resources/ba16blue.png"; // b8cfe5 is color of background
+	public static final String ICON_FILENAME_M = "/main/resources/ba32.png"; 
+	public static final String ICON_FILENAME_L = "/main/resources/ba64.png"; 
+	public static final String ICON_FILENAME_XL = "/main/resources/ba128.png";
 	
 	// Text Formatting
 	static public final int NUMBER_OF_TABS_FOR_PLAYER_NAME = 3;
