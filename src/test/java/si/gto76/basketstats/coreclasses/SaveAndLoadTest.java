@@ -28,15 +28,15 @@ public class SaveAndLoadTest {
 	public static final boolean SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS = true; // intermediate test
 	public static final boolean SAVE_LOAD_TEST_WITH_COMMON_STAT_COMBINATIONS = false; // basic test
 	
-	public static final boolean DISPLAY_TEST_PROGRESS = true;
+	public static final boolean DISPLAY_TEST_PROGRESS = false;
 	public static final boolean DISPLAY_ORIGINAL_GAMES = false;
 	public static final boolean DISPLAY_LOADED_GAMES = false;
 	
 	//////////////////////////////////////////////
 	
-	public static void main(String[] args) {
-		new SaveAndLoadTest().testSaveAndLoad();
-	}
+//	public static void main(String[] args) {
+//		new SaveAndLoadTest().testSaveAndLoad();
+//	}
 	
 	@Test
 	public void testSaveAndLoad() {
@@ -58,6 +58,9 @@ public class SaveAndLoadTest {
 	}
 	
 	private static void printTestResult(String testName, int returnValue) {
+		if (DISPLAY_TEST_PROGRESS == false) {
+			return;
+		}
 		if (returnValue == 0) {
 			print(testName + " PASSED.");
 		} else {
@@ -95,7 +98,7 @@ public class SaveAndLoadTest {
 		for (Set<Stat> validComb : allValidCombinations) {
 			RecordingStats recordingStats = new RecordingStats(validComb);
 			if (DISPLAY_TEST_PROGRESS) System.out.println("### COMPREHENSIVE SAVE LOAD TEST NO " +i+ ": " 
-					+recordingStats+ " ###\n");
+					+recordingStats+ " ###");
 			int retVal; 
 			if (full) {
 				retVal = testWithAllShotValues(recordingStats, i);
@@ -223,7 +226,7 @@ public class SaveAndLoadTest {
 		appendDashes(sb, message.length()+4);
 		sb.append("\n# ").append(message).append(" #\n");
 		appendDashes(sb, message.length()+4);
-		System.out.println(sb);
+		System.out.println("\n"+sb+"\n");
 	}
 
 	private static void appendDashes(StringBuilder sb, int length) {
