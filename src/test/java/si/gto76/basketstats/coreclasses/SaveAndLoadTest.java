@@ -1,4 +1,6 @@
-package si.gto76.basketstats.test;
+package si.gto76.basketstats.coreclasses;
+
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -6,6 +8,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.Test;
 
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.Conf.StatComb;
@@ -18,12 +22,11 @@ import si.gto76.basketstats.coreclasses.ShotValues;
 import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Util;
 
-public class Test {
+public class SaveAndLoadTest {
 
-	public static final boolean SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS_AND_MOST_SHOT_VALUE_COMBINATIONS = true;
-	public static final boolean SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS = false;
-	public static final boolean SAVE_LOAD_TEST_WITH_COMMON_STAT_COMBINATIONS = false;
-	public static final boolean RECORDING_STATS_TEST = false;
+	public static final boolean SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS_AND_MOST_SHOT_VALUE_COMBINATIONS = false; // comprehensive test
+	public static final boolean SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS = true; // intermediate test
+	public static final boolean SAVE_LOAD_TEST_WITH_COMMON_STAT_COMBINATIONS = false; // basic test
 	
 	public static final boolean DISPLAY_TEST_PROGRESS = true;
 	public static final boolean DISPLAY_ORIGINAL_GAMES = false;
@@ -32,17 +35,25 @@ public class Test {
 	//////////////////////////////////////////////
 	
 	public static void main(String[] args) {
+		new SaveAndLoadTest().testSaveAndLoad();
+	}
+	
+	@Test
+	public void testSaveAndLoad() {
 		if (SAVE_LOAD_TEST_WITH_COMMON_STAT_COMBINATIONS) {
-			printTestResult("Simple Save/Load test", simpleSaveLoadTest());
+			int testResult = simpleSaveLoadTest();
+			printTestResult("Simple Save/Load test", testResult);
+			assertTrue(testResult == 0);
 		}
 		if (SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS) {
+			int testResult = simpleSaveLoadTest();
 			printTestResult("Intermediate Save/Load test", intermediateSaveLoadTest());
+			assertTrue(testResult == 0);
 		}
 		if (SAVE_LOAD_TEST_WITH_ALL_STAT_COMBINATIONS_AND_MOST_SHOT_VALUE_COMBINATIONS) {
+			int testResult = simpleSaveLoadTest();
 			printTestResult("Full Save/Load test", fullSaveLoadTest());
-		}
-		if (RECORDING_STATS_TEST) {
-			printTestResult("Recording Stats Test", recordingStatsTest());
+			assertTrue(testResult == 0);
 		}
 	}
 	
@@ -199,27 +210,7 @@ public class Test {
 		return game.getPlayersStatRecorder(firstPlayer);
 	}
 	
-	//////////////////////
-	
-	/*
-	 * RECORDING STATS TEST
-	 */
-	public static int recordingStatsTest() {
-		// for all combinations of Input Stat run getValidSet
-		Set<Set<Stat>> allCombinations = powerSet(new HashSet<Stat>(Arrays.asList(Stat.recordableStats)));
-		for (Set<Stat> combination : allCombinations) {
-			Set<Stat> orderedStats = Util.getOrderedSet(combination);
-			Set<Stat> validSet = RecordingStats.getValidSet(combination);
-			if (DISPLAY_LOADED_GAMES) System.out.println("# ORIGINAL SET: # " 
-					+ Arrays.toString(orderedStats.toArray()));
-			if (DISPLAY_LOADED_GAMES) System.out.println("# CORECTED SET: # " 
-					+ Arrays.toString(validSet.toArray()) + "\n");
-			if (!RecordingStats.isValidSet(validSet)) {
-				return 1;
-			}
-		}
-		return 0;
-	}
+
 	
 	//////////////////////////////////////////////
 	

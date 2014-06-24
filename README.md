@@ -1,7 +1,7 @@
 Basket Stats
 ============
 
-Basketball game statistics gui tool. 
+Basketball stat recorder.
 * Written in Java.
 * Uses Swing for gui.
 * Value of different shots can be adjusted at the start of a new game.
