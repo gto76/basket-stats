@@ -57,7 +57,7 @@ public class Conf {
 	public static Map<Stat,Color> BUTTON_COLORS = new HashMap<Stat,Color>();
 
 	// Icons
-	public static final String ICON_FILENAME_S = "/main/resources/ba16.png/"; 
+	public static final String ICON_FILENAME_S = "/main/resources/ba16.png"; 
 	public static final String ICON_FILENAME_S_BLUE = "/main/resources/ba16blue.png"; // b8cfe5 is color of background
 	public static final String ICON_FILENAME_M = "/main/resources/ba32.png"; 
 	public static final String ICON_FILENAME_L = "/main/resources/ba64.png"; 
