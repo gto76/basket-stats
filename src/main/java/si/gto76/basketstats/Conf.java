@@ -26,7 +26,11 @@ public class Conf {
 	public static final String EMAIL = "sornjure@gmail.com";
 	public static final String YEARS = "2013-2014";
 	public static final String FILE_EXTENSION = "hsg";
-	
+
+    // Version loation
+    public static final String VERSION_FILENAME = "resources/version"; // Here is stored the real version that is
+        // acquired from git at build time. The one above is just for backup.
+
 	// Look and Feel
 	public static final String LOOK_AND_FEEL = "CrossPlatformLookAndFeel";
 	

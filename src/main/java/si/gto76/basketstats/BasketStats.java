@@ -5,7 +5,8 @@ import si.gto76.basketstats.coreclasses.*;
 import si.gto76.basketstats.swingui.SwinGui;
 
 public class BasketStats {
-	public static void main(String[] args) {
+
+    public static void main(String[] args) {
 		setLookAndFeel(Conf.LOOK_AND_FEEL);
 		Game game = Conf.getDefaultGame();
 		new SwinGui(game);
@@ -19,4 +20,5 @@ public class BasketStats {
 	    catch (Exception e) {
 	    }
 	}
+
 }

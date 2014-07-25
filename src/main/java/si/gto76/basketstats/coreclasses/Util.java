@@ -196,4 +196,22 @@ public class Util {
 		return c;
 	}
 
+    public static String getStringFromInputStream(java.io.InputStream inStr) {
+        StringBuilder sb = new StringBuilder();
+        if (inStr == null) {
+            return "";
+        }
+        try {
+            java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(inStr));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                sb.append(inputLine);
+            }
+            in.close();
+        } catch (java.io.IOException e) {
+        }
+        return sb.toString();
+    }
+
+
 }

@@ -1,5 +1,8 @@
 mainClass='si.gto76.basketstats.BasketStats' 
 
+echo "a: GETTING VERSION NUMBER..."
+git describe > src/main/resources/version
+
 echo "a: COMPILING..." &&\
 mkdir -p target/main &&\
 javac -d target/main -cp `echo lib/*.jar | sed 's/ /:/'` `find src/main -name *.java` &&\

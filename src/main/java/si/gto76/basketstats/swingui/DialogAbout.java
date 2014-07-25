@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import si.gto76.basketstats.Conf;
+import si.gto76.basketstats.coreclasses.Util;
 
 
 public class DialogAbout extends JFrame {
@@ -49,9 +50,21 @@ public class DialogAbout extends JFrame {
 	    JLabel label = new JLabel(icon);
 	    label.setAlignmentX(Component.CENTER_ALIGNMENT);
     	p.add(label);
+
+        // Version number
+        ClassLoader cl = this.getClass().getClassLoader();
+        java.io.InputStream in = cl.getResourceAsStream(Conf.VERSION_FILENAME);
+        String version = Util.getStringFromInputStream(in);
+        if (version.length() == 0) {
+            version = Conf.VERSION;
+        } else {
+            int indexOfDash = version.lastIndexOf('-');
+            version = version.substring(1, indexOfDash);
+        }
+        addLabelToPanel(" version " + version + " ", p);
+
     	// Other info
-    	addLabelToPanel(" version " + Conf.VERSION + " ", p);
-    	addLabelToPanel("Copyright (c) " +Conf.YEARS+ " " +Conf.AUTHOR, p);
+        addLabelToPanel("Copyright (c) " +Conf.YEARS+ " " +Conf.AUTHOR, p);
     	addLabelToPanel(Conf.EMAIL, p);
     	
     	dlg.setSize(240, 105);

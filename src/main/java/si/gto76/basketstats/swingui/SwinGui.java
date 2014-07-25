@@ -26,12 +26,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
 
 import si.gto76.basketstats.Conf;
-import si.gto76.basketstats.coreclasses.Event;
-import si.gto76.basketstats.coreclasses.Game;
-import si.gto76.basketstats.coreclasses.Player;
-import si.gto76.basketstats.coreclasses.Action;
-import si.gto76.basketstats.coreclasses.Stat;
-import si.gto76.basketstats.coreclasses.Team;
+import si.gto76.basketstats.coreclasses.*;
 
 /**
  * Main Swing Gui Class.
@@ -76,7 +71,7 @@ public class SwinGui {
 		});
 	    ToolTipManager.sharedInstance().setInitialDelay(Conf.TOOLTIP_DELAY);
 	}
-	
+
 	// Constructor:
 	public SwinGui(final Game game) {
 		this.game = game;
@@ -93,7 +88,7 @@ public class SwinGui {
 	 * INIT INIT INIT INIT INIT INIT INIT
 	 * #### #### #### #### #### #### ####
 	 */
-	
+
 	/*
 	 * 1. SET ICONS
 	 */
@@ -106,7 +101,8 @@ public class SwinGui {
     	
 //    	iconsActive = new ArrayList<Image>() {
 //			private static final long serialVersionUID = 4560955969369357297L;
-//			{add(iconImgSBlue.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
+//			{add(iconImgSBlue.getImage()); add(iconImgM.getImage());
+//          add(iconImgL.getImage()); add(iconImgXL.getImage());}
 //    	};
     	ICONS_NOT_ACTIVE = new ArrayList<Image>() {
 			private static final long serialVersionUID = -337325274310404675L;
