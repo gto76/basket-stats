@@ -1,0 +1,13 @@
+# Runs all projects junit tests.
+
+name=`basename $0`
+
+echo "$name: COMPILING MAIN..." &&\
+mkdir -p target/main &&\
+javac -d target/main -cp `echo lib/*.jar | sed 's/ /:/'` `find src/main -name *.java` &&\
+echo "$name: COMPILING TESTS..." &&\
+mkdir -p target/test &&\
+javac -d target/test -cp `echo lib/*.jar | sed 's/ /:/'`:target/main `find src/test -name *.java` &&\
+cd target &&\
+echo "$name: RUNNING TESTS..." &&\
+java -cp  `echo ../lib/*.jar | sed 's/ /:/'`:main:test org.junit.runner.JUnitCore `cd test; find -name *.class | sed 's/^\.\///' | sed 's/\.class$//g' | tr "/" "."` 

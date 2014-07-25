@@ -7,8 +7,6 @@ echo "a: COMPILING..." &&\
 mkdir -p target/main &&\
 javac -d target/main -cp `echo lib/*.jar | sed 's/ /:/'` `find src/main -name *.java` &&\
 cd target &&\
-echo "a: SAVING VERSION NUMBER..." &&\
-git describe > version &&\
 mkdir -p lib &&\
 cd lib &&\
 echo "a: EXTRACTING LIBRARIES..." &&\
