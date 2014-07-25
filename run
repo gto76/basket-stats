@@ -1,7 +1,11 @@
+mainClass='si.gto76.basketstats.BasketStats' 
+
 echo "a: COMPILING..." &&\
 mkdir -p target/main &&\
 javac -d target/main -cp `echo lib/*.jar | sed 's/ /:/'` `find src/main -name *.java` &&\
 cd target &&\
+echo "a: SAVING VERSION NUMBER..." &&\
+git describe > version &&\
 mkdir -p lib &&\
 cd lib &&\
 echo "a: EXTRACTING LIBRARIES..." &&\
@@ -10,6 +14,6 @@ for library in `find ../../lib/ -name *.jar &> /dev/null`; do
 done &&\
 cd .. &&\
 echo "a: PACKAGING IN JAR..." &&\
-jar cvfe a.jar si.gto76.basketstats.BasketStats -C ../src main/resources -C main . -C lib .  &&\
+jar cvfe a.jar "$mainClass" version -C ../src/main resources -C main . -C lib .  &&\
 echo "a: EXECUTING JAR..." &&\
 java -jar a.jar
