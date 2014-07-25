@@ -1,20 +1,26 @@
 mainClass='si.gto76.basketstats.BasketStats' 
+appName='basket-stats'
 
-echo "a: GETTING VERSION NUMBER..."
+name=`basename $0`
+
+echo "$name: GETTING VERSION NUMBER..."
 git describe > src/main/resources/version
+if [ $? -eq 0 ]; then
+	appName="$appName"-`git describe | sed -r 's/^[^0-9]([0-9\.]*).*$/\1/'`
+fi
 
-echo "a: COMPILING..." &&\
+echo "$name: COMPILING..." &&\
 mkdir -p target/main &&\
 javac -d target/main -cp `echo lib/*.jar | sed 's/ /:/'` `find src/main -name *.java` &&\
 cd target &&\
 mkdir -p lib &&\
 cd lib &&\
-echo "a: EXTRACTING LIBRARIES..." &&\
+echo "$name: EXTRACTING LIBRARIES..." &&\
 for library in `find ../../lib/ -name *.jar &> /dev/null`; do 
 	jar xf "$library"; 
 done &&\
 cd .. &&\
-echo "a: PACKAGING IN JAR..." &&\
-jar cvfe a.jar "$mainClass" version -C ../src/main resources -C main . -C lib .  &&\
-echo "a: EXECUTING JAR..." &&\
-java -jar a.jar
+echo "$name: PACKAGING IN JAR..." &&\
+jar cvfe "$appName.jar" "$mainClass" -C ../src/main resources -C main . -C lib . &> /dev/null  &&\
+echo "$name: EXECUTING JAR..." &&\
+java -jar "$appName.jar"
