@@ -10,9 +10,9 @@ import si.gto76.basketstats.coreclasses.ShotValues;
 
 public class ListenerNewGame implements ActionListener {
 	///////////////////
-	SwinGui mainWindow;
+	SwingGui mainWindow;
 	///////////////////
-	public ListenerNewGame(SwinGui mainWindow) {
+	public ListenerNewGame(SwingGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
 	///////////////////
@@ -30,12 +30,12 @@ public class ListenerNewGame implements ActionListener {
 	}
 	
 	private boolean user_wants_to_abort_loading() {
-		return !SwinGui.exitDialog("Game was not saved.\nAre you sure you want to open another game?");
+		return !SwingGui.exitDialog("Game was not saved.\nAre you sure you want to open another game?");
 	}
 
 	private void createNewGameAndSetUpGui(Tuple<RecordingStats, ShotValues> statsAndValues) {
 		Game newGame = Conf.getDefaultGame(statsAndValues.x, statsAndValues.y);
-		new SwinGui(newGame);
+		new SwingGui(newGame);
 		System.out.println(newGame);
 		mainWindow.frame.setVisible(false);
 	}

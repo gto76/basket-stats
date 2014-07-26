@@ -143,11 +143,7 @@ public class PlayerStatRecorder implements HasStats {
 	 * Needed, because get(REB) returns sum of them all.
 	 */
 	public boolean hasUsedRebounds() {
-		if (values.get(Stat.REB) == 0) {
-			return false;
-		} else {
-			return true;
-		}
+        return values.get(Stat.REB) != 0;
 	}
 
 	public List<Action> getActions() {

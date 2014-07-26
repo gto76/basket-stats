@@ -24,18 +24,18 @@ import si.gto76.basketstats.Conf;
 public class TimePanel {
 	private static final String SPINNER_DATE_FORMAT = "HH:mm dd/MM/yyyy";
 	//////////////////////
-	private final SwinGui swinGui;
+	private final SwingGui swingGui;
 	private final JPanel panel;
 	//////////////////////
-	public TimePanel(SwinGui swinGui, JPanel panel) {
-		this.swinGui = swinGui;
+	public TimePanel(SwingGui swingGui, JPanel panel) {
+		this.swingGui = swingGui;
 		this.panel = panel;
 		addTimeLabel();
 	}
 	//////////////////////
 	
 	private void addTimeLabel() {
-		JLabel dateLabel = new JLabel(swinGui.game.getDate().toString());
+		JLabel dateLabel = new JLabel(swingGui.game.getDate().toString());
 		MouseListener listener = new SwitchLabelWithSpinnerOnDoubleClick();
 		panel.addMouseListener(listener);
 		panel.setLayout(new GridLayout(1, 1));
@@ -71,7 +71,7 @@ public class TimePanel {
 	}
 	
 	private JSpinner getSpinner() {
-		SpinnerDateModel dateModel = new SpinnerDateModel(swinGui.game.getDate(), null, null, Calendar.MONTH);
+		SpinnerDateModel dateModel = new SpinnerDateModel(swingGui.game.getDate(), null, null, Calendar.MONTH);
 		JSpinner spinner = new JSpinner(dateModel);
 		DateEditor dateEditor = new DateEditor(spinner, SPINNER_DATE_FORMAT);
 		spinner.setEditor(dateEditor);
@@ -107,15 +107,15 @@ public class TimePanel {
 		
 		private void setNewDate() {
 			Date newDate = (Date) spinner.getValue();
-	    	swinGui.game.setDate(newDate);
-	    	System.out.println(swinGui.game);
+	    	swingGui.game.setDate(newDate);
+	    	System.out.println(swingGui.game);
 		}
 	}
 
 	private void switchSpinnerWithLabel() {
 		panel.removeAll();
-		panel.add(new JLabel(swinGui.game.getDate().toString()));
-		swinGui.mainPanel.validate();
+		panel.add(new JLabel(swingGui.game.getDate().toString()));
+		swingGui.mainPanel.validate();
 	}
 	
 }

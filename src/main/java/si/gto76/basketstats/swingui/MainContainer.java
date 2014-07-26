@@ -21,18 +21,18 @@ import si.gto76.basketstats.coreclasses.Team;
  */
 public class MainContainer {
 	////////////////////////////////////////
-	private final SwinGui mainWindow;
+	private final SwingGui mainWindow;
 	private final JPanel mainPanel;
 	private final Game game;
 	private int lastFilledRow = 0;
 	////////////////////////////////////////
 	
-	public static void fill(SwinGui mainWindow, JLabel team1Label, JLabel team2Label) {
+	public static void fill(SwingGui mainWindow) {
 		MainContainer instance = new MainContainer(mainWindow);
-		instance.fillContainer(team1Label, team2Label);
+		instance.fillContainer();
 	}
 	
-	private MainContainer(SwinGui mainWindow) {
+	private MainContainer(SwingGui mainWindow) {
 		this.mainWindow = mainWindow;
 		this.mainPanel = mainWindow.mainPanel;
 		this.game = mainWindow.game;
@@ -40,11 +40,11 @@ public class MainContainer {
 
 	////////////////////////////////////////
 	
-	private void fillContainer(JLabel team1Label, JLabel team2Label) {
+	private void fillContainer() {
 		addPlaceContainer(game.getVenue());
 		addTimeContainer();
-		addTeamContainer(game.getTeam1(), team1Label);
-		addTeamContainer(game.getTeam2(), team2Label);
+		addTeamContainer(game.getTeam1());
+		addTeamContainer(game.getTeam2());
 	}
 
 	private void addPlaceContainer(Venue location) {
@@ -69,7 +69,7 @@ public class MainContainer {
 		lastFilledRow++;
 	}
 
-	private void addTeamContainer(Team team, JLabel label) {
+	private void addTeamContainer(Team team) {
 		addTeamName(team);
 		addPlayers(team.getAllPlayersStatRecorders());
 	}

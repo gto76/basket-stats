@@ -5,8 +5,7 @@ import java.util.Set;
 import si.gto76.basketstats.Conf;
 
 public class PrinterGame {
-	private final String ONE_TAB_LINE = "--------";
-	////////////////////////
+    ////////////////////////
 	private final Game game;
 	////////////////////////
 	public static String toString(Game game) {
@@ -43,13 +42,14 @@ public class PrinterGame {
 	}
 	
 	private String lb() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Set<Stat> boxStats = Stat.getDisplayableStatsFromRecordables(game.recordingStats.values);
 		boxStats.remove(Stat.FGA);
 		boxStats.remove(Stat.TPA);
 		boxStats.remove(Stat.FTA);
 		for (int i = boxStats.size() + Conf.NUMBER_OF_TABS_FOR_PLAYER_NAME; i > 0; i--) {
-			sb.append(ONE_TAB_LINE);
+            String ONE_TAB_LINE = "--------";
+            sb.append(ONE_TAB_LINE);
 		}
 		sb.append("\n");
 		return sb.toString();

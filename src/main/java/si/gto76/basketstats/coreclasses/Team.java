@@ -13,7 +13,7 @@ import si.gto76.basketstats.Conf;
 
 /**
  * All stats are kept per player, in players stat recorders. Every time a teams stat is needed,
- * it gets agregated anew.
+ * it gets aggregated anew.
  */
 public class Team implements HasName, HasStats {
 	////////////////////////////////////////
@@ -155,7 +155,7 @@ public class Team implements HasName, HasStats {
 	 */
 	
 	/**
-	 * Rerurns unmodifiable map.
+	 * Returns unmodifiable map.
 	 */
 	public Map<Player, PlayerStatRecorder> getAllPlayersStatRecorders() {
 		return Collections.unmodifiableMap(playersWithStatRecorders);
@@ -181,7 +181,7 @@ public class Team implements HasName, HasStats {
 	////////////////////////////////////////
 
 	/*
-	 * SHOTING PERCENTAGES:
+	 * SHOOTING PERCENTAGES:
 	 */
 	
 	public double getFgPercent() {
@@ -199,7 +199,7 @@ public class Team implements HasName, HasStats {
 	private double getPercent(Stat madeStat, Stat attemptsStat) {
 		int made = get(madeStat);
 		int attempts = get(attemptsStat);
-		return Util.zeroIfDevideByZero(made, attempts);
+		return Util.zeroIfDivideByZero(made, attempts);
 	}
 	
 	//////////////////////////////////////////
@@ -209,17 +209,11 @@ public class Team implements HasName, HasStats {
 	 */
 	
 	public boolean isPlayerFirst(Player player) {
-		if (getPlayersIndex(player) == 0) {
-			return true;
-		}
-		return false;
+        return getPlayersIndex(player) == 0;
 	}
 	
 	public boolean isPlayerLast(Player player) {
-		if (getPlayersIndex(player) == getNumberOfPlayers()-1) {
-			return true;
-		}
-		return false;
+        return getPlayersIndex(player) == getNumberOfPlayers()-1;
 	}
 	
 	private int getPlayersIndex(Player player) {

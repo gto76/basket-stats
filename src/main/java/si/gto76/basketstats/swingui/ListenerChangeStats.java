@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 import si.gto76.basketstats.coreclasses.RecordingStats;
 
 public class ListenerChangeStats implements ActionListener {
-	private final SwinGui mainWindow;
+	private final SwingGui mainWindow;
 
-	public ListenerChangeStats(SwinGui mainWindow) {
+	public ListenerChangeStats(SwingGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
 	

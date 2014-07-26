@@ -33,17 +33,17 @@ public class Util {
 	    return reference;
 	}
 	
-	public static double zeroIfDevideByZero(int devidee, int devider) {
-		if (devider == 0) {
+	public static double zeroIfDivideByZero(int dividend, int divisor) {
+		if (divisor == 0) {
 			return 0;
 		}
-		return ((double) devidee / devider) * 100.0;
+		return ((double) dividend / divisor) * 100.0;
 	}
 
 	public static String[] removeFirstElement(String[] arrayIn) {
 		List<String> list = new ArrayList<String>(Arrays.asList(arrayIn));
 		list.remove(0);
-		return list.toArray(new String[0]); 
+		return list.toArray(new String[list.size()]);
 	}
 	
 	public static Map<Stat,Integer> subMap(Map<Stat,Integer> mapIn, Stat[] set) {
@@ -147,23 +147,6 @@ public class Util {
 		}
 	}
 	
-	public static boolean areAllPositive(int... numbers) {
-		for (int number : numbers) {
-			if (isNegative(number)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public static boolean isNegative(int number) {
-		if (number < 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
 	public static String padTab(String string) {
 		return Util.padEnd(string, Conf.TAB_WIDTH, ' ');
 	}
@@ -195,23 +178,5 @@ public class Util {
 		c.gridy = gridy;
 		return c;
 	}
-
-    public static String getStringFromInputStream(java.io.InputStream inStr) {
-        StringBuilder sb = new StringBuilder();
-        if (inStr == null) {
-            return "";
-        }
-        try {
-            java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(inStr));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                sb.append(inputLine);
-            }
-            in.close();
-        } catch (java.io.IOException e) {
-        }
-        return sb.toString();
-    }
-
 
 }

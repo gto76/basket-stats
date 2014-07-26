@@ -176,10 +176,10 @@ public class DialogNewGame extends JFrame {
 	}
 	
 	private JSpinner createSpinner(int defaultValue) {
-	    Integer current = new Integer(defaultValue);
-	    Integer min = new Integer(1);
-	    Integer max = new Integer(10);
-	    Integer step = new Integer(1);
+	    Integer current = defaultValue;
+	    Integer min = 1;
+	    Integer max = 10;
+	    Integer step = 1;
 	    SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(current, min, max, step);
 	    return new JSpinner(spinnerNumberModel);
 	}

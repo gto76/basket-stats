@@ -13,9 +13,9 @@ import javax.swing.JOptionPane;
 public class ListenerSave implements ActionListener {
 	protected static final String WHAT_IS_BEING_SAVED = "Game";
 	/////////////////////////
-	SwinGui mainWindow;
+	SwingGui mainWindow;
 	/////////////////////////
-	public ListenerSave(SwinGui mainWindow) {
+	public ListenerSave(SwingGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
 	/////////////////////////
@@ -58,7 +58,7 @@ public class ListenerSave implements ActionListener {
 	class Var {
 		String formatName;
 		String errMessage;
-		File outputfile;
+		File outputFile;
 		String givenName;
 	}
 	
@@ -70,8 +70,8 @@ public class ListenerSave implements ActionListener {
 				Var var = new Var();
 				var.formatName = "";
 				var.errMessage = "";
-				var.outputfile = this.getSelectedFile();
-				var.givenName = var.outputfile.getName();
+				var.outputFile = this.getSelectedFile();
+				var.givenName = var.outputFile.getName();
 
 				// Filename Test:
 				boolean all_files_filter_was_selected = this.getFileFilter().getDescription() == "All Files";
@@ -85,7 +85,7 @@ public class ListenerSave implements ActionListener {
 				boolean filename_is_valid_and_it_passed_through_the_filter = var.formatName != "";
 				if (filename_is_valid_and_it_passed_through_the_filter) {
 					checkIfFileAlreadyExistsAndSaveIt(var);
-				} else { // filename_is_invalid_or_it_didnt_pass_through_the_filter
+				} else { // filename_is_invalid_or_it_didn't_pass_through_the_filter
 					JOptionPane.showMessageDialog(null, var.errMessage, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			} 
@@ -93,12 +93,12 @@ public class ListenerSave implements ActionListener {
 			private void getFormatFromFilenameExtension(Var var) {
 				FileFilterExtension fileFilter = FileFilterExtension.getFilterOrNull(var.givenName);
 				boolean entered_filename_has_no_extension = var.givenName.indexOf(".") == -1;
-				boolean entered_filenames_extension_is_not_suported = fileFilter == null;
+				boolean entered_filenames_extension_is_not_supported = fileFilter == null;
 
 				if (entered_filename_has_no_extension) {
 					var.errMessage = "No filename extension or file filter selected. "+WHAT_IS_BEING_SAVED+" was not saved.";
 				}
-				else if (entered_filenames_extension_is_not_suported) {
+				else if (entered_filenames_extension_is_not_supported) {
 					var.errMessage = "Unknown filename extension. "+WHAT_IS_BEING_SAVED+" was not saved.";
 				}
 				else { // entered_filenames_extension_is_valid					
@@ -108,16 +108,16 @@ public class ListenerSave implements ActionListener {
 			
 			private void getFormatFromSelectedFilter(Var var) {
 				FileFilterExtension selectedFilter = (FileFilterExtension) this.getFileFilter();
-				boolean filter_and_entered_filnames_extension_match = selectedFilter.accept(var.givenName);
+				boolean filter_and_entered_filenames_extension_match = selectedFilter.accept(var.givenName);
 				boolean entered_filename_has_no_extension = var.givenName.indexOf(".") == -1;
 				
-				if (filter_and_entered_filnames_extension_match) {
+				if (filter_and_entered_filenames_extension_match) {
 					var.formatName = selectedFilter.getDescription();
 				}
 				else if (entered_filename_has_no_extension) {
-					String newPathName = var.outputfile.getPath().concat(
+					String newPathName = var.outputFile.getPath().concat(
 							"." + selectedFilter.getDescription());
-					var.outputfile = new File(newPathName);
+					var.outputFile = new File(newPathName);
 					var.formatName = selectedFilter.getDescription();
 				}
 				else { // entered_filenames_extension_and_selected_filter_do_not_match
@@ -126,7 +126,7 @@ public class ListenerSave implements ActionListener {
 			}
 
 			private void checkIfFileAlreadyExistsAndSaveIt(Var var) {
-				boolean file_already_exists = var.outputfile.exists() && getDialogType() == SAVE_DIALOG;
+				boolean file_already_exists = var.outputFile.exists() && getDialogType() == SAVE_DIALOG;
 				if (file_already_exists) {
 					int result = JOptionPane.showConfirmDialog(this,
 							"The file exists, overwrite?", "Existing file",
@@ -134,7 +134,7 @@ public class ListenerSave implements ActionListener {
 					switch (result) {
 					// Overwrite:
 					case JOptionPane.YES_OPTION:
-						saveFile(var.formatName, var.outputfile);
+						saveFile(var.formatName, var.outputFile);
 						super.approveSelection();
 						return;
 					// Don't overwrite:
@@ -147,7 +147,7 @@ public class ListenerSave implements ActionListener {
 						return;
 					}
 				}
-				saveFile(var.formatName, var.outputfile);
+				saveFile(var.formatName, var.outputFile);
 				super.approveSelection();
 			}
 			

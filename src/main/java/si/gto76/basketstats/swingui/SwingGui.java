@@ -33,12 +33,9 @@ import si.gto76.basketstats.coreclasses.*;
  * Takes care of input, output gets printed to stdout after every change to Game.
  * It also takes care of undo functionality.
  */
-public class SwinGui {
-    //private static ArrayList<Image> iconsActive;
-    private static ArrayList<Image> ICONS_NOT_ACTIVE;
-	private static final int MAIN_BORDER_TOP = 5, MAIN_BORDER_LEFT = 6, 
+public class SwingGui {
+	private static final int MAIN_BORDER_TOP = 5, MAIN_BORDER_LEFT = 6,
 			 MAIN_BORDER_BOTTOM = 1, MAIN_BORDER_RIGHT = 2;
-    //private static String os = System.getProperty("os.name");
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     
     //////////////////////////////////////////////////////////////
@@ -73,7 +70,7 @@ public class SwinGui {
 	}
 
 	// Constructor:
-	public SwinGui(final Game game) {
+	public SwingGui(final Game game) {
 		this.game = game;
 		setIcons();
 		addMenus();
@@ -94,34 +91,15 @@ public class SwinGui {
 	 */
 	private void setIcons() {
     	final ImageIcon iconImgS = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S));
-//    	final ImageIcon iconImgSBlue = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_S_BLUE));
     	final ImageIcon iconImgM = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_M));
     	final ImageIcon iconImgL = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_L));
     	final ImageIcon iconImgXL = new ImageIcon(getClass().getResource(Conf.ICON_FILENAME_XL));
-    	
-//    	iconsActive = new ArrayList<Image>() {
-//			private static final long serialVersionUID = 4560955969369357297L;
-//			{add(iconImgSBlue.getImage()); add(iconImgM.getImage());
-//          add(iconImgL.getImage()); add(iconImgXL.getImage());}
-//    	};
-    	ICONS_NOT_ACTIVE = new ArrayList<Image>() {
+
+        ArrayList<Image> ICONS = new ArrayList<Image>() {
 			private static final long serialVersionUID = -337325274310404675L;
 			{add(iconImgS.getImage()); add(iconImgM.getImage()); add(iconImgL.getImage()); add(iconImgXL.getImage());}
     	};
-    	
-//    	if (os.startsWith("linux")) {
-//    		frame.setIconImages(iconsActive);
-//			frame.addWindowFocusListener(new WindowAdapter() {
-//	            public void windowGainedFocus(WindowEvent e) {
-//	              frame.setIconImages(SwinGui.iconsActive);
-//	            }
-//	            public void windowLostFocus(WindowEvent e) {
-//	              frame.setIconImages(SwinGui.iconsNotActive);
-//	            }
-//	        });
-//    	} else {
-    		frame.setIconImages(ICONS_NOT_ACTIVE);
-//		}
+    	frame.setIconImages(ICONS);
 	}
 	
 	/*
@@ -131,7 +109,6 @@ public class SwinGui {
 		menu = new Menu();
 		frame.setJMenuBar(menu.getMenuBar());
 		ListenersMenu.add(menu, this);
-		
 	}
 	
 	/*
@@ -158,7 +135,7 @@ public class SwinGui {
 	}
 
 	private void fillContainer() {
-		MainContainer.fill(this, team1Label, team2Label);
+		MainContainer.fill(this);
 		updateScoreLabel();
 	}
 	
@@ -234,7 +211,7 @@ public class SwinGui {
 		updateScoreLabel();
 		// Update the button
 		JButton button = buttonMap.get(lastAction);
-		SwinGuiUtil.setButtonText(button, lastAction);
+		SwingGuiUtil.setButtonText(button, lastAction);
 		// Print
 		System.out.println(game);
 		System.out.println("UNDO!");
@@ -310,15 +287,11 @@ public class SwinGui {
 
 	protected static boolean exitDialog(String text) {
 		String ObjButtons[] = { "Yes", "No" };
-		int PromptResult = JOptionPane.showOptionDialog(null,
+		int promptResult = JOptionPane.showOptionDialog(null,
 				text, "",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null,
 				ObjButtons, ObjButtons[1]);
-		if (PromptResult == JOptionPane.YES_OPTION) {
-			return true;
-		} else {
-			return false;
-		}
+        return promptResult == JOptionPane.YES_OPTION;
 	}
 
 }

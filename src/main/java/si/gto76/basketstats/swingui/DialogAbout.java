@@ -3,6 +3,7 @@ package si.gto76.basketstats.swingui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -44,6 +45,7 @@ public class DialogAbout extends JFrame {
     	lbl.setFont(newLabelFont);
     	lbl.setHorizontalAlignment(JLabel.CENTER);
     	p.add(lbl);
+
     	// Icon
     	URL url = getClass().getResource(Conf.ICON_FILENAME_M);
     	ImageIcon icon = new ImageIcon(url);
@@ -53,8 +55,8 @@ public class DialogAbout extends JFrame {
 
         // Version number
         ClassLoader cl = this.getClass().getClassLoader();
-        java.io.InputStream in = cl.getResourceAsStream(Conf.VERSION_FILENAME);
-        String version = Util.getStringFromInputStream(in);
+        InputStream in = cl.getResourceAsStream(Conf.VERSION_FILENAME);
+        String version = SwingGuiUtil.getStringFromInputStream(in);
         if (version.length() == 0) {
             version = Conf.VERSION;
         } else {

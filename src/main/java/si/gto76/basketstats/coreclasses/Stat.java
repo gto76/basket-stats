@@ -11,9 +11,9 @@ import java.util.Set;
 /**
  * Enum with all statistical categories and their characteristics.
  * Two important characteristics are isRecordable and isDisplayable.
- * Basicly the first one tells wether the stat is meant to be inputed with gui,
- * and the other wether it's meant to be displayed in a box score.
- * Also two mapping functions are probided that transform a set of Recording Stats 
+ * Basically the first one tells whether the stat is meant to be inputted with gui,
+ * and the other whether it's meant to be displayed in a box score.
+ * Also two mapping functions are provided that transform a set of Recording Stats
  * to a set of Displayable Stats and other way around.
  */
 public enum Stat {
@@ -35,7 +35,7 @@ public enum Stat {
 	PM("+/-", "Scoring difference", true, true, false),
 	/////
 	OFF("Off", "Offensive rebound", true, true, false),
-	DEF("Def", "Deffensive rebound", true, true, false),
+	DEF("Def", "Defensive rebound", true, true, false),
 	REB("Reb", "Rebound", true, true, false),
 	TOT("Tot", "Total rebounds", false, true, false),
 	/////
@@ -102,7 +102,7 @@ public enum Stat {
 				recordableStatsList.add(value);
 			}
 		}
-		recordableStats = recordableStatsList.toArray(new Stat[0]);
+		recordableStats = recordableStatsList.toArray(new Stat[recordableStatsList.size()]);
 	}
 
 	public static final Stat[] scoringStats; // = {FGM, FGA, TPM, TPA, TPF, IIPM, IIPF, FTM, FTA, FTF};
@@ -113,7 +113,7 @@ public enum Stat {
 				scoringStatsList.add(value);
 			}
 		}
-		scoringStats = scoringStatsList.toArray(new Stat[0]);
+		scoringStats = scoringStatsList.toArray(new Stat[scoringStatsList.size()]);
 	}
 
 	/*

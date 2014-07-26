@@ -30,7 +30,7 @@ public class GameLoader {
 	    } catch (ParseException parseException) {
 	        throw parseException;
 	    } catch (Exception e) {
-	    	throw new ParseException("Unexpected error occured while loadin game." +
+	    	throw new ParseException("Unexpected error occurred while loading game." +
 	    			"Maybe this message will help explain it: "+ e.getMessage(), -1);
 	    }
 	}
@@ -112,8 +112,7 @@ public class GameLoader {
 		int freeThrowWorth = getShotWorth(line, 5, "free throw");
 		int twoPointerWorth = getShotWorth(line, 7, "two point");
 		int threePointerWorth = getShotWorth(line, 9, "three point");
-		Integer[] shotPoints = {freeThrowWorth, twoPointerWorth, threePointerWorth};
-		return shotPoints;
+        return new Integer[]{freeThrowWorth, twoPointerWorth, threePointerWorth};
 	}
 
 	private static int getShotWorth(String[] line, int lineNum, String shotName) throws ParseException {
@@ -134,7 +133,7 @@ public class GameLoader {
 		}
 		if (line.length() > ShotValues.MAX_VALUE) {
 			throw new ParseException("Number of spaces on this line that denote the number of points a "+shotName+
-					" shot is worth is "+line.length()+", and thus exceeding maximum permited value of "+ShotValues.MAX_VALUE+".", lineNum);
+					" shot is worth is "+line.length()+", and thus exceeding maximum permitted value of "+ShotValues.MAX_VALUE+".", lineNum);
 		}
 	}
 
@@ -142,13 +141,12 @@ public class GameLoader {
 		Set<Stat> stats = new LinkedHashSet<Stat>();
 		if (Conf.DEBUG) System.out.println("statsStrings: " + Arrays.toString(statsStrings));
 		checkForSpecialCombinations(statsStrings, stats);
-		for (int i = 0; i < statsStrings.length; i++) {
-			String statName = statsStrings[i];
-			Stat statOrNull = Stat.getByNameOrNull(statName);
-			if (statOrNull != null) {
-				stats.add(statOrNull);
-			}
-		}
+        for (String statName : statsStrings) {
+            Stat statOrNull = Stat.getByNameOrNull(statName);
+            if (statOrNull != null) {
+                stats.add(statOrNull);
+            }
+        }
 		return Util.getOrderedSet(stats);
 	}
 
@@ -194,8 +192,8 @@ public class GameLoader {
 		// TODO Throw exceptions with different explanations for different parse problems.
 		String playersName = playerRow.substring(0, Conf.PLAYER_NAME_WIDTH-1).trim();
 		Player player = new Player(playersName);
-		String playersRowWithouthName = playerRow.substring(Conf.PLAYER_NAME_WIDTH);
-		PlayerStatRecorder playerStats = getPlayersStatRecorder(playersRowWithouthName, team, displayableStats);
+		String playersRowWithoutName = playerRow.substring(Conf.PLAYER_NAME_WIDTH);
+		PlayerStatRecorder playerStats = getPlayersStatRecorder(playersRowWithoutName, team, displayableStats);
 		return new Tuple<Player,PlayerStatRecorder>(player, playerStats);
 	}
 
@@ -209,7 +207,7 @@ public class GameLoader {
 	
 	private static List<String> tokenizePlayersRow(String playersStats) {
 		List<String> tokens = new ArrayList<String>();
-		// Need to aditionaly split ones with "-". (example: 3-4)
+		// Need to additionally split ones with "-". (example: 3-4)
 		for (String token : playersStats.split(SPLITTER_STR)) {
 			if (token.matches("[0-9]+-[0-9]+")) {
 				for (String subToken : token.split("-")) {

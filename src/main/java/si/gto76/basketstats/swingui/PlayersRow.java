@@ -28,7 +28,7 @@ public class PlayersRow {
 	private final Player player;
 	private final PlayerStatRecorder playerStats;
 	
-	private final SwinGui mainWindow;
+	private final SwingGui mainWindow;
 	private final JPanel mainPanel; 
 	private int row;
 
@@ -37,7 +37,7 @@ public class PlayersRow {
 	private List<JButton> buttons;
 	////////////////////////////
 
-	public static PlayersRow fill(SwinGui mainWindow, Player player, PlayerStatRecorder playerStats, 
+	public static PlayersRow fill(SwingGui mainWindow, Player player, PlayerStatRecorder playerStats,
 			JPanel mainPanel, int row, boolean enabled) {
 		PlayersRow playersRow = new PlayersRow(mainWindow, player, playerStats, mainPanel, row);
 		playersRow.buildPlayersRow();
@@ -45,7 +45,7 @@ public class PlayersRow {
 		return playersRow;
 	}
 	
-	private PlayersRow(SwinGui mainWindow, Player player,
+	private PlayersRow(SwingGui mainWindow, Player player,
 			PlayerStatRecorder playerStats, JPanel mainPanel, int row) {
 		this.mainWindow = mainWindow;
 		this.player = player;
@@ -156,7 +156,7 @@ public class PlayersRow {
 					playerStats.getTeam().getRecordingStats().values.contains(action.getStat());
 			if (we_are_recording_this_action) {
 				JButton button = createPlayersButton(action);
-				SwinGuiUtil.setAllSizes(button, 100, 10);
+				SwingGuiUtil.setAllSizes(button, 100, 10);
 				buttons.add(button);
 				mainWindow.buttonMap.put(action, button);
 			}
@@ -198,18 +198,18 @@ public class PlayersRow {
 			button.setToolTipText(action.getPlayer() + " - " + stat.getExplanation());
 		}
 		// Text
-		SwinGuiUtil.setButtonText(button, action);
+		SwingGuiUtil.setButtonText(button, action);
 		// Action Listener
-		button.addActionListener(new PlayersButtonListaner(action, button));
+		button.addActionListener(new PlayersButtonListener(action, button));
 		return button;
 	}
 	
-	public class PlayersButtonListaner implements ActionListener {
+	public class PlayersButtonListener implements ActionListener {
 		private Action action;
 		private JButton button;
 		private Game game;
 		
-		public PlayersButtonListaner(Action action, JButton button) {
+		public PlayersButtonListener(Action action, JButton button) {
 			this.action = action;
 			this.button = button;
 			this.game = action.getTeam().game;
@@ -229,7 +229,7 @@ public class PlayersRow {
 			mainWindow.pushCommandOnStack(action);
 			System.out.println(mainWindow.game);
 			if (Conf.SHOW_STAT_VALUE_ON_BUTTON_LABEL) {
-				SwinGuiUtil.setButtonText(button, action);
+				SwingGuiUtil.setButtonText(button, action);
 			}
 		}
 		

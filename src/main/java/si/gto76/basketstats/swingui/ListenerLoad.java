@@ -16,9 +16,9 @@ import si.gto76.basketstats.coreclasses.GameLoader;
 
 public class ListenerLoad implements ActionListener {
 	///////////////////
-	SwinGui mainWindow;
+	SwingGui mainWindow;
 	///////////////////
-	public ListenerLoad(SwinGui mainWindow) {
+	public ListenerLoad(SwingGui mainWindow) {
 		this.mainWindow = mainWindow;
 	}
 	///////////////////
@@ -35,7 +35,7 @@ public class ListenerLoad implements ActionListener {
 				loadGame(fileChooser);
 			} catch (IOException f) {
 				JOptionPane.showMessageDialog(null, 
-						"Problem occured while opening file.", "Load Failure", JOptionPane.ERROR_MESSAGE);
+						"Problem occurred while opening file.", "Load Failure", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -50,7 +50,7 @@ public class ListenerLoad implements ActionListener {
 	}
 
 	private boolean user_wants_to_abort_loading() {
-		return !SwinGui.exitDialog("Game was not saved.\nAre you sure you want to open another game?");
+		return !SwingGui.exitDialog("Game was not saved.\nAre you sure you want to open another game?");
 	}
 
 	private String getGameString(JFileChooser fileChooser) throws FileNotFoundException {
@@ -64,7 +64,7 @@ public class ListenerLoad implements ActionListener {
 	private void createNewGameAndSetUpGui(String gameString) {
 		try {
 		 	Game game = GameLoader.createGameFromString(gameString);
-			new SwinGui(game);
+			new SwingGui(game);
 			System.out.println(game);
 			mainWindow.frame.setVisible(false);
 		} catch (ParseException e1) {

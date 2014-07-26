@@ -15,17 +15,17 @@ import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class NamePanel {
-	private static final int NAMEPANEL_WIDTH = 170;
-	private static final int NAMEPANEL_HEIGHT = 25;
-	private static final int TEXTFIELD_HEIGHT = 19;
+	private static final int NAME_PANEL_WIDTH = 170;
+	private static final int NAME_PANEL_HEIGHT = 25;
+	private static final int TEXT_FIELD_HEIGHT = 19;
 	/////////////////////////////////
-	protected final SwinGui mainWindow;
+	protected final SwingGui mainWindow;
 	protected final JPanel nameContainer;
 	protected final HasName hasName;
 	protected JLabel nameLabel;
 	/////////////////////////////////	
 	
-	public NamePanel(SwinGui mainWindow, JPanel nameContainer, HasName hasName) {
+	public NamePanel(SwingGui mainWindow, JPanel nameContainer, HasName hasName) {
 		this.mainWindow = mainWindow;
 		this.hasName = hasName;
 		this.nameContainer = nameContainer;
@@ -43,7 +43,7 @@ public class NamePanel {
 	 * ADD NAME PANEL
 	 */
 	private void addNamePanel() {
-		SwinGuiUtil.setAllSizes(nameContainer, NAMEPANEL_WIDTH, NAMEPANEL_HEIGHT);
+		SwingGuiUtil.setAllSizes(nameContainer, NAME_PANEL_WIDTH, NAME_PANEL_HEIGHT);
 		nameLabel = new JLabel(hasName.getName());
 		
 		// Updates team1Label or team2Label global variable, so that updateScore()
@@ -100,7 +100,7 @@ public class NamePanel {
 			}
 		});
 		
-		SwinGuiUtil.setAllSizes(textField, NAMEPANEL_WIDTH, TEXTFIELD_HEIGHT);
+		SwingGuiUtil.setAllSizes(textField, NAME_PANEL_WIDTH, TEXT_FIELD_HEIGHT);
 		nameContainer.add(textField);
 		nameContainer.validate();
 		textField.requestFocus();

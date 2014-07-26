@@ -7,19 +7,19 @@ import java.net.URISyntaxException;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class ListenersMenu {
-	static void add(Menu meni, final SwinGui mainWindow) {
+	static void add(Menu menu, final SwingGui mainWindow) {
 		
 		/*
 		 * FILE
 		 */
 		// NEW
-		meni.menuFileNew.addActionListener(new ListenerNewGame(mainWindow));
+		menu.menuFileNew.addActionListener(new ListenerNewGame(mainWindow));
 		// OPEN
-		meni.menuFileOpen.addActionListener(new ListenerLoad(mainWindow));
+		menu.menuFileOpen.addActionListener(new ListenerLoad(mainWindow));
 		// SAVE AS
-		meni.menuFileSaveas.addActionListener(new ListenerSave(mainWindow));
+		menu.menuFileSaveAs.addActionListener(new ListenerSave(mainWindow));
 		// FILE EXIT
-		meni.menuFileExit.addActionListener(new ActionListener() {
+		menu.menuFileExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mainWindow.onWindowClose();
 			}
@@ -29,33 +29,33 @@ public class ListenersMenu {
 		 * EDIT
 		 */
 		// UNDO
-		meni.menuEditUndo.addActionListener(new ActionListener() {
+		menu.menuEditUndo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mainWindow.undo();
 			}
 		});
 		// ADD PLAYER TO TEAM 1
-		meni.menuEditAddPlayer1.addActionListener(new ActionListener() {
+		menu.menuEditAddPlayer1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Team team = mainWindow.game.getTeam1();
 				mainWindow.addNewPlayerToTeam(team);
 			}
 		});		
 		// ADD PLAYER TO TEAM 2
-		meni.menuEditAddPlayer2.addActionListener(new ActionListener() {
+		menu.menuEditAddPlayer2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Team team = mainWindow.game.getTeam2();
 				mainWindow.addNewPlayerToTeam(team);
 			}
 		});
 		// CHANGE STATS
-		meni.menuEditChangeStats.addActionListener(new ListenerChangeStats(mainWindow));
+		menu.menuEditChangeStats.addActionListener(new ListenerChangeStats(mainWindow));
 	
         /*
          * HELP
          */
 		// HELP
-        meni.menuHelpHelp.addActionListener (
+        menu.menuHelpHelp.addActionListener (
 			new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 	try {
@@ -67,7 +67,7 @@ public class ListenersMenu {
             }
         );
         // ABOUT
-        meni.menuHelpAbout.addActionListener (
+        menu.menuHelpAbout.addActionListener (
 			new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 	try {

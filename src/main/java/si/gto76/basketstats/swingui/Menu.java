@@ -14,7 +14,7 @@ public class Menu {
 	JMenu menuFile = new JMenu();
 	JMenuItem menuFileNew = new JMenuItem();
 	JMenuItem menuFileOpen = new JMenuItem();
-	JMenuItem menuFileSaveas = new JMenuItem();
+	JMenuItem menuFileSaveAs = new JMenuItem();
 	JMenuItem menuFileExit = new JMenuItem();
 	
 	JMenu menuEdit = new JMenu();
@@ -33,8 +33,8 @@ public class Menu {
 		menuFileNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		menuFileOpen.setText("Open...");
 		menuFileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-		menuFileSaveas.setText("Save As...");
-		menuFileSaveas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
+		menuFileSaveAs.setText("Save As...");
+		menuFileSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuFileExit.setText("Exit");
 		menuFileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
 		
@@ -56,7 +56,7 @@ public class Menu {
 		///////////////////////////
 		menuFile.add(menuFileNew);
 		menuFile.add(menuFileOpen);
-		menuFile.add(menuFileSaveas);
+		menuFile.add(menuFileSaveAs);
 		menuFile.addSeparator();
 		menuFile.add(menuFileExit);
 		menuBar.add(menuFile);

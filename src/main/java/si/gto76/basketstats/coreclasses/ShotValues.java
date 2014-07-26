@@ -30,7 +30,7 @@ public class ShotValues {
 			if (value == null) {
 				continue;
 			}
-			asertValidValue(value);
+			assertValidValue(value);
 			mapBuilder.put(stat, value);
 		}
 		this.values = Collections.unmodifiableMap(shotPoints);
@@ -38,7 +38,7 @@ public class ShotValues {
 	
 	//////////////////////////////////
 
-	private static void asertValidValue(int value) {
+	private static void assertValidValue(int value) {
 		if (value < MIN_VALUE) {
 			throw new IllegalArgumentException("Shot value is less than 1: "+ value);
 		}

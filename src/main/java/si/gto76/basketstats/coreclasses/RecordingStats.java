@@ -1,6 +1,5 @@
 package si.gto76.basketstats.coreclasses;
 
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import java.util.Set;
 
 /**
  * Class that contains unmodifiable set of input Stats that is guaranteed to be in legal state.
- * Legality is decided by rules that demand or forbid some Stats in presence of anothers.
+ * Legality is decided by rules that demand or forbid some Stats in presence of others.
  * (For example you can not track three point shots if you don't also track two pointers.)
  * Set that is sent to constructor should be checked for legality with static function isValidSet(Set<Stat>),
  * or sent to static function getValidSet(Set<Stat>), that will modify it into legal state.
@@ -86,7 +85,7 @@ public class RecordingStats {
 	/**
 	 * Returns new RecordingStats object. Old one stays unchanged.
 	 * New object has additional stat that was passed, plus all the
-	 * stats that had to be added to mantain legal state.
+	 * stats that had to be added to maintain legal state.
 	 */
 	public RecordingStats add(Stat stat) {
 		Set<Stat> valuesOut = new HashSet<Stat>(values);
@@ -109,8 +108,8 @@ public class RecordingStats {
 	
 	/**
 	 * Returns new RecordingStats object. Old one stays unchanged.
-	 * New object is withouth passed stat and also any stat that
-	 * had to be removed with it to mantain legal state.
+	 * New object is without passed stat and also any stat that
+	 * had to be removed with it to maintain legal state.
 	 */
 	public RecordingStats remove_Nullable(Stat stat) {
 		Set<Stat> valuesOut = new HashSet<Stat>(values);
@@ -153,8 +152,8 @@ public class RecordingStats {
 		Set<Stat> mandatoryStats = getMandatoryStats(recordingStats);
 		recordingStats.addAll(mandatoryStats);
 		// Anti-Dependencies
-		Set<Stat> forbidenStats = getForbidenStats(recordingStats);
-		recordingStats.removeAll(forbidenStats);
+		Set<Stat> forbiddenStats = getForbiddenStats(recordingStats);
+		recordingStats.removeAll(forbiddenStats);
 		
 		return Util.getOrderedSet(recordingStats);
 	}
@@ -197,8 +196,8 @@ public class RecordingStats {
 		if (stats_dont_contain_all_the_mandatories) {
 			return true;
 		}
-		Set<Stat> forbidens = getForbidenStats(recordingStats);
-		if (Util.containsAny(recordingStats, forbidens)) {
+		Set<Stat> forbiddens = getForbiddenStats(recordingStats);
+		if (Util.containsAny(recordingStats, forbiddens)) {
 			return true;
 		}
 		return false;
@@ -227,12 +226,12 @@ public class RecordingStats {
 		return mandatoryStats;
 	}
 	
-	private static Set<Stat> getForbidenStats(Set<Stat> recordingStats) {
-		Set<Stat> forbidenStats = new HashSet<Stat>();
+	private static Set<Stat> getForbiddenStats(Set<Stat> recordingStats) {
+		Set<Stat> forbiddenStats = new HashSet<Stat>();
 		if (recordingStats.contains(Stat.OFF) || recordingStats.contains(Stat.DEF)) {
-			forbidenStats.add(Stat.REB);
+			forbiddenStats.add(Stat.REB);
 		}		
-		return forbidenStats;
+		return forbiddenStats;
 	}
 	
 	///////////////////////////

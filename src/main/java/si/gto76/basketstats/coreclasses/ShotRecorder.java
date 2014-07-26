@@ -37,7 +37,7 @@ public class ShotRecorder {
 		tpa = Util.zeroIfNull(statsWithValues.get(Stat.TPA)),
 		ftm = Util.zeroIfNull(statsWithValues.get(Stat.FTM)), 
 		fta = Util.zeroIfNull(statsWithValues.get(Stat.FTA));
-		// If there are no recorded attemts, then missed values become negative,
+		// If there are no recorded attempts, then missed values become negative,
 		// so in that case they are just set to zero:
 		this.made2p = Util.zeroOrPositive(fgm - tpm);
 		this.missed2p = Util.zeroOrPositive(fga - fgm - tpa + tpm);
@@ -49,17 +49,13 @@ public class ShotRecorder {
 
 	
 	public static boolean mapIsValid(Map<Stat,Integer> statsWithValues) {
-		boolean someValuesAreNotPositive = !Util.areAllPositive(statsWithValues.values());
-		if (someValuesAreNotPositive) {
-			return false;
-		}
-		return true;
+        return Util.areAllPositive(statsWithValues.values());
 	}
 
 	////////////////////////////////
 	
 	/*
-	 * SETERS:
+	 * SETTERS:
 	 */
 
 	public int made(Stat stat) {
@@ -68,7 +64,7 @@ public class ShotRecorder {
 	}
 
 	/**
-	 * Checks if stat is being teacked. (Its being tracked if it is in games RecordingStats.values set)
+	 * Checks if stat is being tracked. (Its being tracked if it is in games RecordingStats.values set)
 	 * Now checked only when made, so we can undo stats that are no longer tracked.
 	 */
 	private void assertStatIsRecording(Stat stat) {
@@ -95,12 +91,12 @@ public class ShotRecorder {
 	}
 	
 	/*
-	 * GETERS:
+	 * GETTERS:
 	 */
 	
 	public int get(Stat stat) {
 		if (!stat.isScoringOrPoints()) {
-			throw new IllegalArgumentException("Tried to acces non scoring stat in Shots class.");
+			throw new IllegalArgumentException("Tried to access non scoring stat in Shots class.");
 		}
 		switch (stat) {
 			case FGA: return made2p + missed2p + made3p + missed3p;
@@ -114,7 +110,7 @@ public class ShotRecorder {
 			case FTF: return missedFt; 
 			case FTA: return madeFt + missedFt;
 			case PTS: return getScore();
-			default : throw new IllegalArgumentException("Scoring stat geter is not implemented for: " +stat);
+			default : throw new IllegalArgumentException("Scoring stat getter is not implemented for: " +stat);
 		}
 	}
 
@@ -135,11 +131,8 @@ public class ShotRecorder {
 	}
 
 	public boolean allValuesAreZero() {
-		if (made2p == 0 && missed2p == 0 && made3p == 0 
-				&& missed3p == 0 && madeFt == 0 && missedFt == 0) {
-			return true;
-		}
-		return false;
+		return made2p == 0 && missed2p == 0 && made3p == 0
+				&& missed3p == 0 && madeFt == 0 && missedFt == 0;
 	}
 
 }

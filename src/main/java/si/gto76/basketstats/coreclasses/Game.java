@@ -46,7 +46,7 @@ public class Game {
 	////////////////////////////////////////
 	
 	/*
-	 * SETERS:
+	 * SETTERS:
 	 */
 	
 	public void setDate(Date date) {
@@ -132,10 +132,7 @@ public class Game {
 		if (stat == Stat.REB) {
 			return hasUsedRebounds();
 		}
-		if (get(stat) == 0) {
-			return false;
-		}
-		return true;
+        return get(stat) != 0;
 	}
 	
 	private int get(Stat stat) {
@@ -147,11 +144,8 @@ public class Game {
 	}
 
 	public boolean oneTeamHasNoPlayersOnTheFloor() {
-		if (team1.getPlayersThatAreOnTheFloor().size() == 0
-				|| team2.getPlayersThatAreOnTheFloor().size() == 0) {
-			return true;
-		}
-		return false;
+		return team1.getPlayersThatAreOnTheFloor().size() == 0
+				|| team2.getPlayersThatAreOnTheFloor().size() == 0;
 	}
 	
 	public boolean areNewStatsValidDependingOnWhatHappenedInTheGame(RecordingStats newRecordingStats) {
@@ -178,10 +172,7 @@ public class Game {
 	}
 	
 	public boolean doBothTeamsHaveSameNumberOfPlayersOnTheFloor() {
-		if (team1.getPlayersThatAreOnTheFloor().size() == team2.getPlayersThatAreOnTheFloor().size()) {
-			return true;
-		}
-		return false;
+		return team1.getPlayersThatAreOnTheFloor().size() == team2.getPlayersThatAreOnTheFloor().size();
 	}
 	
 	/////////////////////

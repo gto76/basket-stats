@@ -2,14 +2,14 @@ package si.gto76.basketstats;
 
 import javax.swing.UIManager;
 import si.gto76.basketstats.coreclasses.*;
-import si.gto76.basketstats.swingui.SwinGui;
+import si.gto76.basketstats.swingui.SwingGui;
 
 public class BasketStats {
 
     public static void main(String[] args) {
 		setLookAndFeel(Conf.LOOK_AND_FEEL);
 		Game game = Conf.getDefaultGame();
-		new SwinGui(game);
+		new SwingGui(game);
 		System.out.println(game);
 	}
 

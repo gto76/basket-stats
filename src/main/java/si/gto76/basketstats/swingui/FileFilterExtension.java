@@ -43,18 +43,18 @@ public final class FileFilterExtension extends FileFilter {
 		this.extensions = extensions;
 	}
 
-	// Implemntations for FileFilter
+	// Implementations for FileFilter
 
 	public String getDescription() {
 		return description;
 	}
 
 	public boolean accept(String fileName) {
-		for (int index = 0; index < extensions.length; index++) {
-			if (fileName.endsWith(extensions[index])) {
-				return true;
-			}
-		}
+        for (String extension : extensions) {
+            if (fileName.endsWith(extension)) {
+                return true;
+            }
+        }
 		return false;
 	}
 
