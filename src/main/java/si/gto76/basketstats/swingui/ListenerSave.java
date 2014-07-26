@@ -85,7 +85,7 @@ public class ListenerSave implements ActionListener {
 				boolean filename_is_valid_and_it_passed_through_the_filter = var.formatName != "";
 				if (filename_is_valid_and_it_passed_through_the_filter) {
 					checkIfFileAlreadyExistsAndSaveIt(var);
-				} else { // filename_is_invalid_or_it_didn't_pass_through_the_filter
+				} else { // filename_is_invalid_or_it_didnt_pass_through_the_filter
 					JOptionPane.showMessageDialog(null, var.errMessage, "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			} 
@@ -101,7 +101,7 @@ public class ListenerSave implements ActionListener {
 				else if (entered_filenames_extension_is_not_supported) {
 					var.errMessage = "Unknown filename extension. "+WHAT_IS_BEING_SAVED+" was not saved.";
 				}
-				else { // entered_filenames_extension_is_valid					
+				else { // entered_filename's_extension_is_valid
 					var.formatName = fileFilter.getDescription();
 				}
 			}

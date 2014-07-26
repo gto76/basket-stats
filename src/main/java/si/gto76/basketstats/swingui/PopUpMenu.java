@@ -63,10 +63,10 @@ public class PopUpMenu {
 			popupMenu.addSeparator();
 		}
 		if (!team.isPlayerFirst(player)) {
-			addNewItemToMenu(popupMenu, "Move Up", new MovePlayerUpActionListener());
+			addNewItemToMenu(popupMenu, "Move Player Up", new MovePlayerUpActionListener());
 		}
 		if (!team.isPlayerLast(player)) {
-			addNewItemToMenu(popupMenu, "Move Down", new MovePlayerDownActionListener());
+			addNewItemToMenu(popupMenu, "Move Player Down", new MovePlayerDownActionListener());
 		}
 	    popupMenu.addSeparator();
 	    addNewItemToMenu(popupMenu, "Add New Player", new AddNewPlayerActionListener());

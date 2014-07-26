@@ -35,14 +35,14 @@ public class Conf {
 	public static final String LOOK_AND_FEEL = "CrossPlatformLookAndFeel";
 	
 	// Window
-    public static  final int WINDOW_WIDTH = 1365;
+    public static final int WINDOW_WIDTH = 1365;
     public static final int WINDOW_HEIGHT = 350;
 	public static final long DOUBLE_CLICK_LAG =  250000000;
 	public static final int INITIAL_NUMBER_OF_PLAYERS_IN_ONE_TEAM = 2;
 	
 	// Buttons
-	public static boolean SHOW_STAT_VALUE_ON_BUTTON_LABEL = true;
-	public static String BUTTON_TEXT_SEPARATOR = "  -  ";
+	public static final boolean SHOW_STAT_VALUE_ON_BUTTON_LABEL = true;
+	public static final String BUTTON_TEXT_SEPARATOR = "  -  ";
 	public static final boolean BUTTONS_TOOLTIP = true;
 	public static final int TOOLTIP_DELAY = 1000;
 

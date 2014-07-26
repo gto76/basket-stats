@@ -32,10 +32,10 @@ public class ListenerLoad implements ActionListener {
 		int returnVal = fileChooser.showOpenDialog(mainWindow.frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			try {
-				loadGame(fileChooser);
-			} catch (IOException f) {
-				JOptionPane.showMessageDialog(null, 
-						"Problem occurred while opening file.", "Load Failure", JOptionPane.ERROR_MESSAGE);
+                loadGame(fileChooser);
+            } catch (FileNotFoundException g) {
+                JOptionPane.showMessageDialog(null,
+                        "File with that name does not exist.", "Load Failure", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

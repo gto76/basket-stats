@@ -1,0 +1,22 @@
+* unified help dialog, with tree wiev.
+* dialogs should have main window for parent (so they are centered over it), in tudi oba stat changerja, da imata parenta main vindow. Game was not saved..: all the data since last save will be lost.? + cancel option? - titles (and help) all dialogs?
+all dialogs should have OK Cancel and optional Help
+or Exit Cancel
+configure stats dialog needs the same title and help
+game was not saved title
+new game stat selector needs help
+* configure stat should be showing shot values - or even aloved to be changed - the unscored ones... * Popup help at stat selection, wider positioning * Should we combine or at least copy pase?
+
+------
+
+* Remove mnemonic from about
+* limit venue and team name to something sensible
+* save as should remember last folder !
+* Rebounds in less grey color, to-s also little grayed ?
+* Text on stdout.
+---
+* individual score column at far right.
+* Status bar with last action
+
+------
+
