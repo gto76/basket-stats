@@ -150,7 +150,10 @@ public class Util {
 	public static String padTab(String string) {
 		return Util.padEnd(string, Conf.TAB_WIDTH, ' ');
 	}
-	
+
+    /**
+     * Throws IllegalArgumentException if name is null, empty or contains only whitespaces.
+     */
 	public static String checkNameForNullAndTrimIt(String name, int maxNameLength) {
 		if (name == null) {
 			throw new IllegalArgumentException("Name is null");

@@ -52,7 +52,6 @@ public class Menu {
 		menuHelpHelp.setText("Help");
 		menuHelpHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 		menuHelpAbout.setText("About");
-		menuHelpAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, ActionEvent.CTRL_MASK));
 		///////////////////////////
 		menuFile.add(menuFileNew);
 		menuFile.add(menuFileOpen);

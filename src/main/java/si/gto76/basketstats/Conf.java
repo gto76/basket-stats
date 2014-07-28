@@ -28,7 +28,7 @@ public class Conf {
 	public static final String FILE_EXTENSION = "hsg";
 
     // Version location
-    public static final String VERSION_FILENAME = "resources/version"; // Here is stored the real version that is
+    public static final String VERSION_FILENAME = "version"; // Here is stored the real version that is
         // acquired from git at build time. The one above is just for backup.
 
 	// Look and Feel
