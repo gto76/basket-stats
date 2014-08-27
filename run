@@ -21,7 +21,7 @@ for library in `find ../../lib/ -name *.jar &> /dev/null`; do
 done &&\
 cd .. &&\
 echo "$scriptName: PACKAGING IN JAR..." &&\
-jar cvfe "$appName.jar" "$mainClass" -C .. version -C ../src/main resources -C main . -C lib . &> /dev/null  &&\
+jar cvfe "$appName.jar" "$mainClass" -C .. version -C ../src/main/resources . -C main . -C lib . &> /dev/null  &&\
 echo "$scriptName: EXECUTING JAR..." &&\
 java -jar "$appName.jar" &&\
 rm ../version

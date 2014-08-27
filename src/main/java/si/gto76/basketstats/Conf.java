@@ -59,10 +59,10 @@ public class Conf {
 
 	// Icons
     //public static final String BASE = "/main/resources/";
-	public static final String ICON_FILENAME_S = "/resources/ba16.png";
-	public static final String ICON_FILENAME_M = "/resources/ba32.png";
-	public static final String ICON_FILENAME_L = "/resources/ba64.png";
-	public static final String ICON_FILENAME_XL = "/resources/ba128.png";
+	public static final String ICON_FILENAME_S = "/ba16.png";
+	public static final String ICON_FILENAME_M = "/ba32.png";
+	public static final String ICON_FILENAME_L = "/ba64.png";
+	public static final String ICON_FILENAME_XL = "/ba128.png";
 
 	// Text Formatting
     public static final int NUMBER_OF_TABS_FOR_PLAYER_NAME = 3;
