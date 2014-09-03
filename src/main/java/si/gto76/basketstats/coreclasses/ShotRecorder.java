@@ -1,6 +1,7 @@
 package si.gto76.basketstats.coreclasses;
 
 import java.util.Map;
+import java.util.Observable;
 import java.util.Set;
 
 
@@ -89,7 +90,7 @@ public class ShotRecorder {
 			default : throw new IllegalArgumentException("Wrong stat argument: " +stat);
 		}
 	}
-	
+
 	/*
 	 * GETTERS:
 	 */

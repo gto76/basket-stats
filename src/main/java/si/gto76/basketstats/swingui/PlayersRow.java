@@ -8,12 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
+
 import si.gto76.basketstats.Conf;
 import si.gto76.basketstats.coreclasses.Action;
 import si.gto76.basketstats.coreclasses.Game;
@@ -23,6 +22,10 @@ import si.gto76.basketstats.coreclasses.Stat;
 import si.gto76.basketstats.coreclasses.Team;
 import si.gto76.basketstats.coreclasses.Util;
 
+/**
+ * Row with players name, on-the-floor selector, stat buttons, and players score.
+ * New one gets created after every stat change.
+ */
 public class PlayersRow {
 	////////////////////////////
 	private final Player player;
@@ -52,7 +55,7 @@ public class PlayersRow {
 		this.playerStats = playerStats;
 		this.mainPanel = mainPanel;
 		this.row = row;
-	}	
+	}
 	
 	//////////////////////////////
 
@@ -97,6 +100,8 @@ public class PlayersRow {
 		buttons = createPlayersButtons(playerStats);
 		checkBox = createPlayersCheckBox(player, playerStats.getTeam(), buttons);
 		addPlayersCheckBox(checkBox);
+		// PLAYERS POINTS:
+        JLabel playersPoints = new JLabel("99");
 		// BUTTONS:
 		addPlayersButtons(buttons);
 	}
@@ -126,8 +131,8 @@ public class PlayersRow {
 		onFloorSelector.addActionListener(new CheckBoxListener());
 		return onFloorSelector;
 	}
-	
-	class CheckBoxListener implements ActionListener {
+
+    class CheckBoxListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent actionEvent) {
 			AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
@@ -165,13 +170,16 @@ public class PlayersRow {
 	}
 	
 	private void addPlayersButtons(List<JButton> bbb) {
-		GridLayout layout = new GridLayout(1, bbb.size());
+		GridLayout layout = new GridLayout(1, bbb.size()+1);
 		layout.setHgap(1);
 		JPanel panel = new JPanel(layout);
 		for (JButton b : bbb) {
 			panel.add(b);
 		}
-		
+        // Puts players score in last column
+        JPanel playersScoreContainer = createPlayersScoreContainer();
+        panel.add(playersScoreContainer);
+        ////
 		GridBagConstraints c = Util.getGridBagConstraints(2, row);	
 		c.weighty = 1.0;
 		c.weightx = 1.0;
@@ -179,6 +187,23 @@ public class PlayersRow {
 		c.insets = new Insets(2, 0, 2, 0); 
 		mainPanel.add(panel, c);
 	}
+
+    public JPanel createPlayersScoreContainer() {
+        JPanel playersScoreContainer = new JPanel();
+        //SwingGuiUtil.setAllSizes(playersScoreContainer, NamePanel.NAME_PANEL_WIDTH, NamePanel.NAME_PANEL_HEIGHT);
+        Integer points = (playerStats.get(Stat.PTS));
+        JLabel playersScore = new JLabel(points.toString());
+
+        GridBagConstraints co = Util.getGridBagConstraints(0, 0);
+        co.weighty = 1.0;
+        //co.weightx = 1.0;
+        //co.fill = GridBagConstraints.BOTH;
+        //co.fill = GridBagConstraints.VERTICAL;
+        //co.anchor = GridBagConstraints.CENTER;
+
+        playersScoreContainer.add(playersScore, co);
+        return playersScoreContainer;
+    }
 
 	/*
 	 * BUTTON
@@ -256,5 +281,5 @@ public class PlayersRow {
 			return false;
 		}
 	}
-	
+
 }

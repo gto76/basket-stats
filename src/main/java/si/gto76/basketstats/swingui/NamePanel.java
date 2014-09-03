@@ -15,9 +15,9 @@ import si.gto76.basketstats.coreclasses.Player;
 import si.gto76.basketstats.coreclasses.Team;
 
 public class NamePanel {
-	private static final int NAME_PANEL_WIDTH = 170;
-	private static final int NAME_PANEL_HEIGHT = 25;
-	private static final int TEXT_FIELD_HEIGHT = 19;
+	public static final int NAME_PANEL_WIDTH = 170;
+    public static final int NAME_PANEL_HEIGHT = 25;
+    public static final int TEXT_FIELD_HEIGHT = 19;
 	/////////////////////////////////
 	protected final SwingGui mainWindow;
 	protected final JPanel nameContainer;

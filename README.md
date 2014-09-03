@@ -14,7 +14,7 @@ Basketball stat recorder.
 
 
 #### Gui:
-![Alt text](/src/doc/basket-stats.png?raw=true "Screenshot")
+![Alt text](/doc/basket-stats.png?raw=true "Screenshot")
 
 
 
@@ -58,4 +58,4 @@ cd basket-stats
 ./run
 ```
 #### UML Diagram Of Core Classes:
-![Alt text](/src/doc/uml-diagram.png?raw=true "Screenshot")
+![Alt text](/doc/uml-diagram.png?raw=true "Screenshot")
