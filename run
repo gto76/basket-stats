@@ -1,3 +1,5 @@
+#!/bin/bash
+
 mainClass='si.gto76.basketstats.BasketStats' 
 appName='basket-stats'
 
