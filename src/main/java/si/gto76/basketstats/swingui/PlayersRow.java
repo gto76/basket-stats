@@ -1,9 +1,6 @@
 package si.gto76.basketstats.swingui;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -189,20 +186,15 @@ public class PlayersRow {
 	}
 
     public JPanel createPlayersScoreContainer() {
-        JPanel playersScoreContainer = new JPanel();
-        //SwingGuiUtil.setAllSizes(playersScoreContainer, NamePanel.NAME_PANEL_WIDTH, NamePanel.NAME_PANEL_HEIGHT);
+        JPanel innerPanel = new JPanel();
         Integer points = (playerStats.get(Stat.PTS));
         JLabel playersScore = new JLabel(points.toString());
+        innerPanel.add(playersScore);
 
-        GridBagConstraints co = Util.getGridBagConstraints(0, 0);
-        co.weighty = 1.0;
-        //co.weightx = 1.0;
-        //co.fill = GridBagConstraints.BOTH;
-        //co.fill = GridBagConstraints.VERTICAL;
-        //co.anchor = GridBagConstraints.CENTER;
+        JPanel outerPanel = new JPanel(new GridBagLayout());
+        outerPanel.add(innerPanel);
 
-        playersScoreContainer.add(playersScore, co);
-        return playersScoreContainer;
+        return outerPanel;
     }
 
 	/*
