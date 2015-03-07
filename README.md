@@ -52,10 +52,17 @@ Totals                  21-41   2-7     14-17           6       14      20      
 ```
 
 ### How To Run:
+#### UNIX
 ```bash
 git clone https://github.com/gto76/basket-stats.git
 cd basket-stats
 ./run
 ```
+
+#### Windows
+1. [Download ZIP] (https://github.com/gto76/basket-stats/archive/master.zip)
+2. Extract it
+3. Double click on run.bat
+
 #### UML Diagram Of Core Classes:
 ![Alt text](/doc/uml-diagram.png?raw=true "Screenshot")
