@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 mainClass='si.gto76.basketstats.BasketStats' 
 appName='basket-stats'
 
@@ -11,19 +13,19 @@ if [ $? -eq 0 ]; then
 	appName="$appName"-`git describe | sed -r 's/^[^0-9]([0-9\.]*).*$/\1/'`
 fi
 
-echo "$scriptName: COMPILING..." &&\
-mkdir -p target/main &&\
-javac -d target/main -cp `echo lib/*.jar | sed 's/ /:/'` `find src/main -name *.java` &&\
-cd target &&\
-mkdir -p lib &&\
-cd lib &&\
-echo "$scriptName: EXTRACTING LIBRARIES..." &&\
+echo "$scriptName: COMPILING..."
+mkdir -p target/main
+javac -d target/main -cp `echo lib/*.jar | sed 's/ /:/'` `find src/main -name *.java`
+cd target
+mkdir -p lib
+cd lib
+echo "$scriptName: EXTRACTING LIBRARIES..."
 for library in `find ../../lib/ -name *.jar &> /dev/null`; do 
 	jar xf "$library"; 
-done &&\
-cd .. &&\
-echo "$scriptName: PACKAGING IN JAR..." &&\
-jar cvfe "$appName.jar" "$mainClass" -C .. version -C ../src/main/resources . -C main . -C lib . &> /dev/null  &&\
-echo "$scriptName: EXECUTING JAR..." &&\
-java -jar "$appName.jar" &&\
+done
+cd ..
+echo "$scriptName: PACKAGING IN JAR..."
+jar cvfe "$appName.jar" "$mainClass" -C .. version -C ../src/main/resources . -C main . -C lib . &> /dev/null
+echo "$scriptName: EXECUTING JAR..."
+java -jar "$appName.jar"
 rm ../version
