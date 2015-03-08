@@ -8,3 +8,5 @@ src/.project
 src/main/main.iml
 src/test/test.iml
 target/
+basket-stats.jar
+version
