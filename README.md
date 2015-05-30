@@ -48,8 +48,8 @@ Totals                  21-41   2-7     14-17           6       14      20      
 --------------------------------------------------------------------------------------------------------------------------------
 ```
 
-How To Run
-----------
+How To Run on…
+--------------
 ### Windows
 1. [Download ZIP] (https://github.com/gto76/basket-stats/archive/master.zip)
 2. Extract it
