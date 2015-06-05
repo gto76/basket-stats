@@ -3,7 +3,7 @@ Basket Stats
 
 Basketball stat recorder.
 * Written in Java.
-* Uses Swing for gui.
+* Uses Swing for GUI.
 * Value of different shots can be adjusted at the start of a new game.
 * What stats are being recorded can be changed at any time in game.
 * New players can be added to teams during game.

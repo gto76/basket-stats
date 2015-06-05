@@ -1,4 +1,4 @@
-echo off
+@echo off
 
 SET mainClass=si.gto76.basketstats.BasketStats
 SET appName=basket-stats
@@ -20,7 +20,7 @@ jar xf ..\..\lib\junit-4.11.jar
 cd ..
 
 echo %scriptName%: PACKAGING IN JAR...
-jar cvfe %appName%.jar %mainClass% -C ..\src\main\resources . -C main . -C lib .
+jar cfe %appName%.jar %mainClass% -C ..\src\main\resources . -C main . -C lib .
 
 echo %scriptName%: EXECUTING JAR...
 java -jar %appName%.jar
