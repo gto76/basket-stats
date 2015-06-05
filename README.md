@@ -13,13 +13,10 @@ Basketball stat recorder.
 * Multilevel Undo
 
 
-#### Gui:
+### Gui
 ![Alt text](/doc/basket-stats.png?raw=true "Screenshot")
 
-
-
-
-#### Output / Game File:
+### Output / Game File
 ```
 --------------------------------------------------------------------------------------------------------------------------------
 Sun Jun 14 23:30:00 CEST 1998
@@ -51,18 +48,20 @@ Totals                  21-41   2-7     14-17           6       14      20      
 --------------------------------------------------------------------------------------------------------------------------------
 ```
 
-### How To Run:
-#### UNIX
+How To Run on…
+--------------
+### Windows
+1. [Download ZIP] (https://github.com/gto76/basket-stats/archive/master.zip)
+2. Extract it
+3. Double click on run.bat
+
+### UNIX
 ```bash
 git clone https://github.com/gto76/basket-stats.git
 cd basket-stats
 ./run
 ```
 
-#### Windows
-1. [Download ZIP] (https://github.com/gto76/basket-stats/archive/master.zip)
-2. Extract it
-3. Double click on run.bat
-
-#### UML Diagram Of Core Classes:
+UML Diagram Of Core Classes
+---------------------------
 ![Alt text](/doc/uml-diagram.png?raw=true "Screenshot")
