@@ -1,19 +1,8 @@
 Basket Stats
 ============
 
-Basketball stat recorder.
-* Written in Java.
-* Uses Swing for GUI.
-* Value of different shots can be adjusted at the start of a new game.
-* What stats are being recorded can be changed at any time in game.
-* New players can be added to teams during game.
-* Players can be pulled out/put in the game, so plus/minus stat can be tracked.
-* Prints complete stats on console after every input.
-* Games are saved in text file that is the same as the last output on console.
-* Multilevel Undo
+Basketball stat recorder
 
-
-### Gui
 ![Alt text](/doc/basket-stats.png?raw=true "Screenshot")
 
 ### Output / Game File
@@ -56,11 +45,24 @@ How To Run on…
 3. Double click on run.bat
 
 ### UNIX
-```bash
+```
 git clone https://github.com/gto76/basket-stats.git
 cd basket-stats
 ./run
 ```
+
+Features
+--------
+
+* Written in Java.
+* Uses Swing for GUI.
+* Value of different shots can be adjusted at the start of a new game.
+* What stats are being recorded can be changed at any time in game.
+* New players can be added to teams during game.
+* Players can be pulled out/put in the game, so plus/minus stat can be tracked.
+* Prints complete stats on console after every input.
+* Games are saved in text file that is the same as the last output on console.
+* Multilevel Undo
 
 UML Diagram Of Core Classes
 ---------------------------
