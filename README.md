@@ -5,6 +5,20 @@ Basketball stat recorder
 
 ![Alt text](/doc/basket-stats.png?raw=true "Screenshot")
 
+How To Run on…
+--------------
+### Windows
+1. [Download ZIP] (https://github.com/gto76/basket-stats/archive/master.zip)
+2. Extract it
+3. Double click on run.bat
+
+### UNIX
+```
+$ git clone https://github.com/gto76/basket-stats.git
+$ cd basket-stats
+$ ./run
+```
+
 ### Output / Game File
 ```
 --------------------------------------------------------------------------------------------------------------------------------
@@ -35,20 +49,6 @@ John Stockton           4-10    1-4     1-2     -9      0       3       3       
 Totals                  21-41   2-7     14-17           6       14      20      12      6       2       11      0       58      
                         51.2%   28.6%   82.4%   
 --------------------------------------------------------------------------------------------------------------------------------
-```
-
-How To Run on…
---------------
-### Windows
-1. [Download ZIP] (https://github.com/gto76/basket-stats/archive/master.zip)
-2. Extract it
-3. Double click on run.bat
-
-### UNIX
-```
-git clone https://github.com/gto76/basket-stats.git
-cd basket-stats
-./run
 ```
 
 Features
