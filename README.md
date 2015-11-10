@@ -10,7 +10,7 @@ How To Run on…
 ### Windows
 1. [Download ZIP] (https://github.com/gto76/basket-stats/archive/master.zip)
 2. Extract it
-3. Double click on run.bat
+3. Double click run.bat
 
 ### UNIX
 ```
