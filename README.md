@@ -32,7 +32,8 @@ Features
 * Games are saved in text file that is the same as the last output on console.
 * Multilevel Undo
 
-### Output
+Output
+------
 ```
 --------------------------------------------------------------------------------------------------------------------------------
 Sun Jun 14 23:30:00 CEST 1998
