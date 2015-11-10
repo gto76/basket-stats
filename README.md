@@ -19,6 +19,19 @@ $ cd basket-stats
 $ ./run
 ```
 
+Features
+--------
+
+* Written in Java.
+* Uses Swing for GUI.
+* Value of different shots can be adjusted at the start of a new game.
+* What stats are being recorded can be changed at any time in game.
+* New players can be added to teams during game.
+* Players can be pulled out/put in the game, so plus/minus stat can be tracked.
+* Prints complete stats on console after every input.
+* Games are saved in text file that is the same as the last output on console.
+* Multilevel Undo
+
 ### Output / Game File
 ```
 --------------------------------------------------------------------------------------------------------------------------------
@@ -50,19 +63,6 @@ Totals                  21-41   2-7     14-17           6       14      20      
                         51.2%   28.6%   82.4%   
 --------------------------------------------------------------------------------------------------------------------------------
 ```
-
-Features
---------
-
-* Written in Java.
-* Uses Swing for GUI.
-* Value of different shots can be adjusted at the start of a new game.
-* What stats are being recorded can be changed at any time in game.
-* New players can be added to teams during game.
-* Players can be pulled out/put in the game, so plus/minus stat can be tracked.
-* Prints complete stats on console after every input.
-* Games are saved in text file that is the same as the last output on console.
-* Multilevel Undo
 
 UML Diagram Of Core Classes
 ---------------------------
