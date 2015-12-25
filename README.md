@@ -1,7 +1,7 @@
 Basket Stats
 ============
 
-Basketball stat recorder
+#### Basketball stat recorder
 
 ![Alt text](/doc/basket-stats.png?raw=true "Screenshot")
 
