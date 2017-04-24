@@ -8,7 +8,7 @@ Basket Stats
 How To Run on…
 --------------
 ### Windows
-* [**Download**] (https://github.com/gto76/basket-stats/archive/master.zip)
+* [**Download**](https://github.com/gto76/basket-stats/archive/master.zip)
 * Extract
 * Start **`run.bat`**
 
