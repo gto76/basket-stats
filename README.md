@@ -23,14 +23,15 @@ Features
 --------
 
 * Written in Java.
-* Uses Swing for GUI.
-* Value of different shots can be adjusted at the start of a new game.
-* What stats are being recorded can be changed at any time in game.
-* New players can be added to teams during game.
-* Players can be pulled out/put in the game, so plus/minus stat can be tracked.
+* Multilevel Undo.
 * Prints complete stats on console after every input.
 * Games are saved in text file that is the same as the last output on console.
-* Multilevel Undo
+* Players can be pulled out/put in the game, so plus/minus stat can be tracked.
+* New players can be added to teams during game.
+* Value of different shots can be adjusted at the start of a new game.
+* What stats are being recorded can be changed at any time during game.
+
+
 
 Output
 ------
