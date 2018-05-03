@@ -12,7 +12,14 @@ How To Run on…
 * Extract
 * Run **`run.bat`**
 
-### UNIX
+### Mac 
+```
+$ git clone https://github.com/gto76/basket-stats.git
+$ cd basket-stats
+$ ./run-mac
+```
+
+### Linux
 ```
 $ git clone https://github.com/gto76/basket-stats.git
 $ cd basket-stats
